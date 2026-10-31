@@ -30,21 +30,23 @@ version, and a record of whether the workflow stayed within its cost ceiling.
 The exact fields depend on the decision. What matters is that the required
 evidence is named before the result is interpreted.
 
+##### Terminal states 🚦
+
 The harness uses separate terminal states so an absent result cannot disappear
 inside a green report.
 
-`completed` means the declared evaluation path ran to its intended terminal
-state. It does not mean that every task passed.
+| Harness terminal state | Meaning | Boundary |
+|---|---|---|
+| `completed` | The declared evaluation path reached its intended terminal state. | It does not mean that every task passed. |
+| `failed` | The evidence was present, but the declared rule was not met. | The failure must remain visible. |
+| `refused` | The evaluation declined to proceed because required input, authority, or safety conditions were missing. | It is not equivalent to a model failure. |
+| `skipped` | A check was intentionally not run. | The reason must remain visible. |
+| `not_evaluated` | The evidence was unavailable or invalid. | It is not a weaker form of pass. |
 
-`failed` means the evidence was present and the declared rule was not met.
-
-`refused` means the evaluation declined to proceed because required input,
-authority, or safety conditions were missing.
-
-`skipped` means a check was intentionally not run and must remain visible.
-
-`not_evaluated` means the evidence was unavailable or invalid. It is not a
-weaker form of pass.
+> [!NOTE]
+> These are harness execution states. They explain what happened during the
+> evaluation path; they are not a replacement for the separate report and
+> release statuses used elsewhere in this course.
 
 This distinction matters when a report contains a favorable average. Suppose
 the evaluator ran on nine normal cases and could not run the tenth high-risk

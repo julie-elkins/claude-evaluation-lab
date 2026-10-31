@@ -1,4 +1,4 @@
-# Lab 1: Transport success is not task success
+# Lab 1: Transport success is not task success 🔬
 
 This lab teaches semantic outcome evaluation. Semantic outcome means whether the
 requested task actually reached its declared goal; it is separate from

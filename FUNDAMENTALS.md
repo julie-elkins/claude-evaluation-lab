@@ -1,4 +1,4 @@
-# Fundamentals: The Concepts Under Every Evaluation
+# Fundamentals 📘: The Concepts Under Every Evaluation
 
 This section is the foundation for the course. Read it before the lessons if
 you are new to LLM evaluations, or use it as a reference when a term is

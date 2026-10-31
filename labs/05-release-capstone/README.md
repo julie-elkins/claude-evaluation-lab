@@ -1,4 +1,4 @@
-# Lab 5: Turn evaluation evidence into a release decision
+# Lab 5: Turn evaluation evidence into a release decision 🔬
 
 This lab is the course capstone. It connects benchmark interpretation, a
 controlled baseline-versus-variant comparison, uncertainty, revision binding,

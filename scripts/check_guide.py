@@ -28,6 +28,34 @@ def main() -> int:
         print(f"Expected 30 lesson headings, found {lesson_headings}", file=sys.stderr)
         return 1
 
+    visual_sections = {
+        "\n## Fundamentals 📘": 1,
+        "\n### Runnable labs 🔬": 1,
+        "\n#### Learner practice 🧪": 30,
+        "\n#### What this lesson does not prove ⚠️": 30,
+        "\n### Module practice check 📝": 5,
+        "\n## Lab 1: Transport success is not task success 🔬": 1,
+        "\n## Lab 2: Build a case set before you trust the score 🔬": 1,
+        "\n## Lab 3: Layer the evaluator before you trust the judge 🔬": 1,
+        "\n## Lab 4: Evaluate the path, not only the final answer 🔬": 1,
+        "\n## Lab 5: Turn evaluation evidence into a release decision 🔬": 1,
+        "\n##### Terminal states 🚦": 1,
+    }
+    for marker, expected_count in visual_sections.items():
+        actual_count = actual.count(marker)
+        if actual_count != expected_count:
+            print(
+                f"Expected {expected_count} occurrence(s) of {marker.strip()!r}, "
+                f"found {actual_count}",
+                file=sys.stderr,
+            )
+            return 1
+
+    for state in ("completed", "failed", "refused", "skipped", "not_evaluated"):
+        if f"| `{state}` |" not in actual:
+            print(f"Missing terminal-state table entry: {state}", file=sys.stderr)
+            return 1
+
     required_links = [
         "FUNDAMENTALS.md",
         "GLOSSARY.md",
