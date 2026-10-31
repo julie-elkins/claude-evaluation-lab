@@ -19,6 +19,28 @@ You will build an evaluation workflow that can distinguish:
 - a passing average from a blocking high-risk failure; and
 - a benchmark result from evidence that your own use case works.
 
+## Start here
+
+Read the [learner guide](GUIDE.md). It contains the fundamentals, all 30
+learner-facing lessons, the first lab, diagrams, and module practice checks in
+one reading path. You should not need to move between lesson folders to follow
+the course.
+
+The [Claude Architect Lab](https://github.com/julie-elkins/claude-architect-lab)
+is the companion prerequisite course for agent loops, tools, configuration,
+prompting, context, and reliability. The [Agent Assurance
+Harness](https://github.com/julie-elkins/agent-assurance-harness) is the public
+evaluation engine used by this course.
+
+The [Agent Systems Design Guide](https://github.com/julie-elkins/agent-systems-design-guide)
+defines the shared evaluation vocabulary. The
+[Apple Platform Agent Quality Lab](https://github.com/julie-elkins/apple-platform-agent-quality-lab)
+shows the same evidence boundary in a native macOS implementation.
+
+For optional video walkthroughs and related projects, visit
+[Julie’s YouTube channel](https://www.youtube.com/@JulieElkins) and
+[Julie’s public site](https://julie-elkins.github.io).
+
 ## Learning path
 
 The course is organized as five modules and 30 lessons. The course map and
@@ -32,9 +54,10 @@ learner path.
 4. Factuality, safety, and agent evaluation
 5. Regression, release decisions, and the capstone
 
-The first lab is intentionally offline. It gives you a fast result without a
-Claude API key, so you can understand the evaluation contract before paying for
-live model calls.
+The first five labs are intentionally offline. They give you fast results
+without a Claude API key, so you can understand the evaluation contract,
+case-design discipline, evaluator-layer controls, and agent-behavior checks
+before using live model calls or making a release decision.
 
 ## Quick start
 
@@ -67,7 +90,10 @@ scenario.
 ## Repository map
 
 ```text
-course/       learner guide, lesson map, and reusable templates
+GUIDE.md      generated learner guide for the full course
+FUNDAMENTALS.md prerequisite concepts and readiness check
+GLOSSARY.md   course vocabulary
+course/       lesson source, map, and reusable templates
 labs/         runnable learner labs
 slides/       PowerPoint source and recording assets
 scripts/      course validation and setup helpers
@@ -76,8 +102,7 @@ examples/     small supporting examples
 
 ## Status
 
-The repository currently contains the course scaffold, Module 1 lesson scripts,
-and the first runnable lab. The source coverage matrix now captures the
-complete lesson requirements. The remaining build phases are the Module 2–5
-scripts, runnable lab extensions, PowerPoint deck, and optional live-Claude
-extension.
+The repository contains the complete 30-lesson learner guide and recording
+scripts, Modules 1–5 runnable labs, source coverage matrix, and cream visual system.
+The remaining build phases are runnable lab extensions, the PowerPoint deck, and
+the optional live-Claude extension.
