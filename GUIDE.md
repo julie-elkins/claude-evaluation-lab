@@ -161,13 +161,15 @@ live requests.
 
 #### Readiness check
 
-You are ready for Lesson 1 if you can answer these questions:
-
-1. What decision would this evaluation support?
-2. What evidence would make the decision defensible?
-3. What would count as a deliberately degraded case?
-4. What should happen if required evidence is missing?
-5. Who owns the action after the result is reported?
+> **Learner checkpoint — readiness check**
+>
+> You are ready for Lesson 1 if you can answer these questions:
+>
+> 1. What decision would this evaluation support?
+> 2. What evidence would make the decision defensible?
+> 3. What would count as a deliberately degraded case?
+> 4. What should happen if required evidence is missing?
+> 5. Who owns the action after the result is reported?
 
 If you cannot answer one of these, that is not a reason to stop. It tells you
 which question to make explicit while you work through the first module.
@@ -487,15 +489,14 @@ calibration result, a stable rubric, or a human comparison may be exploratory.
 It can help locate behavior worth inspecting. It should not silently become
 release evidence.
 
-Use the checklist as a review surface. For each row, ask four questions:
-
-Who owns the check?
-
-What evidence artifact identifies the result?
-
-What threshold or decision rule applies?
-
-What happens if the evidence is missing?
+> **Learner checkpoint — review the evidence contract**
+>
+> Use the checklist as a review surface. For each row, ask four questions:
+>
+> 1. Who owns the check?
+> 2. What evidence artifact identifies the result?
+> 3. What threshold or decision rule applies?
+> 4. What happens if the evidence is missing?
 
 That last question is the one that prevents absence from becoming a pass.
 Sometimes the answer is “block.” Sometimes it is “request human review.”
@@ -1271,12 +1272,14 @@ The cost of using pairwise results as a release gate is that a winner can be the
 
 #### Learner practice
 
-For each question, choose pointwise, pairwise, or both:
-
-1. Does the response contain required evidence?
-2. Which prompt version is more useful?
-3. Is the tool call authorized?
-4. Which answer is clearer while both remain factually supported?
+> **Learner checkpoint — choose the judging design**
+>
+> For each question, choose pointwise, pairwise, or both:
+>
+> 1. Does the response contain required evidence?
+> 2. Which prompt version is more useful?
+> 3. Is the tool call authorized?
+> 4. Which answer is clearer while both remain factually supported?
 
 State the failure that would be invisible if you used only your chosen design.
 
@@ -2253,11 +2256,13 @@ Complete a report with these sections:
 8. release or revision action,
 9. owner, monitoring, and rollback trigger.
 
-Have a peer review the report using three questions:
-
-- Can they identify the decision?
-- Can they trace each important claim to evidence?
-- Can they tell what the report does not prove?
+> **Learner checkpoint — peer-review the report**
+>
+> Have a peer review the report using three questions:
+>
+> 1. Can they identify the decision?
+> 2. Can they trace each important claim to evidence?
+> 3. Can they tell what the report does not prove?
 
 #### Boundary
 

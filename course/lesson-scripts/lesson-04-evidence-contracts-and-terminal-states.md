@@ -57,15 +57,14 @@ calibration result, a stable rubric, or a human comparison may be exploratory.
 It can help locate behavior worth inspecting. It should not silently become
 release evidence.
 
-Use the checklist as a review surface. For each row, ask four questions:
-
-Who owns the check?
-
-What evidence artifact identifies the result?
-
-What threshold or decision rule applies?
-
-What happens if the evidence is missing?
+> **Learner checkpoint — review the evidence contract**
+>
+> Use the checklist as a review surface. For each row, ask four questions:
+>
+> 1. Who owns the check?
+> 2. What evidence artifact identifies the result?
+> 3. What threshold or decision rule applies?
+> 4. What happens if the evidence is missing?
 
 That last question is the one that prevents absence from becoming a pass.
 Sometimes the answer is “block.” Sometimes it is “request human review.”

@@ -53,11 +53,13 @@ Complete a report with these sections:
 8. release or revision action,
 9. owner, monitoring, and rollback trigger.
 
-Have a peer review the report using three questions:
-
-- Can they identify the decision?
-- Can they trace each important claim to evidence?
-- Can they tell what the report does not prove?
+> **Learner checkpoint — peer-review the report**
+>
+> Have a peer review the report using three questions:
+>
+> 1. Can they identify the decision?
+> 2. Can they trace each important claim to evidence?
+> 3. Can they tell what the report does not prove?
 
 ## What this lesson does not prove
 

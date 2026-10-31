@@ -39,12 +39,14 @@ The cost of using pairwise results as a release gate is that a winner can be the
 
 ## Learner practice
 
-For each question, choose pointwise, pairwise, or both:
-
-1. Does the response contain required evidence?
-2. Which prompt version is more useful?
-3. Is the tool call authorized?
-4. Which answer is clearer while both remain factually supported?
+> **Learner checkpoint — choose the judging design**
+>
+> For each question, choose pointwise, pairwise, or both:
+>
+> 1. Does the response contain required evidence?
+> 2. Which prompt version is more useful?
+> 3. Is the tool call authorized?
+> 4. Which answer is clearer while both remain factually supported?
 
 State the failure that would be invisible if you used only your chosen design.
 
