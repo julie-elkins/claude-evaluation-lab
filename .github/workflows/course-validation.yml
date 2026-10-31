@@ -1,0 +1,76 @@
+name: Claude evaluation course validation
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate course guide and labs
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Check out pinned Agent Assurance Harness
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: julie-elkins/agent-assurance-harness
+          ref: 3d69db3cc45a86c832c53244f6c9fba55f4b16db
+          path: agent-assurance-harness
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          python-version: "3.11"
+
+      - name: Install locked dependencies
+        run: uv sync --locked
+
+      - name: Compile Python sources
+        run: >-
+          uv run python -m py_compile
+          scripts/build_guide.py
+          scripts/check_guide.py
+          labs/01-semantic-outcomes/run_lab.py
+          labs/02-case-design/run_lab.py
+          labs/03-automated-evaluators/run_lab.py
+          labs/04-agent-behavior/run_lab.py
+          labs/05-release-capstone/run_lab.py
+
+      - name: Rebuild and validate learner guide
+        run: |
+          uv run python scripts/build_guide.py
+          uv run python scripts/check_guide.py
+
+      - name: Run standard-library contract tests
+        run: uv run python -m unittest discover -s tests -p 'test_*.py'
+
+      - name: Run Lab 1
+        run: >-
+          uv run python labs/01-semantic-outcomes/run_lab.py
+          --harness-root "$GITHUB_WORKSPACE/agent-assurance-harness"
+
+      - name: Run Lab 2
+        run: uv run python labs/02-case-design/run_lab.py
+
+      - name: Run Lab 3
+        run: uv run python labs/03-automated-evaluators/run_lab.py
+
+      - name: Run Lab 4
+        run: uv run python labs/04-agent-behavior/run_lab.py
+
+      - name: Run Lab 5
+        run: uv run python labs/05-release-capstone/run_lab.py
+
+      - name: Check patch whitespace
+        run: git diff --check

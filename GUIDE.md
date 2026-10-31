@@ -57,6 +57,10 @@ The first five labs are offline and synthetic. They require no Claude API key an
 - [Lab 4: Evaluate the path, not only the final answer](labs/04-agent-behavior/README.md)
 - [Lab 5: Turn evaluation evidence into a release decision](labs/05-release-capstone/README.md)
 
+### Optional live-Claude extension
+
+The required path stays offline and deterministic. If you want to attach one live Claude observation, use the [bounded live-Claude adapter guide](labs/06-live-claude-adapter/README.md) only after declaring request, time, token, spend, model, revision, and privacy limits.
+
 ## Fundamentals 📘
 
 This section is the foundation for the course. Read it before the lessons if
@@ -147,6 +151,43 @@ The course keeps these stages visible because each one can fail independently:
 - the evidence may be missing or invalid;
 - the decision rule may hide a high-risk failure; or
 - the action may not match the decision.
+
+#### Report and execution status crosswalk
+
+An execution state describes what happened while the evaluation ran. An evidence
+status describes whether a required check produced usable evidence. A release
+decision describes what the owner does next. These are related, but they are
+not interchangeable.
+
+| Course execution state | Evidence/report meaning | Typical release consequence |
+|---|---|---|
+| `completed` | The evaluation path reached its declared terminal state; individual checks may still be `passed`, `failed`, or `not_evaluated`. | Interpret only the checks whose evidence is complete. |
+| `failed` | Required evidence was present, but the declared rule was not met. | Usually `hold`, `revise`, or `rollback` for a blocking finding. |
+| `refused` | The evaluator or workflow declined to proceed because input, authority, or safety conditions were missing. | Usually `blocked` or `escalate`; do not call it a model failure automatically. |
+| `skipped` | The check was intentionally not run and the reason remains visible. | Treat a required skipped check as incomplete evidence. |
+| `not_evaluated` | Evidence was missing or invalid. | Do not convert it to `passed`; rerun, escalate, or hold. |
+
+The shared [evaluation report vocabulary](https://github.com/julie-elkins/agent-systems-design-guide/blob/main/REPORT_VOCABULARY.md) uses `passed`, `failed`, `blocked`, `not_evaluated`, `not_applicable`, `rerun_required`, and `unavailable` for evidence, and `release`, `hold`, `revise`, `rollback`, and `escalate` for release decisions. A local lab may use a different JSON shape, but it must preserve these distinctions.
+
+#### Evidence hygiene and privacy
+
+Evaluation evidence is useful only when it is inspectable and safe to share.
+For learner artifacts and public repositories:
+
+- record stable synthetic identifiers for cases, claims, evidence, revisions,
+  and runs;
+- record the minimum trace fields needed to explain the decision;
+- redact secrets, credentials, access tokens, private prompts, personal data,
+  customer content, and raw tool payloads unless the data owner has explicitly
+  approved their use;
+- define how long traces and evaluator outputs are retained before recording
+  or sharing; and
+  and
+- treat a public teaching artifact as a metadata and synthetic-data boundary,
+  not as a place to copy production logs.
+
+If a trace cannot be shared safely, keep the evidence in the approved internal
+system and publish only the synthetic structure and the claim boundary.
 
 #### What you do not need before starting
 
@@ -1479,6 +1520,8 @@ uv run python labs/03-automated-evaluators/run_lab.py --show-cases
 The summary should show:
 
 - `malformed-001` caught by the deterministic contract layer;
+- `incomplete-001` caught because parseable JSON is still invalid evidence when
+  required fields are missing;
 - `unsupported-001` passed by the synthetic judge but caught by the independent
   semantic check;
 - `position_bias_detected: true` after the pairwise order is reversed; and
@@ -1511,6 +1554,7 @@ Review these fields in the JSON output:
 - `evaluator_layers`
 - `case_results`
 - `contract_failures`
+- `judge_contract_failures`
 - `judge_false_passes`
 - `negative_control`
 - `bias_probe`
@@ -1528,8 +1572,10 @@ without evidence. The synthetic judge gives it a parseable pass because it
 rewards fluent completion language. The independent semantic check returns
 `fail`, exposing the judge false pass.
 
-The malformed case is a separate failure. It does not reach semantic
-interpretation because the deterministic contract layer cannot parse it safely.
+The malformed and incomplete cases are separate contract failures. They do not
+reach semantic interpretation because the deterministic contract layer cannot
+accept them as valid evidence. Parseable JSON is not enough; required fields and
+field types must also be valid.
 
 The pairwise probe uses a seeded position-biased judge. It always prefers the
 first presented candidate, so reversing the order changes the preferred
@@ -1939,9 +1985,13 @@ The summary should show:
 
 - supported claims passing and an unsupported high-risk claim failing;
 - an unsafe request without refusal being caught;
+- a refused request without an explained boundary or safe redirect being caught;
 - a followed prompt injection being caught;
 - a missed tool and wrong tool arguments being caught;
+- an unauthorized tool call being caught;
 - a missing state transition being caught;
+- a trajectory that reaches the expected state through an unauthorized tool
+  being caught; and
 - a recovered trajectory passing; and
 - `evaluator_suite_status: "passed"` with
   `candidate_release_decision: "block"`.
@@ -1978,6 +2028,8 @@ Review these fields in the JSON output:
 Within each case result, inspect the `reason_code` and the evidence-specific
 details. The same final answer can be acceptable or unacceptable depending on
 whether its claims, tools, authorization, and state evidence support it.
+Claim results retain evidence identifiers so a reviewer can trace a finding back
+to an evidence artifact rather than trusting only a status label.
 
 #### Try the failure
 
@@ -1988,9 +2040,14 @@ The deliberately degraded cases include:
 - `prompt-injection-followed-001`: an untrusted instruction was followed;
 - `tool-routing-missed-001`: the required tool was not selected;
 - `tool-arguments-wrong-target-001`: the selected tool received semantically
-  wrong arguments; and
+  wrong arguments;
+- `tool-unauthorized-001`: the selected tool was outside the allowed authority;
 - `state-change-missing-001`: the tool returned but the expected state did not
   change.
+- `unsafe-refusal-unhelpful-001`: the request was refused without an explained
+  boundary or safe redirect.
+- `trajectory-unauthorized-tool-001`: the final state looks correct, but the
+  path used an unauthorized tool.
 
 The evaluator must catch all of them. `trajectory-recovery-001` demonstrates
 that recovery is more than retrying: the path ends in the expected verified
@@ -2014,6 +2071,7 @@ decision:
 evaluator_revision:
 case_ids:
 claim_findings:
+claim_evidence_ids:
 safety_findings:
 tool_findings:
 state_and_trajectory_findings:

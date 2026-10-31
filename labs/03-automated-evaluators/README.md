@@ -55,6 +55,8 @@ uv run python labs/03-automated-evaluators/run_lab.py --show-cases
 The summary should show:
 
 - `malformed-001` caught by the deterministic contract layer;
+- `incomplete-001` caught because parseable JSON is still invalid evidence when
+  required fields are missing;
 - `unsupported-001` passed by the synthetic judge but caught by the independent
   semantic check;
 - `position_bias_detected: true` after the pairwise order is reversed; and
@@ -87,6 +89,7 @@ Review these fields in the JSON output:
 - `evaluator_layers`
 - `case_results`
 - `contract_failures`
+- `judge_contract_failures`
 - `judge_false_passes`
 - `negative_control`
 - `bias_probe`
@@ -104,8 +107,10 @@ without evidence. The synthetic judge gives it a parseable pass because it
 rewards fluent completion language. The independent semantic check returns
 `fail`, exposing the judge false pass.
 
-The malformed case is a separate failure. It does not reach semantic
-interpretation because the deterministic contract layer cannot parse it safely.
+The malformed and incomplete cases are separate contract failures. They do not
+reach semantic interpretation because the deterministic contract layer cannot
+accept them as valid evidence. Parseable JSON is not enough; required fields and
+field types must also be valid.
 
 The pairwise probe uses a seeded position-biased judge. It always prefers the
 first presented candidate, so reversing the order changes the preferred

@@ -89,6 +89,43 @@ The course keeps these stages visible because each one can fail independently:
 - the decision rule may hide a high-risk failure; or
 - the action may not match the decision.
 
+## Report and execution status crosswalk
+
+An execution state describes what happened while the evaluation ran. An evidence
+status describes whether a required check produced usable evidence. A release
+decision describes what the owner does next. These are related, but they are
+not interchangeable.
+
+| Course execution state | Evidence/report meaning | Typical release consequence |
+|---|---|---|
+| `completed` | The evaluation path reached its declared terminal state; individual checks may still be `passed`, `failed`, or `not_evaluated`. | Interpret only the checks whose evidence is complete. |
+| `failed` | Required evidence was present, but the declared rule was not met. | Usually `hold`, `revise`, or `rollback` for a blocking finding. |
+| `refused` | The evaluator or workflow declined to proceed because input, authority, or safety conditions were missing. | Usually `blocked` or `escalate`; do not call it a model failure automatically. |
+| `skipped` | The check was intentionally not run and the reason remains visible. | Treat a required skipped check as incomplete evidence. |
+| `not_evaluated` | Evidence was missing or invalid. | Do not convert it to `passed`; rerun, escalate, or hold. |
+
+The shared [evaluation report vocabulary](https://github.com/julie-elkins/agent-systems-design-guide/blob/main/REPORT_VOCABULARY.md) uses `passed`, `failed`, `blocked`, `not_evaluated`, `not_applicable`, `rerun_required`, and `unavailable` for evidence, and `release`, `hold`, `revise`, `rollback`, and `escalate` for release decisions. A local lab may use a different JSON shape, but it must preserve these distinctions.
+
+## Evidence hygiene and privacy
+
+Evaluation evidence is useful only when it is inspectable and safe to share.
+For learner artifacts and public repositories:
+
+- record stable synthetic identifiers for cases, claims, evidence, revisions,
+  and runs;
+- record the minimum trace fields needed to explain the decision;
+- redact secrets, credentials, access tokens, private prompts, personal data,
+  customer content, and raw tool payloads unless the data owner has explicitly
+  approved their use;
+- define how long traces and evaluator outputs are retained before recording
+  or sharing; and
+  and
+- treat a public teaching artifact as a metadata and synthetic-data boundary,
+  not as a place to copy production logs.
+
+If a trace cannot be shared safely, keep the evidence in the approved internal
+system and publish only the synthetic structure and the claim boundary.
+
 ## What you do not need before starting
 
 You do not need to know how a model is trained, how tokenization is

@@ -81,6 +81,12 @@ does and does not prove.
 5. [Release capstone](labs/05-release-capstone/README.md) — compare revisions,
    inspect high-risk slices, and make a bounded release recommendation.
 
+Optional:
+
+- [Live-Claude adapter](labs/06-live-claude-adapter/README.md) — connect one
+  live provider observation to the same evidence contract under explicit
+  request, time, token, spend, and privacy limits.
+
 ## Quick start
 
 Clone both repositories beside each other:
@@ -119,7 +125,7 @@ course/       lesson source, map, and reusable templates
 labs/         five runnable learner labs
 slides/       slide outlines and recording guidance
 scripts/      course validation and setup helpers
-examples/     small supporting examples
+tests/        standard-library contract tests for the course labs
 ```
 
 ## Current status
@@ -130,13 +136,16 @@ Available now:
 - five offline, deterministic labs covering Modules 1–5;
 - the source coverage matrix, fundamentals, glossary, and cream visual system;
 - validation scripts for the generated guide; and
+- a local CI contract that rebuilds the guide and runs every lab; and
 - links to the companion design guide, Apple lab, harness, website, and videos.
 
 Planned or optional next steps:
 
-- the full editable PowerPoint deck and lesson-by-lesson recording assets; and
-- an opt-in live-Claude extension with explicit request, time, token, and spend
-  limits.
+- the full editable PowerPoint deck and lesson-by-lesson recording assets.
 
 Synthetic lab results are learning evidence, not proof of live Claude quality,
 production safety, or business impact.
+
+The repository contains the learner guide, lesson scripts, lab implementations,
+and recording guidance. The editable PowerPoint deck remains a separate
+recording deliverable until it is added under `slides/`.
