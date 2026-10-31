@@ -3,6 +3,11 @@
 The course deck will use the cream visual direction from the Claude Architect
 Lab, adapted for Julie's YouTube channel.
 
+The repository visual rules are documented in
+[`course/VISUAL-SYSTEM.md`](../course/VISUAL-SYSTEM.md). Use the same palette
+in the PowerPoint deck: cream background, navy text, blue workflow/input,
+orange evaluation/evidence, sage pass/recovery, and red failure/block.
+
 Each lesson slide sequence will include:
 
 - a concept anchor;

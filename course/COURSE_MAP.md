@@ -1,5 +1,10 @@
 # Course map
 
+Start with the generated [learner guide](../GUIDE.md). It contains the
+fundamentals, all 30 learner-facing lessons, all five runnable labs, diagrams, and
+module practice checks in one reading path. This file remains the compact
+authoring map; the lesson scripts remain the editable recording source.
+
 ## Working title
 
 **Claude Evaluation Lab: Build Reliable LLM Evaluations from Scratch**
@@ -111,3 +116,10 @@ The Stanford lecture reviewed for this course provides conceptual reference
 points such as human agreement, rule-based metrics, LLM-as-a-judge, factuality,
 agent evaluation, benchmarks, and Goodhart's law. The lesson scripts will be
 original and will not reproduce the lecture transcript.
+
+## Continue learning
+
+- [Julie’s YouTube channel](https://www.youtube.com/@JulieElkins) — optional video walkthroughs.
+- [Julie’s public site](https://julie-elkins.github.io) — projects, learning paths, and design principles.
+- [Agent Systems Design Guide](https://github.com/julie-elkins/agent-systems-design-guide) — shared design reasoning and report vocabulary.
+- [Apple Platform Agent Quality Lab](https://github.com/julie-elkins/apple-platform-agent-quality-lab) — native macOS implementation of the evaluation boundary.
