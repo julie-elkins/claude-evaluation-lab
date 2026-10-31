@@ -1,6 +1,7 @@
-# Claude Evaluation Lab
+# LLM & Agent Evaluation Lab
 
-Hands-on lessons for building and interpreting LLM evaluations with Claude.
+Hands-on lessons for building and interpreting LLM and agent evaluations, using
+Claude as a running provider example.
 
 This course uses the public
 [Agent Assurance Harness](https://github.com/julie-elkins/agent-assurance-harness)
