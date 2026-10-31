@@ -22,9 +22,9 @@ You will build an evaluation workflow that can distinguish:
 ## Start here
 
 Read the [learner guide](GUIDE.md). It contains the fundamentals, all 30
-learner-facing lessons, the first lab, diagrams, and module practice checks in
-one reading path. You should not need to move between lesson folders to follow
-the course.
+learner-facing lessons, all five runnable labs, diagrams, and module practice
+checks in one reading path. You should not need to move between lesson folders
+to follow the course.
 
 The [Claude Architect Lab](https://github.com/julie-elkins/claude-architect-lab)
 is the companion prerequisite course for agent loops, tools, configuration,
@@ -41,6 +41,16 @@ For optional video walkthroughs and related projects, visit
 [Julie’s YouTube channel](https://www.youtube.com/@JulieElkins) and
 [Julie’s public site](https://julie-elkins.github.io).
 
+## Prerequisites
+
+- Python 3.11 or newer.
+- [`uv`](https://docs.astral.sh/uv/) for running the course commands.
+- Comfort reading JSON and using a terminal. Python experience is helpful but
+  not required for the introductory labs.
+
+The first five labs are offline and synthetic, meaning they use bounded local
+fixtures rather than live Claude requests. They do not require a Claude API key.
+
 ## Learning path
 
 The course is organized as five modules and 30 lessons. The course map and
@@ -54,10 +64,22 @@ learner path.
 4. Factuality, safety, and agent evaluation
 5. Regression, release decisions, and the capstone
 
-The first five labs are intentionally offline. They give you fast results
-without a Claude API key, so you can understand the evaluation contract,
-case-design discipline, evaluator-layer controls, and agent-behavior checks
-before using live model calls or making a release decision.
+## Runnable labs
+
+Run the labs in order. Each lab is self-contained, produces a fast local
+result, includes a deliberately degraded case, and states what its evidence
+does and does not prove.
+
+1. [Semantic outcomes](labs/01-semantic-outcomes/README.md) — distinguish
+   transport success from task success.
+2. [Case design](labs/02-case-design/README.md) — build representative,
+   calibrated, and held-out evaluation cases.
+3. [Automated evaluators](labs/03-automated-evaluators/README.md) — layer
+   deterministic checks, semantic checks, and judge-bias probes.
+4. [Agent behavior](labs/04-agent-behavior/README.md) — evaluate factuality,
+   safety, tool use, authorization, state, and recovery.
+5. [Release capstone](labs/05-release-capstone/README.md) — compare revisions,
+   inspect high-risk slices, and make a bounded release recommendation.
 
 ## Quick start
 
@@ -94,15 +116,27 @@ GUIDE.md      generated learner guide for the full course
 FUNDAMENTALS.md prerequisite concepts and readiness check
 GLOSSARY.md   course vocabulary
 course/       lesson source, map, and reusable templates
-labs/         runnable learner labs
-slides/       PowerPoint source and recording assets
+labs/         five runnable learner labs
+slides/       slide outlines and recording guidance
 scripts/      course validation and setup helpers
 examples/     small supporting examples
 ```
 
-## Status
+## Current status
 
-The repository contains the complete 30-lesson learner guide and recording
-scripts, Modules 1–5 runnable labs, source coverage matrix, and cream visual system.
-The remaining build phases are runnable lab extensions, the PowerPoint deck, and
-the optional live-Claude extension.
+Available now:
+
+- the complete 30-lesson learner guide and recording scripts;
+- five offline, deterministic labs covering Modules 1–5;
+- the source coverage matrix, fundamentals, glossary, and cream visual system;
+- validation scripts for the generated guide; and
+- links to the companion design guide, Apple lab, harness, website, and videos.
+
+Planned or optional next steps:
+
+- the full editable PowerPoint deck and lesson-by-lesson recording assets; and
+- an opt-in live-Claude extension with explicit request, time, token, and spend
+  limits.
+
+Synthetic lab results are learning evidence, not proof of live Claude quality,
+production safety, or business impact.
