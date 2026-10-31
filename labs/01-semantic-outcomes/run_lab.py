@@ -9,7 +9,8 @@ import subprocess
 from pathlib import Path
 
 
-HARNESS_REVISION = "3d69db3cc45a86c832c53244f6c9fba55f4b16db"
+HARNESS_CONTENT_REVISION = "3d69db3cc45a86c832c53244f6c9fba55f4b16db"
+HARNESS_PUBLIC_MAIN_REVISION = "2f95f4c"
 HARNESS_LAB = Path("examples/agent-workflow-teaching-lab/run_lab.py")
 
 
@@ -48,10 +49,10 @@ def main() -> int:
         )
 
     actual_revision = _revision(root)
-    if actual_revision != HARNESS_REVISION:
+    if actual_revision != HARNESS_CONTENT_REVISION:
         raise SystemExit(
             "Harness revision mismatch: "
-            f"expected {HARNESS_REVISION}, found {actual_revision}. "
+            f"expected {HARNESS_CONTENT_REVISION}, found {actual_revision}. "
             "Use the course-pinned revision before recording a learner result."
         )
 
@@ -80,7 +81,8 @@ def main() -> int:
     summary = {
         "course": "claude-evaluation-lab",
         "lab": "01-semantic-outcomes",
-        "harness_revision": actual_revision,
+        "harness_content_revision": actual_revision,
+        "harness_public_main_revision": HARNESS_PUBLIC_MAIN_REVISION,
         "offline": True,
         "metadata_only": True,
         "underlying_exit_code": result.returncode,

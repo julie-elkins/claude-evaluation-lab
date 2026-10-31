@@ -21,7 +21,10 @@ You will build an evaluation workflow that can distinguish:
 
 ## Learning path
 
-The course is organized as five modules:
+The course is organized as five modules and 30 lessons. The course map and
+[source coverage matrix](course/SOURCE_COVERAGE_MATRIX.md) show how the
+historical lecture concepts and the current harness controls map into the
+learner path.
 
 1. Evaluation foundations
 2. Human review and evaluation cases
@@ -44,9 +47,11 @@ cd claude-evaluation-lab
 uv run python labs/01-semantic-outcomes/run_lab.py
 ```
 
-The course wrapper uses harness revision
-`3d69db3cc45a86c832c53244f6c9fba55f4b16db`. If you are working from a local
-checkout, the wrapper verifies that revision before running the lab.
+The course wrapper uses the harness content tree from revision
+`3d69db3cc45a86c832c53244f6c9fba55f4b16db`, which matches the current public
+`origin/main` tree at `2f95f4c` as of the course audit. If you are working from
+a local checkout, the wrapper verifies the pinned revision before running the
+lab.
 
 ## What the first lab proves
 
@@ -71,6 +76,8 @@ examples/     small supporting examples
 
 ## Status
 
-The repository currently contains the course scaffold and the first runnable
-lab. The full lesson scripts, PowerPoint deck, and optional live-Claude
-extension are the next build phases.
+The repository currently contains the course scaffold, Module 1 lesson scripts,
+and the first runnable lab. The source coverage matrix now captures the
+complete lesson requirements. The remaining build phases are the Module 2–5
+scripts, runnable lab extensions, PowerPoint deck, and optional live-Claude
+extension.
