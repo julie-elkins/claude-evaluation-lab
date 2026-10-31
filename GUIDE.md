@@ -49,7 +49,7 @@ The first five labs are offline and synthetic. They require no Claude API key an
 - [Agent Systems Design Guide](https://github.com/julie-elkins/agent-systems-design-guide) — shared design reasoning and report vocabulary.
 - [Apple Platform Agent Quality Lab](https://github.com/julie-elkins/apple-platform-agent-quality-lab) — native macOS implementation of the evaluation boundary.
 
-### Runnable labs
+### Runnable labs 🔬
 
 - [Lab 1: Transport success is not task success](labs/01-semantic-outcomes/README.md)
 - [Lab 2: Build a case set before you trust the score](labs/02-case-design/README.md)
@@ -57,7 +57,7 @@ The first five labs are offline and synthetic. They require no Claude API key an
 - [Lab 4: Evaluate the path, not only the final answer](labs/04-agent-behavior/README.md)
 - [Lab 5: Turn evaluation evidence into a release decision](labs/05-release-capstone/README.md)
 
-## Fundamentals
+## Fundamentals 📘
 
 This section is the foundation for the course. Read it before the lessons if
 you are new to LLM evaluations, or use it as a reference when a term is
@@ -161,13 +161,15 @@ live requests.
 
 #### Readiness check
 
-You are ready for Lesson 1 if you can answer these questions:
-
-1. What decision would this evaluation support?
-2. What evidence would make the decision defensible?
-3. What would count as a deliberately degraded case?
-4. What should happen if required evidence is missing?
-5. Who owns the action after the result is reported?
+> **Learner checkpoint — readiness check**
+>
+> You are ready for Lesson 1 if you can answer these questions:
+>
+> 1. What decision would this evaluation support?
+> 2. What evidence would make the decision defensible?
+> 3. What would count as a deliberately degraded case?
+> 4. What should happen if required evidence is missing?
+> 5. Who owns the action after the result is reported?
 
 If you cannot answer one of these, that is not a reason to stop. It tells you
 which question to make explicit while you work through the first module.
@@ -267,7 +269,7 @@ In the next lesson, we will write that decision down before choosing a metric.
 Then we will run the first lab, where two workflows both receive a successful
 transport response but only one has enough evidence to continue.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Choose one Claude workflow you care about. Write one sentence beginning:
 
@@ -275,7 +277,7 @@ Choose one Claude workflow you care about. Write one sentence beginning:
 
 Then list one thing that sentence does not decide.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 It does not establish that any model, benchmark, or evaluation harness is
 universally reliable. It establishes the course's evaluation vocabulary and
@@ -333,15 +335,14 @@ No single layer replaces the others. A response can be semantically helpful
 while using an unauthorized tool. A tool call can be syntactically valid while
 changing the wrong record. A low cost can coexist with an unsafe refusal.
 
-For the exercise, choose one Claude workflow and write four lines:
-
-The task is…
-
-The decision is…
-
-The most expensive plausible failure is…
-
-The evidence I need is…
+> **Learner checkpoint — declare the evaluation contract**
+>
+> For the exercise, choose one Claude workflow and write four lines:
+>
+> 1. The task is…
+> 2. The decision is…
+> 3. The most expensive plausible failure is…
+> 4. The evidence I need is…
 
 If you cannot name the evidence, the evaluation is not ready to run. That is
 not a failure of the model. It is a missing contract.
@@ -349,12 +350,12 @@ not a failure of the model. It is a missing contract.
 The next lesson turns this into a runnable example by separating transport
 status from semantic outcome.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Complete the four-line evaluation contract for one workflow. Add one negative
 case that would look successful if you checked only the request status.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 A well-written contract does not prove that the chosen evidence is sufficient.
 It makes the intended decision and the missing evidence visible enough to review.
@@ -424,13 +425,13 @@ clarification, refusal, retry, or escalation. It is not automatically success.
 In the next lesson, we will name those terminal states and define the evidence
 required before a result can move from observation to decision.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Change the example in your notes: replace “empty context” with one failure from
 your own system. What evidence would distinguish transport success from task
 success?
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 The synthetic lab proves only the declared behavior of this scenario and its
 evaluation control. It does not establish live Claude quality or production
@@ -460,21 +461,23 @@ version, and a record of whether the workflow stayed within its cost ceiling.
 The exact fields depend on the decision. What matters is that the required
 evidence is named before the result is interpreted.
 
+##### Terminal states 🚦
+
 The harness uses separate terminal states so an absent result cannot disappear
 inside a green report.
 
-`completed` means the declared evaluation path ran to its intended terminal
-state. It does not mean that every task passed.
+| Harness terminal state | Meaning | Boundary |
+|---|---|---|
+| `completed` | The declared evaluation path reached its intended terminal state. | It does not mean that every task passed. |
+| `failed` | The evidence was present, but the declared rule was not met. | The failure must remain visible. |
+| `refused` | The evaluation declined to proceed because required input, authority, or safety conditions were missing. | It is not equivalent to a model failure. |
+| `skipped` | A check was intentionally not run. | The reason must remain visible. |
+| `not_evaluated` | The evidence was unavailable or invalid. | It is not a weaker form of pass. |
 
-`failed` means the evidence was present and the declared rule was not met.
-
-`refused` means the evaluation declined to proceed because required input,
-authority, or safety conditions were missing.
-
-`skipped` means a check was intentionally not run and must remain visible.
-
-`not_evaluated` means the evidence was unavailable or invalid. It is not a
-weaker form of pass.
+> [!NOTE]
+> These are harness execution states. They explain what happened during the
+> evaluation path; they are not a replacement for the separate report and
+> release statuses used elsewhere in this course.
 
 This distinction matters when a report contains a favorable average. Suppose
 the evaluator ran on nine normal cases and could not run the tenth high-risk
@@ -487,15 +490,14 @@ calibration result, a stable rubric, or a human comparison may be exploratory.
 It can help locate behavior worth inspecting. It should not silently become
 release evidence.
 
-Use the checklist as a review surface. For each row, ask four questions:
-
-Who owns the check?
-
-What evidence artifact identifies the result?
-
-What threshold or decision rule applies?
-
-What happens if the evidence is missing?
+> **Learner checkpoint — review the evidence contract**
+>
+> Use the checklist as a review surface. For each row, ask four questions:
+>
+> 1. Who owns the check?
+> 2. What evidence artifact identifies the result?
+> 3. What threshold or decision rule applies?
+> 4. What happens if the evidence is missing?
 
 That last question is the one that prevents absence from becoming a pass.
 Sometimes the answer is “block.” Sometimes it is “request human review.”
@@ -507,7 +509,7 @@ the failure that matters, separate transport status from semantic outcome, and
 keep unavailable evidence visible. The next module will build the evaluation
 cases and human rubric that give those checks something trustworthy to measure.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Create a five-row table for one workflow:
 
@@ -519,25 +521,26 @@ Create a five-row table for one workflow:
 
 Assign the expected terminal state for each.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 The vocabulary makes evaluation gaps visible. It does not decide the correct
 threshold for every product or risk level; that decision belongs to the
 accountable owner of the workflow.
 
-### Module practice check
+### Module practice check 📝
 
-Answer these before moving to the next module:
+> [!TIP]
+> Answer these before moving to the next module:
+>
+> 1. What decision does your evaluation support, and what decision is outside its scope?
+> 2. Which field would distinguish transport success from semantic success?
+> 3. What should happen when a required evidence item is missing?
 
-1. What decision does your evaluation support, and what decision is outside its scope?
-2. Which field would distinguish transport success from semantic success?
-3. What should happen when a required evidence item is missing?
-
-## Lab 1: Transport success is not task success
+## Lab 1: Transport success is not task success 🔬
 
 The first runnable lab is included here so you can complete the course's initial hands-on path without leaving the guide.
 
-### Lab 1: Transport success is not task success
+### Lab 1: Transport success is not task success 🔬
 
 This lab teaches semantic outcome evaluation. Semantic outcome means whether the
 requested task actually reached its declared goal; it is separate from
@@ -692,7 +695,7 @@ The goal is not to maximize the number of cases. The goal is to make the decisio
 
 In the demo, inspect the existing synthetic cases and identify which decision each one supports. Then add three cases without changing the evaluator. This separates test-design work from evaluator tuning. If a case cannot be linked to a decision, either rewrite it or mark it as exploratory rather than presenting it as release evidence.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Create a case table with these columns:
 
@@ -700,7 +703,7 @@ Create a case table with these columns:
 
 Add one case for a normal path, one for missing evidence, one for conflicting evidence, one for an unauthorized action, and one for recovery after a failed attempt. Mark which cases are release-blocking and explain why.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 Representative cases do not prove that the sample reflects every production user or every future failure mode. They make the tested decision more credible; they do not eliminate sampling risk.
 
@@ -728,7 +731,7 @@ Golden cases are valuable, but they are not magical. The label still needs a rea
 
 In the demo, inspect the metadata rather than only the scores. Ask which cases influenced the rubric, which influenced the evaluator, and which are being used for the release decision. The cost of mixing these roles is a report that appears more precise than the evidence supports. That can delay the discovery of a bad evaluator until it is attached to a release.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Take ten synthetic cases and assign them to:
 
@@ -738,7 +741,7 @@ Take ten synthetic cases and assign them to:
 
 Write one sentence explaining why each case is allowed to influence that stage. Identify any case that would create leakage if it appeared in both calibration and held-out sets.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 A held-out split reduces one important source of overconfidence, but it does not guarantee generalization. The held-out cases can still be unrepresentative, too easy, or too small to support a stable conclusion.
 
@@ -766,7 +769,7 @@ Keep criteria separate when they answer different questions. A response can be f
 
 In the demo, score three synthetic cases. Pay attention to the case where the original criterion seems clear until two reviewers interpret “complete” differently. Add an explicit boundary to the rubric, then rescore. The cost of skipping calibration is expensive disagreement later: reviewers spend more time, the result becomes harder to interpret, and evaluator tuning is aimed at an unstable target.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Write a rubric for “the agent should not claim completion without completion evidence.” Include:
 
@@ -778,7 +781,7 @@ Write a rubric for “the agent should not claim completion without completion e
 
 Have a second reviewer score three cases and compare the disagreements.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 A clear rubric improves consistency; it does not make subjective judgment disappear. Some tasks require human review because context, harm, or domain meaning cannot be reduced safely to a single rule.
 
@@ -806,7 +809,7 @@ Also report the underlying counts and the rating distribution. A single agreemen
 
 In the demo, compare two synthetic rating tables with similar raw agreement but different class distributions. Then inspect the disagreement categories. The point is not to memorize a threshold. The point is to avoid treating an agreement statistic as a substitute for reviewing what the raters actually disagreed about.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Given two reviewer columns, calculate:
 
@@ -816,7 +819,7 @@ Given two reviewer columns, calculate:
 
 Write one decision: proceed, recalibrate, or escalate for adjudication. Support the decision with the disagreement pattern, not only the statistic.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 High agreement does not prove correctness, fairness, or safety. Reviewers can consistently apply a flawed rubric, and a statistic can hide disagreements concentrated in the most consequential cases.
 
@@ -844,7 +847,7 @@ Make the escalation rule explicit. For example: “If a case is high risk, evide
 
 In the demo, compare full review with risk-based review. Include calibration and adjudication in both estimates. The cheapest plan is not automatically the best plan; a plan that misses a release-blocking failure is more expensive than the review time it saved.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Design a review plan for 100 cases:
 
@@ -854,23 +857,24 @@ Design a review plan for 100 cases:
 
 Specify how many cases receive automated checks, human review, and adjudication. State the rule that moves a case from one tier to another and the consequence if the plan under-samples a risk.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 Risk-based sampling improves focus, but it can miss an unrecognized risk category. Keep a mechanism for discovering new failures and periodically review whether the sampling policy still matches the product.
 
-### Module practice check
+### Module practice check 📝
 
-Answer these before moving to the next module:
+> [!TIP]
+> Answer these before moving to the next module:
+>
+> 1. Which cases represent normal, boundary, missing-information, conflicting, and recovery paths?
+> 2. Which cases may tune the rubric, and which must remain held out?
+> 3. What disagreement would cause recalibration rather than a simple average?
 
-1. Which cases represent normal, boundary, missing-information, conflicting, and recovery paths?
-2. Which cases may tune the rubric, and which must remain held out?
-3. What disagreement would cause recalibration rather than a simple average?
-
-## Lab 2: Build a case set before you trust the score
+## Lab 2: Build a case set before you trust the score 🔬
 
 This lab is included here so you can practice representative cases, calibration, held-out measurement, and negative controls without leaving the guide.
 
-### Lab 2: Build a case set before you trust the score
+### Lab 2: Build a case set before you trust the score 🔬
 
 This lab teaches evaluation-case design. An evaluation case is one test
 situation with its input, expected behavior, observed result, evidence, and
@@ -1073,7 +1077,7 @@ In the harness, inspect how transport status, finding status, semantic outcome, 
 
 Do not add deterministic checks simply to make the dashboard greener. A check is useful when it measures a requirement that would change the decision. The cost of choosing the wrong check is false assurance: the system passes a precise test while the actual risk remains unmeasured.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Classify these checks as hard gate, diagnostic signal, or not yet defined:
 
@@ -1085,7 +1089,7 @@ Classify these checks as hard gate, diagnostic signal, or not yet defined:
 
 For each hard gate, write the exact failure consequence.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 Deterministic checks cannot judge every meaningful property. A workflow can satisfy its schema and authorization rules while still being factually wrong, unsafe, or unhelpful.
 
@@ -1111,7 +1115,7 @@ Use reference metrics as one layer in a measurement stack. Pair them with determ
 
 Avoid turning a metric into a universal quality score. A higher number is not automatically a better answer if the answer is more verbose, more copied, or more similar to a flawed reference. The cost of using the wrong metric is optimization in the wrong direction: the system learns to resemble the reference while missing the actual user requirement.
 
-#### Learner practice
+#### Learner practice 🧪
 
 For each requirement, choose reference overlap, deterministic checking, human review, or a combination:
 
@@ -1123,7 +1127,7 @@ For each requirement, choose reference overlap, deterministic checking, human re
 
 Explain why the selected method measures the requirement.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 METEOR, BLEU, and ROUGE do not provide a general measure of truth, safety, usefulness, or agent reliability. Their value depends on the task and the reference set.
 
@@ -1151,7 +1155,7 @@ In the demo, compare three synthetic answers: an exact reference match, a valid 
 
 The cost of ignoring valid variation is that a system is trained toward one phrasing rather than the user’s goal. The cost of ignoring false positives is more serious: a polished answer can pass while making a decision the evidence does not support.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Write three answers to one synthetic prompt:
 
@@ -1161,7 +1165,7 @@ Write three answers to one synthetic prompt:
 
 For each answer, record the lexical result, semantic result, evidence result, and final decision.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 Semantic checks reduce one limitation of lexical overlap, but they introduce their own risks: judge bias, inconsistent prompts, and difficulty reproducing a human judgment.
 
@@ -1189,7 +1193,7 @@ In the demo, give the judge one supported answer and one answer with a missing e
 
 The cost of treating a judge as an oracle is that the evaluation can become self-confirming. A fluent model judges a fluent model, the dashboard reports a number, and no independent control is present to expose the miss.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Write a binary judge contract for:
 
@@ -1197,7 +1201,7 @@ Write a binary judge contract for:
 
 Specify the input fields, output fields, pass condition, and the independent check that would challenge the judge.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 A well-structured judge prompt does not guarantee accurate judgments. It improves inspectability and repeatability, but calibration and independent controls remain necessary.
 
@@ -1229,7 +1233,7 @@ In the demo, show a well-formed output that marks an unsupported answer as pass.
 
 The cost of collapsing these stages is misleading operations data. A dashboard may show “evaluator completed” when all that happened was that a JSON parser accepted the response.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Design an evaluator schema with:
 
@@ -1241,7 +1245,7 @@ Design an evaluator schema with:
 
 Describe how the independent validator checks the fifth requirement.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 Structured output improves operational reliability; it does not make the evaluator correct. Parseability is necessary for a dependable pipeline, not sufficient for a trustworthy decision.
 
@@ -1269,18 +1273,20 @@ In the demo, compare two synthetic answers: one concise and supported, one more 
 
 The cost of using pairwise results as a release gate is that a winner can be the least bad option. The system may improve relative to a baseline while still failing the requirement users depend on.
 
-#### Learner practice
+#### Learner practice 🧪
 
-For each question, choose pointwise, pairwise, or both:
-
-1. Does the response contain required evidence?
-2. Which prompt version is more useful?
-3. Is the tool call authorized?
-4. Which answer is clearer while both remain factually supported?
+> **Learner checkpoint — choose the judging design**
+>
+> For each question, choose pointwise, pairwise, or both:
+>
+> 1. Does the response contain required evidence?
+> 2. Which prompt version is more useful?
+> 3. Is the tool call authorized?
+> 4. Which answer is clearer while both remain factually supported?
 
 State the failure that would be invisible if you used only your chosen design.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 Pairwise judging can improve sensitivity to relative differences, but it remains vulnerable to position, verbosity, and judge-preference bias.
 
@@ -1308,7 +1314,7 @@ In the demo, run one pairwise comparison in both orders and one pointwise compar
 
 The cost of ignoring judge bias is especially high when the judge becomes the training signal. The system can be optimized toward the evaluator’s preference, causing the measured score to rise while the real requirement stays flat or gets worse.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Design one probe for each bias:
 
@@ -1319,7 +1325,7 @@ Design one probe for each bias:
 
 For each probe, name the irrelevant factor, the expected invariant, and the action if the result changes.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 No small probe suite can establish the absence of bias. It can expose known risks and justify stronger controls where the evaluation decision is consequential.
 
@@ -1347,7 +1353,7 @@ In the demo, trace one synthetic case through the layers and stop when a release
 
 The cost of a single-layer evaluator is blind spots. The cost of a badly composed layered evaluator is duplicated work or contradictory results. The design goal is not “more checks”; it is independent evidence tied to the decision.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Assign the strongest evaluation layer to each criterion:
 
@@ -1359,7 +1365,7 @@ Assign the strongest evaluation layer to each criterion:
 
 Explain what independent layer would challenge each assignment.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 Layering reduces blind spots but does not eliminate them. The layers can share the same flawed data, assumptions, or model family, so independence must be considered explicitly.
 
@@ -1387,7 +1393,7 @@ In the demo, begin with a passing synthetic case. Mutate one property, such as r
 
 The cost of skipping negative controls is silent evaluator drift. A refactor can disconnect a check from the decision, and the ordinary examples continue to pass. The dashboard remains green because nothing is actively trying to fail.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Write a breaker contract with:
 
@@ -1399,23 +1405,24 @@ Write a breaker contract with:
 
 Add one breaker for missing evidence and one for unauthorized action.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 A passing negative control proves only that the tested failure was detected. It does not prove that other failure modes will be detected or that the control is independent in every meaningful sense.
 
-### Module practice check
+### Module practice check 📝
 
-Answer these before moving to the next module:
+> [!TIP]
+> Answer these before moving to the next module:
+>
+> 1. Which criteria are deterministic, and which require semantic or human judgment?
+> 2. What bias probe would challenge your judge?
+> 3. What planted failure should your negative control catch?
 
-1. Which criteria are deterministic, and which require semantic or human judgment?
-2. What bias probe would challenge your judge?
-3. What planted failure should your negative control catch?
-
-## Lab 3: Layer the evaluator before you trust the judge
+## Lab 3: Layer the evaluator before you trust the judge 🔬
 
 This lab is included here so you can inspect deterministic checks, structured judge output, independent semantic evidence, and pairwise bias without leaving the guide.
 
-### Lab 3: Layer the evaluator before you trust the judge
+### Lab 3: Layer the evaluator before you trust the judge 🔬
 
 This lab teaches evaluator composition. An evaluator is a rule, program, model,
 or human process that turns observed behavior into a finding. The lab shows why
@@ -1627,7 +1634,7 @@ In the demo, inspect a synthetic answer with three claims. Mark one supported, o
 
 The cost of skipping claim extraction is that fluent prose becomes the unit of trust. A response can look mostly correct while containing one unsupported instruction that causes the user to take the wrong action.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Take a six-sentence synthetic answer and create:
 
@@ -1635,7 +1642,7 @@ Take a six-sentence synthetic answer and create:
 
 Write a final decision that explains whether one unsupported claim blocks the answer or triggers review.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 Claim extraction can miss implicit claims, qualifications, or reasoning steps. A clean table does not guarantee that every meaningful assertion was found.
 
@@ -1663,7 +1670,7 @@ In the demo, evaluate three synthetic claims against a small evidence pack. Show
 
 The cost of treating factuality as a single confidence score is that uncertainty disappears. A high-confidence unsupported claim is still unsupported, and a low-confidence supported claim may only need clearer evidence presentation.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Define the decision policy for:
 
@@ -1675,7 +1682,7 @@ Define the decision policy for:
 
 Specify pass, fail, or escalation for each and explain the cost of getting the policy wrong.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 Factuality evaluation is limited by the evidence set. If the evidence is incomplete, stale, or wrong, the evaluator can produce a confident but incorrect support judgment.
 
@@ -1703,7 +1710,7 @@ In the demo, create two answers with the same number of unsupported claims but d
 
 The cost of a poor aggregation rule is asymmetric. It can approve a response that is broadly plausible but wrong at the exact point where a user needs reliable guidance.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Define an aggregation policy for five claims:
 
@@ -1713,7 +1720,7 @@ Define an aggregation policy for five claims:
 
 Specify the weights, the blocking conditions, and the escalation condition. Test the policy against an answer with one unsupported high-risk claim.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 Weighted scores still depend on judgment about risk. They make the policy explicit; they do not make the policy objectively correct.
 
@@ -1741,7 +1748,7 @@ In the demo, present a benign task with an injected instruction inside a synthet
 
 The cost of weak safety evaluation is not only a bad response. A successful injection can redirect tools, expose data, or create an unauthorized action. That is why safety needs explicit negative controls and trajectory evidence.
 
-#### Learner practice
+#### Learner practice 🧪
 
 For three synthetic cases, record:
 
@@ -1749,7 +1756,7 @@ For three synthetic cases, record:
 
 Decide whether each case passes, fails, or requires human review.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 Passing a small injection suite does not prove broad resistance. Attack patterns change, and safety evaluation must be refreshed as tools, data sources, and policies change.
 
@@ -1777,7 +1784,7 @@ In the demo, inspect a small synthetic catalog and run cases for a supported loo
 
 The cost of ignoring routing is hidden work and unsafe side effects. The agent can appear capable because it produces fluent text while never using the required source or tool.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Create six routing cases:
 
@@ -1790,7 +1797,7 @@ Create six routing cases:
 
 Define the expected finding and release consequence for each case.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 Correct routing does not prove correct tool arguments, safe execution, or successful recovery. It is one stage of the agent decision path.
 
@@ -1818,7 +1825,7 @@ In the demo, inspect a synthetic trace where the tool call passes schema validat
 
 The cost of checking only the schema is dangerous precision: the system reports a valid call while performing the wrong action. The cost of ignoring state is false completion: the agent says the work is done when the system remains unchanged.
 
-#### Learner practice
+#### Learner practice 🧪
 
 For one synthetic tool call, define:
 
@@ -1826,7 +1833,7 @@ For one synthetic tool call, define:
 
 Create one passing trace and one trace that is schema-valid but semantically wrong.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 State assertions can miss delayed, partial, or externally caused changes. The evaluation needs a clear observation window and an escalation path for uncertain state.
 
@@ -1854,7 +1861,7 @@ In the demo, compare the guarded and unguarded semantic-outcomes paths. Inspect 
 
 The cost of evaluating only final answers is that process failures disappear. That matters most for agents, because the path can create side effects even when the final text looks acceptable.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Annotate a five-step synthetic trajectory with:
 
@@ -1862,23 +1869,24 @@ Annotate a five-step synthetic trajectory with:
 
 Choose pass, fail, or escalate. Explain whether the final answer would change your decision and why.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 A captured trajectory is only as complete as the instrumentation. Missing events can make an unsafe path look safe, so evidence completeness is itself an evaluation criterion.
 
-### Module practice check
+### Module practice check 📝
 
-Answer these before moving to the next module:
+> [!TIP]
+> Answer these before moving to the next module:
+>
+> 1. Which claims in the response need separate evidence checks?
+> 2. What makes a refusal safe and still useful?
+> 3. What trajectory evidence proves that a tool action was authorized and completed?
 
-1. Which claims in the response need separate evidence checks?
-2. What makes a refusal safe and still useful?
-3. What trajectory evidence proves that a tool action was authorized and completed?
-
-## Lab 4: Evaluate the path, not only the final answer
+## Lab 4: Evaluate the path, not only the final answer 🔬
 
 This lab is included here so you can inspect claim support, safety boundaries, tool behavior, state changes, and recovery without leaving the guide.
 
-### Lab 4: Evaluate the path, not only the final answer
+### Lab 4: Evaluate the path, not only the final answer 🔬
 
 This lab teaches agent-behavior evaluation. An agent trajectory is the ordered
 sequence of observations, decisions, tool calls, results, and recovery steps
@@ -2087,7 +2095,7 @@ In the demo, choose one course decision and identify the benchmark category that
 
 The cost of category confusion is overclaiming. Teams select a familiar benchmark, report an impressive number, and discover later that it did not measure the failure that mattered in their workflow.
 
-#### Learner practice
+#### Learner practice 🧪
 
 For each decision, select one useful benchmark category and one local check:
 
@@ -2099,7 +2107,7 @@ For each decision, select one useful benchmark category and one local check:
 
 Explain why the benchmark alone is insufficient.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 Benchmark performance is evidence about sampled tasks under benchmark conditions. It does not establish production fit, safety, or reliability for an untested workflow.
 
@@ -2127,7 +2135,7 @@ In the demo, compare two synthetic system profiles. One has higher benchmark qua
 
 The cost of presenting a benchmark as a complete ranking is that stakeholders optimize the number instead of the system. A limitation statement protects the decision from that shortcut.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Write a five-sentence limitation statement covering:
 
@@ -2137,7 +2145,7 @@ Write a five-sentence limitation statement covering:
 4. the local evidence needed,
 5. the decision consequence of disagreement.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 A limitations statement improves honesty; it does not correct a poorly chosen benchmark. If the benchmark is irrelevant, the right action may be to replace it.
 
@@ -2165,7 +2173,7 @@ In the demo, compare a baseline and variant on the same synthetic cases. Report 
 
 The cost of an uncontrolled comparison is an attribution error. We may ship a change because the score improved when the improvement actually came from easier cases, a changed evaluator, or random variation.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Write a comparison plan for a baseline and one variant:
 
@@ -2173,7 +2181,7 @@ Write a comparison plan for a baseline and one variant:
 
 Add one result pattern that would cause you to reject the variant despite an aggregate improvement.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 Matched comparisons improve attribution, but they do not prove generalization beyond the tested cases. Keep a held-out or newly sampled set for follow-up.
 
@@ -2201,7 +2209,7 @@ In the demo, inspect a run manifest and rollback rehearsal record. Identify whic
 
 The cost of weak release evidence is not just a bad score. It is the inability to explain what changed, reproduce the result, or recover quickly when the system behaves differently in the field.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Draft a release record with:
 
@@ -2209,7 +2217,7 @@ Draft a release record with:
 
 Add one condition that would move the decision from release to hold.
 
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 A rehearsed rollback path does not guarantee instant recovery or prevent all impact. Monitoring is only useful when the signal is observable, the threshold is actionable, and an owner responds.
 
@@ -2239,7 +2247,7 @@ End with a practice-question placeholder for the final course deck. Ask learners
 
 The cost of a weak capstone is that every earlier lesson remains disconnected. The report is where measurement becomes accountable action.
 
-#### Learner practice
+#### Learner practice 🧪
 
 Complete a report with these sections:
 
@@ -2253,29 +2261,32 @@ Complete a report with these sections:
 8. release or revision action,
 9. owner, monitoring, and rollback trigger.
 
-Have a peer review the report using three questions:
+> **Learner checkpoint — peer-review the report**
+>
+> Have a peer review the report using three questions:
+>
+> 1. Can they identify the decision?
+> 2. Can they trace each important claim to evidence?
+> 3. Can they tell what the report does not prove?
 
-- Can they identify the decision?
-- Can they trace each important claim to evidence?
-- Can they tell what the report does not prove?
-
-#### Boundary
+#### What this lesson does not prove ⚠️
 
 A complete report does not make an evaluation complete forever. The decision is bounded by its revision, cases, evidence, and date; changes to the system or risk environment require a new evaluation.
 
-### Module practice check
+### Module practice check 📝
 
-Answer these before moving to the next module:
+> [!TIP]
+> Answer these before moving to the next module:
+>
+> 1. What stayed constant between the baseline and variant?
+> 2. Which high-risk slice could overturn an aggregate improvement?
+> 3. What owner, monitoring signal, and rollback trigger belong in the final report?
 
-1. What stayed constant between the baseline and variant?
-2. Which high-risk slice could overturn an aggregate improvement?
-3. What owner, monitoring signal, and rollback trigger belong in the final report?
-
-## Lab 5: Turn evaluation evidence into a release decision
+## Lab 5: Turn evaluation evidence into a release decision 🔬
 
 This capstone lab is included here so you can compare a baseline and variant, inspect uncertainty and high-risk slices, rehearse rollback, and complete a release report without leaving the guide.
 
-### Lab 5: Turn evaluation evidence into a release decision
+### Lab 5: Turn evaluation evidence into a release decision 🔬
 
 This lab is the course capstone. It connects benchmark interpretation, a
 controlled baseline-versus-variant comparison, uncertainty, revision binding,
@@ -2473,7 +2484,7 @@ The release workflow builds on the public [Agent Assurance Harness](https://gith
 - `course/VISUAL-SYSTEM.md` — colors and diagram conventions.
 - `scripts/build_guide.py` — reproducible guide builder.
 
-## What this course does not prove
+## What this course does not prove ⚠️
 
 The course uses public synthetic examples and an offline first path. Its results do not establish live Claude quality, production safety, business impact, or learner adoption outside the declared scenario. A release decision remains bounded by its revision, case set, evidence, evaluator configuration, and date.
 

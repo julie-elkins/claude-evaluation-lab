@@ -1,4 +1,4 @@
-# Fundamentals: The Concepts Under Every Evaluation
+# Fundamentals 📘: The Concepts Under Every Evaluation
 
 This section is the foundation for the course. Read it before the lessons if
 you are new to LLM evaluations, or use it as a reference when a term is
@@ -102,13 +102,15 @@ live requests.
 
 ## Readiness check
 
-You are ready for Lesson 1 if you can answer these questions:
-
-1. What decision would this evaluation support?
-2. What evidence would make the decision defensible?
-3. What would count as a deliberately degraded case?
-4. What should happen if required evidence is missing?
-5. Who owns the action after the result is reported?
+> **Learner checkpoint — readiness check**
+>
+> You are ready for Lesson 1 if you can answer these questions:
+>
+> 1. What decision would this evaluation support?
+> 2. What evidence would make the decision defensible?
+> 3. What would count as a deliberately degraded case?
+> 4. What should happen if required evidence is missing?
+> 5. Who owns the action after the result is reported?
 
 If you cannot answer one of these, that is not a reason to stop. It tells you
 which question to make explicit while you work through the first module.

@@ -239,11 +239,11 @@ def render_lesson(path: Path) -> str:
         "",
         script,
         "",
-        "#### Learner practice",
+        "#### Learner practice 🧪",
         "",
         practice,
         "",
-        "#### Boundary",
+        "#### What this lesson does not prove ⚠️",
         "",
         limitation,
         "",
@@ -285,13 +285,16 @@ def render_module(module: dict[str, object], lessons: list[Path]) -> str:
     parts.extend(render_lesson(path) for path in lessons)
     parts.extend(
         [
-            "### Module practice check",
+            "### Module practice check 📝",
             "",
-            "Answer these before moving to the next module:",
-            "",
+            "> [!TIP]",
+            "> Answer these before moving to the next module:",
+            ">",
         ]
     )
-    parts.extend(f"{index}. {question}" for index, question in enumerate(practice, start=1))
+    parts.extend(
+        f"> {index}. {question}" for index, question in enumerate(practice, start=1)
+    )
     parts.append("")
     return "\n".join(parts)
 
@@ -355,7 +358,7 @@ def build() -> str:
         "- [Agent Systems Design Guide](https://github.com/julie-elkins/agent-systems-design-guide) — shared design reasoning and report vocabulary.",
         "- [Apple Platform Agent Quality Lab](https://github.com/julie-elkins/apple-platform-agent-quality-lab) — native macOS implementation of the evaluation boundary.",
         "",
-        "### Runnable labs",
+        "### Runnable labs 🔬",
         "",
         "- [Lab 1: Transport success is not task success](labs/01-semantic-outcomes/README.md)",
         "- [Lab 2: Build a case set before you trust the score](labs/02-case-design/README.md)",
@@ -363,7 +366,7 @@ def build() -> str:
         "- [Lab 4: Evaluate the path, not only the final answer](labs/04-agent-behavior/README.md)",
         "- [Lab 5: Turn evaluation evidence into a release decision](labs/05-release-capstone/README.md)",
         "",
-        "## Fundamentals",
+        "## Fundamentals 📘",
         "",
         render_fundamentals(),
         "",
@@ -391,7 +394,7 @@ def build() -> str:
         if module["number"] == 1:
             parts.extend(
                 [
-                    "## Lab 1: Transport success is not task success",
+                    "## Lab 1: Transport success is not task success 🔬",
                     "",
                     "The first runnable lab is included here so you can complete the course's initial hands-on path without leaving the guide.",
                     "",
@@ -402,7 +405,7 @@ def build() -> str:
         elif module["number"] == 2:
             parts.extend(
                 [
-                    "## Lab 2: Build a case set before you trust the score",
+                    "## Lab 2: Build a case set before you trust the score 🔬",
                     "",
                     "This lab is included here so you can practice representative cases, calibration, held-out measurement, and negative controls without leaving the guide.",
                     "",
@@ -413,7 +416,7 @@ def build() -> str:
         elif module["number"] == 3:
             parts.extend(
                 [
-                    "## Lab 3: Layer the evaluator before you trust the judge",
+                    "## Lab 3: Layer the evaluator before you trust the judge 🔬",
                     "",
                     "This lab is included here so you can inspect deterministic checks, structured judge output, independent semantic evidence, and pairwise bias without leaving the guide.",
                     "",
@@ -432,7 +435,7 @@ def build() -> str:
         elif module["number"] == 4:
             parts.extend(
                 [
-                    "## Lab 4: Evaluate the path, not only the final answer",
+                    "## Lab 4: Evaluate the path, not only the final answer 🔬",
                     "",
                     "This lab is included here so you can inspect claim support, safety boundaries, tool behavior, state changes, and recovery without leaving the guide.",
                     "",
@@ -451,7 +454,7 @@ def build() -> str:
         elif module["number"] == 5:
             parts.extend(
                 [
-                    "## Lab 5: Turn evaluation evidence into a release decision",
+                    "## Lab 5: Turn evaluation evidence into a release decision 🔬",
                     "",
                     "This capstone lab is included here so you can compare a baseline and variant, inspect uncertainty and high-risk slices, rehearse rollback, and complete a release report without leaving the guide.",
                     "",
@@ -481,7 +484,7 @@ def build() -> str:
             "- `course/VISUAL-SYSTEM.md` — colors and diagram conventions.",
             "- `scripts/build_guide.py` — reproducible guide builder.",
             "",
-            "## What this course does not prove",
+            "## What this course does not prove ⚠️",
             "",
             "The course uses public synthetic examples and an offline first path. Its results do not establish live Claude quality, production safety, business impact, or learner adoption outside the declared scenario. A release decision remains bounded by its revision, case set, evidence, evaluator configuration, and date.",
             "",

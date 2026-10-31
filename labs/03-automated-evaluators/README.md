@@ -1,4 +1,4 @@
-# Lab 3: Layer the evaluator before you trust the judge
+# Lab 3: Layer the evaluator before you trust the judge 🔬
 
 This lab teaches evaluator composition. An evaluator is a rule, program, model,
 or human process that turns observed behavior into a finding. The lab shows why

@@ -1,4 +1,4 @@
-# Lab 4: Evaluate the path, not only the final answer
+# Lab 4: Evaluate the path, not only the final answer 🔬
 
 This lab teaches agent-behavior evaluation. An agent trajectory is the ordered
 sequence of observations, decisions, tool calls, results, and recovery steps

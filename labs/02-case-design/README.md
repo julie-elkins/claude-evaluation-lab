@@ -1,4 +1,4 @@
-# Lab 2: Build a case set before you trust the score
+# Lab 2: Build a case set before you trust the score 🔬
 
 This lab teaches evaluation-case design. An evaluation case is one test
 situation with its input, expected behavior, observed result, evidence, and

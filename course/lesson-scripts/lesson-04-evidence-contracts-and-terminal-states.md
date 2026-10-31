@@ -30,21 +30,23 @@ version, and a record of whether the workflow stayed within its cost ceiling.
 The exact fields depend on the decision. What matters is that the required
 evidence is named before the result is interpreted.
 
+##### Terminal states 🚦
+
 The harness uses separate terminal states so an absent result cannot disappear
 inside a green report.
 
-`completed` means the declared evaluation path ran to its intended terminal
-state. It does not mean that every task passed.
+| Harness terminal state | Meaning | Boundary |
+|---|---|---|
+| `completed` | The declared evaluation path reached its intended terminal state. | It does not mean that every task passed. |
+| `failed` | The evidence was present, but the declared rule was not met. | The failure must remain visible. |
+| `refused` | The evaluation declined to proceed because required input, authority, or safety conditions were missing. | It is not equivalent to a model failure. |
+| `skipped` | A check was intentionally not run. | The reason must remain visible. |
+| `not_evaluated` | The evidence was unavailable or invalid. | It is not a weaker form of pass. |
 
-`failed` means the evidence was present and the declared rule was not met.
-
-`refused` means the evaluation declined to proceed because required input,
-authority, or safety conditions were missing.
-
-`skipped` means a check was intentionally not run and must remain visible.
-
-`not_evaluated` means the evidence was unavailable or invalid. It is not a
-weaker form of pass.
+> [!NOTE]
+> These are harness execution states. They explain what happened during the
+> evaluation path; they are not a replacement for the separate report and
+> release statuses used elsewhere in this course.
 
 This distinction matters when a report contains a favorable average. Suppose
 the evaluator ran on nine normal cases and could not run the tenth high-risk
@@ -57,15 +59,14 @@ calibration result, a stable rubric, or a human comparison may be exploratory.
 It can help locate behavior worth inspecting. It should not silently become
 release evidence.
 
-Use the checklist as a review surface. For each row, ask four questions:
-
-Who owns the check?
-
-What evidence artifact identifies the result?
-
-What threshold or decision rule applies?
-
-What happens if the evidence is missing?
+> **Learner checkpoint — review the evidence contract**
+>
+> Use the checklist as a review surface. For each row, ask four questions:
+>
+> 1. Who owns the check?
+> 2. What evidence artifact identifies the result?
+> 3. What threshold or decision rule applies?
+> 4. What happens if the evidence is missing?
 
 That last question is the one that prevents absence from becoming a pass.
 Sometimes the answer is “block.” Sometimes it is “request human review.”
