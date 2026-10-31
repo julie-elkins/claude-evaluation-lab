@@ -7,14 +7,15 @@ authoring map; the lesson scripts remain the editable recording source.
 
 ## Working title
 
-**Claude Evaluation Lab: Build Reliable LLM Evaluations from Scratch**
+**LLM & Agent Evaluation Lab: Build Reliable Evaluations from Scratch**
 
 ## Learner promise
 
 By the end of the course, learners will be able to design an evaluation
-workflow for a Claude application or agent, run it against representative test
+workflow for an LLM application or agent, run it against representative test
 cases, interpret the evidence, and explain what the result does and does not
-prove.
+prove. Claude provides the running provider examples, while the evaluation
+contracts are designed to remain useful across providers.
 
 ## Audience and prerequisites
 

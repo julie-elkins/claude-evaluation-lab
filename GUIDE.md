@@ -1,4 +1,4 @@
-# Claude Evaluation Lab — Learner Guide
+# LLM & Agent Evaluation Lab — Learner Guide
 
 <!-- GENERATED FILE. Edit course/lesson-scripts or FUNDAMENTALS.md, then run `uv run python scripts/build_guide.py`. -->
 
@@ -6,7 +6,7 @@ This is the complete learner-facing course in one reading path. The lesson scrip
 
 ## Start here
 
-This course teaches you to design and interpret evaluations for Claude applications and agents. You will learn to connect a declared decision to representative cases, evidence, evaluator layers, and a bounded release action.
+This course teaches you to design and interpret evaluations for LLM applications and agents, using Claude as a running provider example. You will learn to connect a declared decision to representative cases, evidence, evaluator layers, and a bounded release action.
 
 If you are new to evaluation work, start with the [fundamentals](FUNDAMENTALS.md) below. If you want the shortest working path, read Module 1 and run [Lab 1](labs/01-semantic-outcomes/README.md) before continuing.
 
