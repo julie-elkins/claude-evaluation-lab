@@ -37,6 +37,13 @@ CASES = (
         expected_decision="fail",
     ),
     EvaluationCase(
+        case_id="incomplete-001",
+        schema_valid=True,
+        evidence_present=True,
+        claims_completion=True,
+        expected_decision="fail",
+    ),
+    EvaluationCase(
         case_id="unsupported-001",
         schema_valid=True,
         evidence_present=False,
@@ -82,8 +89,11 @@ def _synthetic_judge(case: EvaluationCase) -> str:
 
     if not case.schema_valid:
         return "{not-json"
-    # This judge rewards fluent completion language and does not inspect evidence.
-    decision = "pass" if case.claims_completion or not case.evidence_present else "pass"
+    if case.case_id == "incomplete-001":
+        return json.dumps({"decision": "pass"})
+    # This teaching judge intentionally passes every valid-shaped output so the
+    # independent semantic check can expose its false pass.
+    decision = "pass"
     reason_code = "fluent-completion" if case.claims_completion else "escalation-language"
     return json.dumps(
         {
@@ -100,19 +110,52 @@ def _parse_judge_output(raw: str) -> dict[str, Any]:
         parsed = json.loads(raw)
     except json.JSONDecodeError:
         return {
+            "status": "not_evaluated",
             "parseable": False,
+            "valid": False,
             "decision": None,
             "reason_code": "malformed_json",
         }
 
     if not isinstance(parsed, dict) or parsed.get("decision") not in {"pass", "fail"}:
         return {
+            "status": "not_evaluated",
             "parseable": False,
+            "valid": False,
             "decision": None,
             "reason_code": "schema_invalid",
         }
+
+    required_fields = {"reason_code", "judge_revision", "evidence_ids"}
+    missing_fields = sorted(required_fields - parsed.keys())
+    if missing_fields:
+        return {
+            "status": "not_evaluated",
+            "parseable": True,
+            "valid": False,
+            "decision": None,
+            "reason_code": "schema_incomplete",
+            "missing_fields": missing_fields,
+        }
+
+    if (
+        not isinstance(parsed["reason_code"], str)
+        or not isinstance(parsed["judge_revision"], str)
+        or not isinstance(parsed["evidence_ids"], list)
+        or not all(isinstance(item, str) for item in parsed["evidence_ids"])
+    ):
+        return {
+            "status": "not_evaluated",
+            "parseable": True,
+            "valid": False,
+            "decision": None,
+            "reason_code": "schema_invalid",
+        }
+
     return {
+        "status": "passed",
         "parseable": True,
+        "valid": True,
         "decision": parsed["decision"],
         "reason_code": parsed["reason_code"],
         "judge_revision": parsed["judge_revision"],
@@ -175,9 +218,13 @@ def run_lab() -> dict[str, Any]:
             "judge": judge,
             "independent_semantic_check": independent,
         }
-        if contract["status"] == "fail":
+        if contract["status"] == "fail" or not judge["valid"]:
             contract_failures.append(case.case_id)
-        if judge.get("decision") == "pass" and independent["status"] == "fail":
+        if (
+            judge.get("valid")
+            and judge.get("decision") == "pass"
+            and independent["status"] == "fail"
+        ):
             false_passes.append(case.case_id)
 
     bias_probe = _bias_probe()
@@ -193,6 +240,7 @@ def run_lab() -> dict[str, Any]:
         },
         "case_results": layers,
         "contract_failures": contract_failures,
+        "judge_contract_failures": contract_failures,
         "judge_false_passes": false_passes,
         "negative_control": {
             "case_id": negative_control_id,
@@ -204,6 +252,7 @@ def run_lab() -> dict[str, Any]:
         "release_decision": "block",
         "release_reasons": [
             "malformed evaluator output was not parseable",
+            "incomplete evaluator output was not valid evidence",
             "semantic judge produced a false pass",
             "pairwise judge changed preference when order changed",
         ],
@@ -214,8 +263,10 @@ def run_lab() -> dict[str, Any]:
         ],
     }
 
-    if contract_failures != ["malformed-001"]:
-        raise AssertionError("The contract layer must catch only the malformed case.")
+    if contract_failures != ["malformed-001", "incomplete-001"]:
+        raise AssertionError(
+            "The contract layer must catch malformed and incomplete judge output."
+        )
     if false_passes != ["unsupported-001"]:
         raise AssertionError("The seeded judge false pass changed unexpectedly.")
     if not summary["negative_control"]["independent_check_caught"]:
