@@ -1,0 +1,9 @@
+[project]
+name = "claude-evaluation-lab"
+version = "0.1.0"
+description = "Hands-on LLM evaluation labs built on the Agent Assurance Harness"
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.uv]
+package = false
