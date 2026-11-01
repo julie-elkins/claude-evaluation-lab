@@ -12,15 +12,24 @@ By the end of this lesson, you can produce a compact evaluation report that conn
 
 1. **The report answers one decision** — what is being decided and for whom.
 2. **Evidence map** — cases, evaluators, findings, uncertainty, and high-risk slices.
-3. **Decision and action** — release, revise, hold, escalate, or rollback.
-4. **Limitations and ownership** — what the report does not prove and who acts next.
-5. **Practice: complete and review the capstone report**.
+3. **Failure analysis** — classify why each important case failed and what changes next.
+4. **Decision and action** — release, revise, hold, escalate, or rollback.
+5. **Limitations and ownership** — what the report does not prove and who acts next.
+6. **Practice: complete and review the capstone report**.
 
 ## Speaker script
 
 The capstone report is not a score dump. It is a decision record. Start with the decision: what are we deciding, what revision or workflow does it concern, and what risk matters most?
 
 Then map the evidence. Include the case set, data roles, deterministic checks, semantic or human evaluation, agent trajectory findings, negative controls, high-risk slices, uncertainty, and any benchmark evidence. Preserve the underlying findings so a reader can see how the conclusion was reached.
+
+For every important failure, perform error analysis: classify the likely cause,
+identify the evidence supporting that classification, and name the next action.
+Useful categories include case or data, model or prompt, retrieval or memory,
+tool routing, tool execution, policy or authorization, evaluator, and telemetry.
+Do not call a case a model failure when the evaluator or environment prevented a
+valid conclusion. If the cause is uncertain, keep the finding unresolved and
+assign a follow-up investigation.
 
 State the decision and the action separately. “Release” is an action. “The variant meets the evidence contract for the bounded use case” is the conclusion that supports it. Other outcomes include revise, hold, escalate, or rollback. If evidence is missing or conflicting, say so instead of converting uncertainty into a pass.
 
@@ -48,10 +57,11 @@ Complete a report with these sections:
 3. case inventory and data split,
 4. evaluator layers,
 5. findings and high-risk slices,
-6. negative controls,
-7. limitations and uncertainty,
-8. release or revision action,
-9. owner, monitoring, and rollback trigger.
+6. failure analysis and evidence supporting each cause,
+7. negative controls,
+8. limitations and uncertainty,
+9. release or revision action,
+10. owner, monitoring, and rollback trigger.
 
 > **Learner checkpoint — peer-review the report**
 >

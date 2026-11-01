@@ -8,6 +8,20 @@ The lecture is a historical conceptual source. It is not copied into the
 scripts. The harness is the current operational source for evidence contracts,
 negative controls, release decisions, and limits.
 
+## Learner foundation coverage
+
+These concepts are prerequisites for interpreting an agent evaluation. They are
+introduced in `FUNDAMENTALS.md` and reinforced by the named lessons rather than
+left as assumed measurement vocabulary.
+
+| Foundation | Learner needs to understand | Course location | Hands-on treatment |
+| --- | --- | --- | --- |
+| Agent system under test | Request, environment, context and memory, tools, stopping criteria, scorer, trajectory, and final outcome. | Fundamentals; Lessons 5 and 25 | Write a case contract and annotate a bounded trajectory. |
+| Measurement foundations | Construct, validity, reliability, sensitivity, specificity, false positives, false negatives, and calibration. | Fundamentals; Lessons 7–9, 14, 16–18 | Compare workflow correctness, evaluator correctness, and evidence sufficiency. |
+| Retrieval, memory, and environment | Retrieval recall, context relevance, context sufficiency, grounding, memory read/write, stale state, and environment reset. | Fundamentals; Lessons 19, 24, and 25 | Build a retrieval-and-claim table and compare before/after memory and state. |
+| Sampling and uncertainty | Target population, case count, repeated runs, confidence intervals, effect size, practical significance, and high-risk slices. | Fundamentals; Lessons 6, 9, 27–30, and 46 | Write a matched comparison and interpret aggregate and slice results. |
+| Failure analysis | Classify whether a finding came from data, model, prompt, retrieval, tool, policy, evaluator, or telemetry. | Lessons 29–30, 36–39, and 48 | Turn a failed case into a bounded cause hypothesis, owner, and next action. |
+
 ## YouTube lecture coverage
 
 | Lecture area | Required learner concepts | Course location | Hands-on treatment |
