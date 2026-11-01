@@ -47,7 +47,7 @@ as a release result is false confidence.
 
 ## Demo notes
 
-- Use `labs/07-live-claude-adapter/README.md`.
+- Use `labs/optional-live-claude-adapter/README.md`.
 - Show the local manifest fields before any request is considered.
 - Keep the example optional and use synthetic prompts and evidence.
 - Recording boundary: verify official documentation immediately before

@@ -71,7 +71,7 @@ def main() -> int:
         "labs/06-production-observability/README.md",
         "labs/07-security-controls/README.md",
         "labs/08-telemetry-vertical-slice/README.md",
-        "labs/07-live-claude-adapter/README.md",
+        "labs/optional-live-claude-adapter/README.md",
         "https://github.com/julie-elkins/claude-architect-lab",
         "https://github.com/julie-elkins/agent-assurance-harness",
         "https://github.com/julie-elkins/agent-systems-design-guide",
@@ -79,7 +79,7 @@ def main() -> int:
         "https://github.com/julie-elkins/apple-platform-agent-quality-lab",
         "https://www.youtube.com/@JulieElkins",
         "https://julie-elkins.github.io",
-        "https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/",
+        "https://opentelemetry.io/docs/specs/semconv/gen-ai/",
         "https://github.com/Arize-ai/phoenix",
         "https://github.com/langfuse/langfuse",
     ]

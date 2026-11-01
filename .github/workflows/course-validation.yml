@@ -46,6 +46,9 @@ jobs:
           labs/03-automated-evaluators/run_lab.py
           labs/04-agent-behavior/run_lab.py
           labs/05-release-capstone/run_lab.py
+          labs/06-production-observability/run_lab.py
+          labs/07-security-controls/run_lab.py
+          labs/08-telemetry-vertical-slice/run_lab.py
 
       - name: Rebuild and validate learner guide
         run: |
@@ -71,6 +74,15 @@ jobs:
 
       - name: Run Lab 5
         run: uv run python labs/05-release-capstone/run_lab.py
+
+      - name: Run Lab 6
+        run: uv run python labs/06-production-observability/run_lab.py
+
+      - name: Run Lab 7
+        run: uv run python labs/07-security-controls/run_lab.py
+
+      - name: Run Lab 8
+        run: uv run python labs/08-telemetry-vertical-slice/run_lab.py
 
       - name: Check patch whitespace
         run: git diff --check

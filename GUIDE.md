@@ -48,7 +48,7 @@ The required labs are offline and synthetic. They require no Claude API key and 
 - [Julie’s public site](https://julie-elkins.github.io) — projects, learning paths, and design principles.
 - [Agent Systems Design Guide](https://github.com/julie-elkins/agent-systems-design-guide) — shared design reasoning and report vocabulary.
 - [Apple Platform Agent Quality Lab](https://github.com/julie-elkins/apple-platform-agent-quality-lab) — native macOS implementation of the evaluation boundary.
-- [OpenTelemetry GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/) — provider-neutral trace and metric vocabulary.
+- [OpenTelemetry GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/gen-ai/) — provider-neutral trace and metric vocabulary; verify the current convention status before recording.
 - [Phoenix](https://github.com/Arize-ai/phoenix) — optional local observability backend for trace inspection.
 - [Langfuse](https://github.com/langfuse/langfuse) — optional comparison point for trace, evaluation, dataset, and experiment workflows.
 
@@ -65,7 +65,7 @@ The required labs are offline and synthetic. They require no Claude API key and 
 
 ### Optional live-Claude extension
 
-The required path stays offline and deterministic. If you want to attach one live Claude observation, use the [bounded live-Claude adapter guide](labs/07-live-claude-adapter/README.md) only after declaring request, time, token, spend, model, revision, and privacy limits.
+The required path stays offline and deterministic. If you want to attach one live Claude observation, use the [optional bounded live-Claude adapter guide](labs/optional-live-claude-adapter/README.md) only after declaring request, time, token, spend, model, revision, and privacy limits.
 
 ## Fundamentals 📘
 
@@ -4070,7 +4070,7 @@ The release workflow builds on the public [Agent Assurance Harness](https://gith
 
 ## What this course does not prove ⚠️
 
-The course uses public synthetic examples and an offline-first path. Its results do not establish live Claude quality, production safety, business impact, or learner adoption outside the declared scenario. The security and observability tracks teach production-oriented control paths, not a guarantee that any deployed system is secure, compliant, observable, or operationally complete. A release decision remains bounded by its revision, case set, evidence, evaluator configuration, control coverage, telemetry completeness, and date.
+The course uses public synthetic examples and an offline-first path. Its results do not establish live Claude quality, production safety, business impact, or learner adoption outside the declared scenario. The security, observability, and assurance tracks teach production-oriented control paths, not a guarantee that any deployed system is secure, compliant, observable, or operationally complete. A release decision remains bounded by its revision, case set, evidence, evaluator configuration, control coverage, telemetry completeness, and date.
 
 To rebuild this guide after editing the source files:
 

@@ -192,7 +192,7 @@ checks, not copied course content.
 - [Julie’s public site](https://julie-elkins.github.io) — projects, learning paths, and design principles.
 - [Agent Systems Design Guide](https://github.com/julie-elkins/agent-systems-design-guide) — shared design reasoning and report vocabulary.
 - [Apple Platform Agent Quality Lab](https://github.com/julie-elkins/apple-platform-agent-quality-lab) — native macOS implementation of the evaluation boundary.
-- [OpenTelemetry GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/) — provider-neutral trace and metric vocabulary.
+- [OpenTelemetry GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/gen-ai/) — provider-neutral trace and metric vocabulary; verify the current convention status before recording.
 - [Phoenix](https://github.com/Arize-ai/phoenix) and [Langfuse](https://github.com/langfuse/langfuse) — optional observability backends for comparing local trace workflows.
 - [Stanford Engineering AI Agents](https://cs329z.stanford.edu/) — agent evaluation and reliability framing.
 - [Evaluating AI Agents](https://www.deeplearning.ai/courses/evaluating-ai-agents) — trace-to-evaluation and component-evaluation patterns.
