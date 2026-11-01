@@ -60,6 +60,124 @@ change because of sampling, repeated runs, evaluator variation, or missing
 evidence. Ownership means a named person or role is responsible for acting on
 the result.
 
+### Observability and evaluation
+
+Observability is the practice of collecting enough telemetry to explain what a
+system did. Telemetry includes traces, events, and metrics. Evaluation is the
+separate practice of applying criteria to that behavior so an owner can decide
+what to do.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Agent run"] --> B["Telemetry"]
+    B --> C["Trace reconstruction"]
+    B --> D["Operational signals"]
+    C --> E["Evaluation evidence"]
+    D --> F["Monitoring rule"]
+    E --> G["Decision"]
+    F --> G
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    class A,B blue
+    class C,D orange
+    class E,F sage
+    class G orange
+```
+
+A trace can show that an agent selected a tool, sent arguments, received an
+error, retried, and stopped. That explains the path; it does not prove the
+behavior was acceptable. An evaluation can say that the tool was unauthorized
+or that the state transition was missing; it cannot explain the finding if the
+trace omitted the tool span, authorization context, or state before and after
+the call.
+
+### Production telemetry basics
+
+Before collecting data, define a minimum trace contract:
+
+- stable `trace_id` and `session_id`;
+- workflow, model, agent, and evaluator revisions;
+- model, tool, state, evaluator, and terminal events;
+- latency, token, cost, retry, and error signals;
+- terminal state and evidence completeness; and
+- redaction status, retention, and access owner.
+
+An operational metric is a measurement of how the system ran. A service-level
+objective, or SLO, is an explicit target for a signal over a defined window.
+Neither one replaces task-quality or safety evidence. A fast unauthorized tool
+call is still a failure.
+
+### Privacy and incident basics
+
+Telemetry is data. Prompts, outputs, tool arguments, retrieved documents,
+identifiers, and state details may need different retention and access rules.
+Collect the minimum evidence required by the decision, redact sensitive content,
+name the owner, and define how the record is deleted.
+
+An alert is a signal that crossed a declared threshold. An incident is a
+condition that requires coordinated action. A useful incident record names the
+severity, owner, containment action, rollback trigger, and follow-up evaluation
+case.
+
+### Security and assurance controls
+
+Security is not one model score. It is a set of boundaries that must remain
+visible across identity, tools, data, networks, side effects, and telemetry.
+
+- A **threat model** names assets, actors, entry points, consequences, and
+  controls.
+- A **trust boundary** is where authority, data sensitivity, or ownership
+  changes.
+- **Least privilege** means granting only the authority required for the
+  declared task.
+- **Output validation** checks model-produced arguments before a downstream
+  system performs a side effect.
+- **Idempotency** means repeating the same action request does not create an
+  unintended duplicate effect.
+- **Telemetry security** protects the evidence itself with classification,
+  access control, redaction, retention, deletion, and audit records.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Untrusted input"] --> B["Trust boundary"]
+    B --> C["Identity and scope"]
+    C --> D["Validated tool action"]
+    D --> E["State and audit event"]
+    E --> F["Telemetry privacy"]
+    F --> G["Monitor and respond"]
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    classDef red fill:#F3D6D2,stroke:#B44B45,color:#16324F,stroke-width:2px
+    class A blue
+    class B,C orange
+    class D,E sage
+    class F,G red
+```
+
+### Continuous assurance
+
+Continuous assurance is the repeated loop of observing, evaluating, reviewing,
+and acting after the first release decision. The loop must distinguish an agent
+failure, a monitor failure, and unavailable evidence.
+
+Monitor the monitor with counts for records received, accepted, rejected,
+dropped, delayed, and exported. A quiet dashboard is ambiguous unless the
+telemetry path itself reports healthy. If required evidence is missing, use
+`not_evaluated` or `unavailable`; do not convert silence into a pass.
+
+Track data drift, model drift, evaluator drift, and concept drift separately.
+Drift means the measured relationship changed; it does not automatically mean
+rollback. Define the comparison window, threshold, owner, and action such as
+sampling, recalibration, hold, or rollback.
+
+For state-changing actions, preserve idempotency keys, state versions, approval
+identity, compensation action, and audit evidence. A successful final message
+does not erase a duplicate, stale, or unauthorized side effect.
+
 ## The evaluation vocabulary
 
 ```mermaid
@@ -119,7 +237,6 @@ For learner artifacts and public repositories:
   approved their use;
 - define how long traces and evaluator outputs are retained before recording
   or sharing; and
-  and
 - treat a public teaching artifact as a metadata and synthetic-data boundary,
   not as a place to copy production logs.
 

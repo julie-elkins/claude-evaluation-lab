@@ -78,6 +78,81 @@ class LabContractTests(unittest.TestCase):
             },
         )
 
+    def test_observability_lab_catches_operational_and_privacy_failures(self) -> None:
+        lab = load_lab_module(
+            "labs/06-production-observability/run_lab.py",
+            "lab_06_production_observability",
+        )
+
+        report = lab.run_lab()
+
+        self.assertEqual(report["observability_suite_status"], "passed")
+        self.assertEqual(report["candidate_release_decision"], "block")
+        self.assertIn(
+            "trace-missing-terminal-001",
+            report["negative_controls"]["caught_failures"],
+        )
+        self.assertIn(
+            "trace-raw-content-001",
+            report["negative_controls"]["caught_failures"],
+        )
+        self.assertEqual(
+            report["case_results"]["trace-healthy-001"]["status"],
+            "pass",
+        )
+        self.assertEqual(
+            report["case_results"]["trace-missing-terminal-001"]["status"],
+            "not_evaluated",
+        )
+
+    def test_security_lab_catches_authority_and_evidence_failures(self) -> None:
+        lab = load_lab_module(
+            "labs/07-security-controls/run_lab.py",
+            "lab_07_security_controls",
+        )
+
+        report = lab.run_lab()
+
+        self.assertEqual(report["security_suite_status"], "passed")
+        self.assertEqual(report["candidate_release_decision"], "block")
+        self.assertEqual(
+            report["case_results"]["security-healthy-001"]["status"],
+            "passed",
+        )
+        self.assertEqual(
+            report["case_results"]["security-missing-approval-001"]["status"],
+            "refused",
+        )
+        self.assertEqual(
+            report["case_results"]["security-deletion-evidence-missing-001"]["status"],
+            "not_evaluated",
+        )
+        self.assertEqual(
+            report["case_results"]["security-cross-tenant-read-001"]["status"],
+            "failed",
+        )
+
+    def test_telemetry_vertical_slice_makes_pipeline_loss_visible(self) -> None:
+        lab = load_lab_module(
+            "labs/08-telemetry-vertical-slice/run_lab.py",
+            "lab_08_telemetry_vertical_slice",
+        )
+
+        report = lab.run_lab()
+
+        self.assertEqual(report["vertical_slice_status"], "passed")
+        self.assertEqual(report["candidate_release_decision"], "block")
+        self.assertTrue(report["negative_controls"]["privacy_redaction_passed"])
+        self.assertTrue(report["negative_controls"]["telemetry_loss_visible"])
+        self.assertEqual(
+            report["telemetry_health"]["pipeline_status"],
+            "unavailable",
+        )
+        self.assertEqual(
+            report["trace_results"]["trace-missing-span-001"]["status"],
+            "not_evaluated",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

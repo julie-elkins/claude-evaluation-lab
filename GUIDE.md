@@ -1,4 +1,4 @@
-# LLM & Agent Evaluation Lab — Learner Guide
+# LLM & Agent Evaluation Lab — From Offline Evidence to Production-Oriented Assurance
 
 <!-- GENERATED FILE. Edit course/lesson-scripts or FUNDAMENTALS.md, then run `uv run python scripts/build_guide.py`. -->
 
@@ -6,7 +6,7 @@ This is the complete learner-facing course in one reading path. The lesson scrip
 
 ## Start here
 
-This course teaches you to design and interpret evaluations for LLM applications and agents, using Claude as a running provider example. You will learn to connect a declared decision to representative cases, evidence, evaluator layers, and a bounded release action.
+This course is a build-along path for learning how to evaluate and observe LLM applications and agents, using Claude as a running provider example. You will connect a declared decision to representative cases, evidence, evaluator layers, telemetry, security controls, monitoring, and a bounded release action.
 
 If you are new to evaluation work, start with the [fundamentals](FUNDAMENTALS.md) below. If you want the shortest working path, read Module 1 and run [Lab 1](labs/01-semantic-outcomes/README.md) before continuing.
 
@@ -40,7 +40,7 @@ flowchart LR
 uv run python labs/01-semantic-outcomes/run_lab.py
 ```
 
-The first five labs are offline and synthetic. They require no Claude API key and demonstrate the path from transport status to a bounded release decision.
+The required labs are offline and synthetic. They require no Claude API key and demonstrate the path from transport status to a bounded release decision, then from an agent trace to security controls, telemetry health, an incident, and a regression case.
 
 ## Continue learning
 
@@ -48,6 +48,9 @@ The first five labs are offline and synthetic. They require no Claude API key an
 - [Julie’s public site](https://julie-elkins.github.io) — projects, learning paths, and design principles.
 - [Agent Systems Design Guide](https://github.com/julie-elkins/agent-systems-design-guide) — shared design reasoning and report vocabulary.
 - [Apple Platform Agent Quality Lab](https://github.com/julie-elkins/apple-platform-agent-quality-lab) — native macOS implementation of the evaluation boundary.
+- [OpenTelemetry GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/) — provider-neutral trace and metric vocabulary.
+- [Phoenix](https://github.com/Arize-ai/phoenix) — optional local observability backend for trace inspection.
+- [Langfuse](https://github.com/langfuse/langfuse) — optional comparison point for trace, evaluation, dataset, and experiment workflows.
 
 ### Runnable labs 🔬
 
@@ -56,10 +59,13 @@ The first five labs are offline and synthetic. They require no Claude API key an
 - [Lab 3: Layer the evaluator before you trust the judge](labs/03-automated-evaluators/README.md)
 - [Lab 4: Evaluate the path, not only the final answer](labs/04-agent-behavior/README.md)
 - [Lab 5: Turn evaluation evidence into a release decision](labs/05-release-capstone/README.md)
+- [Lab 6: Observe the agent before you trust the dashboard](labs/06-production-observability/README.md)
+- [Lab 7: Test the agent security boundary](labs/07-security-controls/README.md)
+- [Lab 8: Build the local telemetry vertical slice](labs/08-telemetry-vertical-slice/README.md)
 
 ### Optional live-Claude extension
 
-The required path stays offline and deterministic. If you want to attach one live Claude observation, use the [bounded live-Claude adapter guide](labs/06-live-claude-adapter/README.md) only after declaring request, time, token, spend, model, revision, and privacy limits.
+The required path stays offline and deterministic. If you want to attach one live Claude observation, use the [bounded live-Claude adapter guide](labs/07-live-claude-adapter/README.md) only after declaring request, time, token, spend, model, revision, and privacy limits.
 
 ## Fundamentals 📘
 
@@ -123,6 +129,124 @@ change because of sampling, repeated runs, evaluator variation, or missing
 evidence. Ownership means a named person or role is responsible for acting on
 the result.
 
+##### Observability and evaluation
+
+Observability is the practice of collecting enough telemetry to explain what a
+system did. Telemetry includes traces, events, and metrics. Evaluation is the
+separate practice of applying criteria to that behavior so an owner can decide
+what to do.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Agent run"] --> B["Telemetry"]
+    B --> C["Trace reconstruction"]
+    B --> D["Operational signals"]
+    C --> E["Evaluation evidence"]
+    D --> F["Monitoring rule"]
+    E --> G["Decision"]
+    F --> G
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    class A,B blue
+    class C,D orange
+    class E,F sage
+    class G orange
+```
+
+A trace can show that an agent selected a tool, sent arguments, received an
+error, retried, and stopped. That explains the path; it does not prove the
+behavior was acceptable. An evaluation can say that the tool was unauthorized
+or that the state transition was missing; it cannot explain the finding if the
+trace omitted the tool span, authorization context, or state before and after
+the call.
+
+##### Production telemetry basics
+
+Before collecting data, define a minimum trace contract:
+
+- stable `trace_id` and `session_id`;
+- workflow, model, agent, and evaluator revisions;
+- model, tool, state, evaluator, and terminal events;
+- latency, token, cost, retry, and error signals;
+- terminal state and evidence completeness; and
+- redaction status, retention, and access owner.
+
+An operational metric is a measurement of how the system ran. A service-level
+objective, or SLO, is an explicit target for a signal over a defined window.
+Neither one replaces task-quality or safety evidence. A fast unauthorized tool
+call is still a failure.
+
+##### Privacy and incident basics
+
+Telemetry is data. Prompts, outputs, tool arguments, retrieved documents,
+identifiers, and state details may need different retention and access rules.
+Collect the minimum evidence required by the decision, redact sensitive content,
+name the owner, and define how the record is deleted.
+
+An alert is a signal that crossed a declared threshold. An incident is a
+condition that requires coordinated action. A useful incident record names the
+severity, owner, containment action, rollback trigger, and follow-up evaluation
+case.
+
+##### Security and assurance controls
+
+Security is not one model score. It is a set of boundaries that must remain
+visible across identity, tools, data, networks, side effects, and telemetry.
+
+- A **threat model** names assets, actors, entry points, consequences, and
+  controls.
+- A **trust boundary** is where authority, data sensitivity, or ownership
+  changes.
+- **Least privilege** means granting only the authority required for the
+  declared task.
+- **Output validation** checks model-produced arguments before a downstream
+  system performs a side effect.
+- **Idempotency** means repeating the same action request does not create an
+  unintended duplicate effect.
+- **Telemetry security** protects the evidence itself with classification,
+  access control, redaction, retention, deletion, and audit records.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Untrusted input"] --> B["Trust boundary"]
+    B --> C["Identity and scope"]
+    C --> D["Validated tool action"]
+    D --> E["State and audit event"]
+    E --> F["Telemetry privacy"]
+    F --> G["Monitor and respond"]
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    classDef red fill:#F3D6D2,stroke:#B44B45,color:#16324F,stroke-width:2px
+    class A blue
+    class B,C orange
+    class D,E sage
+    class F,G red
+```
+
+##### Continuous assurance
+
+Continuous assurance is the repeated loop of observing, evaluating, reviewing,
+and acting after the first release decision. The loop must distinguish an agent
+failure, a monitor failure, and unavailable evidence.
+
+Monitor the monitor with counts for records received, accepted, rejected,
+dropped, delayed, and exported. A quiet dashboard is ambiguous unless the
+telemetry path itself reports healthy. If required evidence is missing, use
+`not_evaluated` or `unavailable`; do not convert silence into a pass.
+
+Track data drift, model drift, evaluator drift, and concept drift separately.
+Drift means the measured relationship changed; it does not automatically mean
+rollback. Define the comparison window, threshold, owner, and action such as
+sampling, recalibration, hold, or rollback.
+
+For state-changing actions, preserve idempotency keys, state versions, approval
+identity, compensation action, and audit evidence. A successful final message
+does not erase a duplicate, stale, or unauthorized side effect.
+
 #### The evaluation vocabulary
 
 ```mermaid
@@ -182,7 +306,6 @@ For learner artifacts and public repositories:
   approved their use;
 - define how long traces and evaluator outputs are retained before recording
   or sharing; and
-  and
 - treat a public teaching artifact as a metadata and synthetic-data boundary,
   not as a place to copy production logs.
 
@@ -224,6 +347,12 @@ which question to make explicit while you work through the first module.
 | 3. Automated evaluation | 10–18 | Combine deterministic checks, semantic judges, human calibration, and independent negative controls. |
 | 4. Factuality, safety, and agents | 19–25 | Evaluate claims, safety boundaries, tool behavior, state changes, and recovery across an agent trajectory. |
 | 5. Benchmarks, release, and capstone | 26–30 | Compare a baseline and variant, state uncertainty and limitations, and produce an accountable release recommendation. |
+| 6. Production observability foundations | 31–32 | Distinguish observability from evaluation and define the trace evidence an agent workflow needs. |
+| 7. Instrumentation and operational signals | 33–34 | Map agent behavior to provider-neutral spans, metrics, budgets, and service-level objectives. |
+| 8. Privacy, monitoring, and incident response | 35–36 | Design redaction, retention, alerting, ownership, and rollback boundaries for agent evidence. |
+| 9. Continuous evaluation and production capstone | 37–39 | Turn production-style traces into regression cases and make a bounded release, hold, revise, or rollback decision. |
+| 10. Security and assurance controls | 40–44 | Threat-model an agent, enforce authority and data boundaries, protect telemetry, and test monitoring resilience. |
+| 11. Continuous assurance and production implementation | 45–48 | Run a local telemetry path, detect drift and side-effect risk, and produce a security-aware assurance decision. |
 
 The course uses the cream visual system documented in [course/VISUAL-SYSTEM.md](course/VISUAL-SYSTEM.md). The [glossary](GLOSSARY.md) is a quick reference for evaluation terms.
 
@@ -2527,6 +2656,1400 @@ For the shared status meanings behind the report, see the
 For a native platform implementation, compare the
 [Apple Platform Agent Quality Lab](https://github.com/julie-elkins/apple-platform-agent-quality-lab).
 
+## Module 6 — Production observability foundations
+
+**Hands-on outcome:** Distinguish observability from evaluation and define the trace evidence an agent workflow needs.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Agent run"] --> B["Telemetry"]
+    B --> C["Trace and events"]
+    C --> D["Debug or investigate"]
+    C --> E["Evaluation case"]
+    E --> F["Decision"]
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    class A,B blue
+    class C orange
+    class D,E sage
+    class F orange
+```
+
+### Lesson 31: Observability Versus Evaluation
+
+*10–12 minutes*
+
+**Lab connection:** Lab 6 — Observe the agent before you trust the dashboard
+
+#### Learner objective
+
+By the end of this lesson, you can distinguish telemetry that explains what
+happened from evaluation evidence that supports a decision.
+
+#### Core lesson
+
+Observability is the practice of collecting enough telemetry to explain what a
+system did. Telemetry includes traces, events, and metrics. Evaluation is the
+separate practice of applying criteria to behavior so an owner can decide what
+to do.
+
+A trace can show that an agent selected a tool, sent arguments, received an
+error, retried twice, and eventually stopped. That is useful evidence about the
+path. It does not by itself prove that the tool was authorized, that the final
+answer was correct, or that the workflow is safe to release.
+
+An evaluation can say that the tool was unauthorized or that the required state
+change did not occur. It cannot explain the finding if the trace omitted the
+tool span, the authorization context, or the state before and after the call.
+The production control therefore needs both reconstruction evidence and
+judgment evidence.
+
+In the demo, run Lab 6 and compare the healthy trace with the planted failures.
+Point out that the metrics remain visible even when the candidate release
+decision is blocked. A cost number is a signal; a declared spend threshold is
+the rule that turns the signal into an action.
+
+The cost of confusing observability with evaluation is a dashboard that proves
+the system was busy but cannot support a safe decision. The cost of collecting
+telemetry without a privacy boundary is a different failure: the evidence may
+be useful but unsafe to retain or share.
+
+#### Learner practice 🧪
+
+Create a two-column table for one agent workflow:
+
+| Observability can show | Evaluation must decide |
+|---|---|
+|  |  |
+
+Add one field that is required for both columns and explain why.
+
+#### What this lesson does not prove ⚠️
+
+A complete trace does not prove that the behavior was acceptable. A passing
+evaluation does not prove that the trace captured every event. Production
+confidence requires both a declared evaluation boundary and evidence that the
+instrumentation is complete enough for that boundary.
+
+### Lesson 32: The Agent Telemetry Model and Trace Contract
+
+*10–12 minutes*
+
+**Lab connection:** Lab 6 — Observe the agent before you trust the dashboard
+
+#### Learner objective
+
+By the end of this lesson, you can define a trace contract for an agent run and
+identify when missing telemetry makes a result not evaluated.
+
+#### Core lesson
+
+A production trace is not just a line of text. It is a structured record of the
+agent path. The exact hierarchy can vary, but a useful teaching model is
+session, turn, workflow, model call, tool call, state change, and terminal
+event.
+
+Every record needs stable identity. Capture the trace ID, session ID, workflow
+name, model revision, agent or policy revision, and evaluator revision. These
+fields bind the evidence to the system that produced it. Without revision
+binding, a trace from yesterday can be mistaken for evidence about today's
+workflow.
+
+The trace also needs the path: what context was available, what decision was
+made, which tool was selected, what arguments were sent, what result returned,
+how state changed, and why the agent stopped. Do not capture more content than
+the decision requires. Structure and privacy are part of the contract.
+
+In the demo, inspect `trace-missing-terminal-001`. Its model span exists, but
+the terminal state is absent. The correct outcome is `not_evaluated`, not pass
+and not necessarily model failure. The evaluator lacks evidence that the
+declared path reached its end.
+
+The cost of a weak trace contract is an investigation that reconstructs the
+most convenient story from incomplete events. The cost of an overly broad
+contract is unnecessary data collection, storage cost, and privacy exposure.
+
+#### Learner practice 🧪
+
+Write a trace contract for one workflow with these fields:
+
+`trace_id`, `session_id`, `workflow_name`, `model_revision`,
+`agent_revision`, `span_id`, `span_kind`, `terminal_state`,
+`redaction_status`.
+
+Mark each field as required, conditional, or forbidden to retain in raw form.
+
+#### What this lesson does not prove ⚠️
+
+A trace schema does not guarantee that the application emits every event or
+that timestamps and attributes are correct. Instrumentation itself requires
+negative controls and periodic completeness checks.
+
+### Module practice check 📝
+
+> [!TIP]
+> Answer these before moving to the next module:
+>
+> 1. Which production question requires a trace, and which requires an evaluation?
+> 2. What fields are required to reconstruct the agent path?
+> 3. What would make a trace incomplete rather than merely unsuccessful?
+
+## Lab 6: Observe the agent before you trust the dashboard 🔬
+
+This lab is included here so you can inspect a provider-neutral trace contract, operational signals, privacy boundaries, incident findings, and the trace-to-test-case loop without requiring a live provider.
+
+### Lab 6: Observe the agent before you trust the dashboard 🔬
+
+This lab teaches production-oriented agent observability using synthetic
+traces. Observability means collecting enough telemetry—traces, events, and
+metrics—to reconstruct what happened. Evaluation means applying a declared
+rule to that evidence to support a decision. A dashboard without an evaluation
+boundary can show activity without showing whether the workflow was safe or
+successful.
+
+#### What you will learn
+
+You will inspect:
+
+- a provider-neutral trace contract;
+- workflow, model, tool, state, and terminal spans;
+- latency, token, cost, and retry signals;
+- authorization and terminal-state findings;
+- redaction and public-data boundaries;
+- incident severity and ownership; and
+- the trace-to-test-case feedback loop.
+
+The fields are shaped like production telemetry, but the lab remains
+offline-first and does not require an OpenTelemetry package, a collector, a
+dashboard, a Claude API key, or network access.
+
+#### Why this matters
+
+An evaluator can report that a task failed, but it cannot explain the failure if
+the agent path was not captured. Conversely, a complete trace can explain what
+happened without proving that the behavior met the product requirement. The
+production control needs both: trace evidence for reconstruction and evaluation
+evidence for judgment.
+
+#### Run it
+
+From the repository root:
+
+```bash
+uv run python labs/06-production-observability/run_lab.py
+```
+
+To inspect the synthetic traces before evaluation:
+
+```bash
+uv run python labs/06-production-observability/run_lab.py --show-traces
+```
+
+To save a local report:
+
+```bash
+uv run python labs/06-production-observability/run_lab.py --output /tmp/observability-report.json
+```
+
+#### Expected result
+
+The report should show:
+
+- one healthy trace passing;
+- an unauthorized tool being caught;
+- a missing terminal state becoming `not_evaluated`;
+- a cost budget breach being caught;
+- a retry loop being caught;
+- raw content being rejected by the privacy boundary;
+- metrics remaining separate from findings;
+- incident findings with severity and action; and
+- trace failures converted into regression-case candidates.
+
+The observability suite passes because it catches the planted failures. The
+candidate release decision is blocked because the synthetic trace set contains
+failures that require investigation.
+
+#### Workflow map
+
+```text
+agent run
+   |
+   v
+trace contract ----> spans and events ----> metrics
+   |                       |                  |
+   |                       v                  v
+   |                 reconstruct path    budget signal
+   v
+privacy and completeness checks
+   |
+   v
+evaluation findings ----> incident action ----> regression case
+```
+
+#### Evidence to inspect
+
+Review these fields:
+
+- `trace_schema_revision`
+- `case_results`
+- `metrics`
+- `incident_findings`
+- `trace_to_case`
+- `negative_controls`
+- `candidate_release_decision`
+- `evidence_template`
+
+Within each trace result, inspect `status`, `reason_code`, `trace_id`, and
+`span_names`. The status answers whether the declared check passed; the span
+names explain what the trace contained.
+
+#### Try the failure
+
+The deliberately degraded traces include:
+
+- `trace-unauthorized-tool-001`: a tool span outside the authorized boundary;
+- `trace-missing-terminal-001`: an incomplete trace with no terminal state;
+- `trace-cost-spike-001`: a synthetic spend budget breach;
+- `trace-retry-loop-001`: repeated tool errors beyond the retry limit; and
+- `trace-raw-content-001`: content that was not redacted before retention.
+
+The evaluator must catch all of them. The healthy trace demonstrates that a
+complete, redacted, bounded path can pass the observability contract.
+
+#### Troubleshooting
+
+1. Run the command from the repository root.
+2. Confirm `uv --version` is available.
+3. If the report exits non-zero, inspect the report; the lab intentionally
+   returns non-zero only if the evaluator fails to catch a planted failure.
+4. Keep trace identifiers synthetic and do not replace them with production
+   session IDs or raw prompts.
+
+#### Evidence template
+
+Copy this structure into your own notes:
+
+```text
+trace_schema_revision:
+trace_ids:
+workflow_name:
+model_revision:
+agent_revision:
+terminal_states:
+span_inventory:
+latency_and_token_signals:
+cost_and_retry_signals:
+privacy_status:
+incident_findings:
+regression_cases_created:
+candidate_release_decision:
+limitations:
+```
+
+#### What this does not prove
+
+This is an offline synthetic observability control. It does not prove that a
+live exporter captures every event, that a dashboard is correctly configured,
+that a production SLO is achievable, that redaction is complete for every
+payload, or that an incident owner will respond in time.
+
+#### Optional extension
+
+Map the lab's fields to the current OpenTelemetry GenAI semantic conventions.
+Then compare the same synthetic trace in one local backend, such as Phoenix or
+Langfuse. Keep the backend optional and record which fields were transformed,
+dropped, or redacted.
+
+## Module 7 — Instrumentation and operational signals
+
+**Hands-on outcome:** Map agent behavior to provider-neutral spans, metrics, budgets, and service-level objectives.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart TB
+    A["Workflow span"] --> B["Model span"]
+    A --> C["Tool span"]
+    A --> D["State and terminal event"]
+    B --> E["Tokens and latency"]
+    C --> F["Authorization and result"]
+    D --> G["Outcome and evidence"]
+    E --> H["Budget and SLO"]
+    F --> H
+    G --> H
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    class A,B,C,D blue
+    class E,F,G orange
+    class H sage
+```
+
+### Lesson 33: OpenTelemetry Spans and Semantic Conventions
+
+*10–12 minutes*
+
+**Lab connection:** Lab 6 — Observe the agent before you trust the dashboard
+
+#### Learner objective
+
+By the end of this lesson, you can map an agent workflow to provider-neutral
+spans and identify where a provider adapter must preserve meaning.
+
+#### Core lesson
+
+OpenTelemetry is a vendor-neutral way to represent and export telemetry. The
+course uses it as a vocabulary and contract, not as a required dependency in
+the offline path.
+
+A span represents one timed operation inside a larger trace. For an agent, useful
+spans may represent the workflow, a model call, a tool call, a state check, or
+an evaluator. The names matter less than preserving the meaning: which
+operation happened, which revision performed it, what it consumed, and what
+result it produced.
+
+Provider adapters are translation boundaries. A Claude-specific request ID,
+tool-use record, or stop reason can be mapped to a provider-neutral field, but
+the adapter must not silently drop authorization, terminal-state, cost, or
+error meaning. Record the provider and adapter revision so a later reader can
+tell what was transformed.
+
+In the demo, compare the synthetic spans with the required evidence template.
+Ask which fields can be queried across providers and which remain provider
+extensions. A portable schema should make common decisions comparable without
+pretending the providers behave identically.
+
+The cost of skipping a shared vocabulary is lock-in and incomparable evidence.
+The cost of pretending the vocabulary is complete is false portability: a
+field can have the same name while representing a different event.
+
+#### Learner practice 🧪
+
+Choose one provider-specific event and write:
+
+1. the provider field;
+2. the provider-neutral field;
+3. the information that could be lost; and
+4. the test that would detect the loss.
+
+#### What this lesson does not prove ⚠️
+
+Mapping fields to a standard does not prove that an exporter is configured
+correctly or that a backend retains the fields. Validate the emitted trace,
+not only the instrumentation code.
+
+### Lesson 34: Metrics, Budgets, and Service-Level Objectives
+
+*10–12 minutes*
+
+**Lab connection:** Lab 6 — Observe the agent before you trust the dashboard
+
+#### Learner objective
+
+By the end of this lesson, you can separate operational signals from quality
+evidence and define a service-level objective for an agent workflow.
+
+#### Core lesson
+
+An operational metric is a measurement of how the system ran. Examples include
+latency, token usage, estimated cost, retry count, tool error rate, and
+escalation rate. These signals help an owner detect a problem, but they do not
+automatically answer whether the task was correct or safe.
+
+A budget is a declared limit. It can bound time, tokens, spend, retries, loop
+depth, or side effects. A service-level objective, or SLO, is an explicit target
+for a service signal over a defined window. For example, a workflow may require
+that 99 percent of bounded requests finish below a latency target while
+high-risk tool failures remain zero.
+
+Keep quality and operations separate in the report. A variant that lowers cost
+but increases unauthorized actions has not improved the system for the stated
+decision. Likewise, an evaluation may pass its quality criteria while exceeding
+the cost ceiling that makes the workflow viable.
+
+In the demo, inspect `trace-cost-spike-001` and `trace-retry-loop-001`. The
+metrics remain visible, and the evaluator applies explicit thresholds. This is
+why a dashboard should show both the measurement and the action rule.
+
+The cost of aggregate metrics without slices is hidden risk. A healthy average
+can hide a high-risk workflow that is slow, expensive, or unsafe every time.
+
+#### Learner practice 🧪
+
+Define one bounded workflow contract with:
+
+`latency_target`, `spend_limit`, `retry_limit`, `quality_threshold`,
+`high_risk_blocking_rule`, and `owner`.
+
+Explain which field would trigger an immediate hold.
+
+#### What this lesson does not prove ⚠️
+
+A synthetic threshold is not a production SLO. Real targets require traffic,
+cost, risk, and user-outcome evidence from the environment where the workflow
+operates.
+
+### Module practice check 📝
+
+> [!TIP]
+> Answer these before moving to the next module:
+>
+> 1. Which signal shows the agent was slow, and which shows that it was wrong?
+> 2. What budget or service-level objective would block release?
+> 3. Which provider-specific field should be mapped to a provider-neutral field?
+
+## Module 8 — Privacy, monitoring, and incident response
+
+**Hands-on outcome:** Design redaction, retention, alerting, ownership, and rollback boundaries for agent evidence.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Raw event"] --> B["Redact and classify"]
+    B --> C["Retain minimum evidence"]
+    C --> D["Detect threshold"]
+    D --> E["Owner investigates"]
+    E --> F{"Containment needed?"}
+    F -->|yes| G["Rollback or disable"]
+    F -->|no| H["Document and monitor"]
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef red fill:#F3D6D2,stroke:#B44B45,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    class A,B,C blue
+    class D,E,F orange
+    class G red
+    class H sage
+```
+
+### Lesson 35: Redaction, Retention, and Access Boundaries
+
+*10–12 minutes*
+
+**Lab connection:** Lab 6 — Observe the agent before you trust the dashboard
+
+#### Learner objective
+
+By the end of this lesson, you can design a minimum-evidence telemetry policy
+that supports investigation without treating raw agent content as harmless.
+
+#### Core lesson
+
+Observability improves when we can see the path, but visibility creates a data
+responsibility. Prompts, outputs, tool arguments, retrieved documents, user
+identifiers, credentials, and state details may need different controls.
+
+Start with the decision. If a tool-authorization finding only needs the tool
+name, scope, authorization result, and revision, do not retain the raw
+customer payload to prove the finding. Store synthetic or redacted identifiers
+where they are enough.
+
+Define classes before recording: safe metadata, redacted content, restricted
+content, and content that must not be retained. Add retention duration, access
+owner, deletion path, and review date. A retention policy is not complete if no
+one can explain who can access the trace or how it disappears.
+
+In the demo, inspect `trace-raw-content-001`. The run reached a terminal state,
+but the privacy boundary failed. The correct action is not to celebrate the
+successful completion; it is to hold the evidence path and investigate the
+capture policy.
+
+The cost of retaining too little is an investigation that cannot explain a
+failure. The cost of retaining too much is privacy exposure and an unsafe
+public artifact. The course chooses synthetic metadata for the required path.
+
+#### Learner practice 🧪
+
+For one trace field, record:
+
+`data_class`, `purpose`, `retention_period`, `access_owner`, `redaction_rule`,
+and `deletion_trigger`.
+
+Mark whether the field belongs in a public teaching artifact.
+
+#### What this lesson does not prove ⚠️
+
+A redaction flag is not proof that every sensitive value was removed. Test
+redaction with representative synthetic patterns and review the actual emitted
+artifact.
+
+### Lesson 36: Alerts, Incidents, Rollback, and Ownership
+
+*12–15 minutes*
+
+**Lab connection:** Lab 6 — Observe the agent before you trust the dashboard
+
+#### Learner objective
+
+By the end of this lesson, you can turn an observability finding into an
+owned incident, containment action, and follow-up evaluation case.
+
+#### Core lesson
+
+An alert is a signal that crossed a declared threshold. An incident is an
+operational condition that requires coordinated action. The difference matters:
+without a rule, a dashboard produces attention but not ownership.
+
+Define severity using consequence and urgency. An unauthorized tool action may
+require an immediate hold even if the overall error rate is low. A moderate
+latency increase may require investigation but not rollback. The threshold must
+name the action, not only the color on a chart.
+
+Name owners. One person or role investigates, another may approve containment,
+someone communicates the status, and an evaluator owner converts the failure
+into a case or control. In a small team, one person may hold several roles, but
+the responsibilities still need to be visible.
+
+Rollback is the ability to return to a known acceptable revision. Rehearsal
+means testing that path before it is needed, including the trigger, owner,
+change record, and evidence that the rollback completed.
+
+In the demo, inspect the incident findings produced from the Lab 6 traces.
+Notice that each finding contains a reason code, severity, and action. The next
+step is not merely to close the alert; it is to create a regression case that
+prevents the same failure from becoming invisible.
+
+The cost of alerting without ownership is silent accumulation. The cost of
+rollback without rehearsal is discovering during an incident that the recovery
+path depends on the system that is failing.
+
+#### Learner practice 🧪
+
+Complete an incident record:
+
+`severity`, `trigger`, `owner`, `containment_action`, `rollback_trigger`,
+`communication_owner`, `regression_case_id`, and `review_date`.
+
+Explain why the action is proportionate to the failure cost.
+
+#### What this lesson does not prove ⚠️
+
+A written incident record does not prove that a real responder will act within
+the target window. Operational readiness requires rehearsal, access, and
+evidence that the runbook works in the deployed environment.
+
+### Module practice check 📝
+
+> [!TIP]
+> Answer these before moving to the next module:
+>
+> 1. Which event fields are safe to retain, and which require redaction?
+> 2. What threshold turns a signal into an incident?
+> 3. Who owns containment, communication, and the follow-up regression case?
+
+## Module 9 — Continuous evaluation and production capstone
+
+**Hands-on outcome:** Turn production-style traces into regression cases and make a bounded release, hold, revise, or rollback decision.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Trace sample"] --> B["Review and classify"]
+    B --> C["Evaluation case"]
+    C --> D["Regression run"]
+    D --> E["Compare revision"]
+    E --> F{"Decision"}
+    F -->|release| G["Monitor"]
+    F -->|hold or revise| H["Change and rerun"]
+    F -->|rollback| I["Contain"]
+    G --> B
+    H --> C
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    classDef red fill:#F3D6D2,stroke:#B44B45,color:#16324F,stroke-width:2px
+    class A,B,C blue
+    class D,E,F orange
+    class G,H sage
+    class I red
+```
+
+### Lesson 37: Turning Traces into Evaluation Cases
+
+*10–12 minutes*
+
+**Lab connection:** Lab 6 — Observe the agent before you trust the dashboard
+
+#### Learner objective
+
+By the end of this lesson, you can turn a production-style trace finding into
+a bounded evaluation case without copying sensitive content.
+
+#### Core lesson
+
+Production telemetry becomes useful to evaluation when a finding can be
+reproduced as a case. Start by classifying the finding. Was the task wrong, the
+tool unauthorized, the state unchanged, the cost above budget, the trace
+incomplete, or the capture policy unsafe?
+
+Then minimize the case. Keep the input structure, boundary condition, expected
+behavior, evidence requirement, and decision consequence. Remove secrets,
+customer content, private identifiers, and raw tool payloads. A synthetic case
+can preserve the failure mechanism without preserving the data that caused it.
+
+Choose the data role. A newly discovered failure may belong in a regression set
+so the known problem cannot return. It may also need a calibration case if the
+rubric is unclear. Keep it out of a held-out measurement set when it was used
+to shape the evaluator.
+
+In the demo, inspect `trace_to_case`. The lab proposes a case identifier and
+next evaluator, but a human still owns the decision to accept, transform, or
+discard the case.
+
+The cost of never converting production findings into tests is repeated
+incidents. The cost of copying traces directly into a dataset is leakage,
+privacy exposure, and an evaluation set that nobody can safely share.
+
+#### Learner practice 🧪
+
+Take one synthetic trace finding and write:
+
+1. the failure mechanism;
+2. the minimum safe case input;
+3. the expected outcome;
+4. the evidence requirement; and
+5. the dataset role.
+
+#### What this lesson does not prove ⚠️
+
+A regression case protects against a known failure mechanism. It does not prove
+coverage of all future failures or preserve the original production context.
+
+### Lesson 38: Connecting a Bounded Live Claude Observation
+
+*10–12 minutes*
+
+**Lab connection:** Optional bounded live-Claude adapter
+
+#### Learner objective
+
+By the end of this lesson, you can attach one live Claude observation to the
+course evidence contract without making live access a learner prerequisite.
+
+#### Core lesson
+
+The required course path stays offline because live calls add credentials,
+cost, latency, changing model behavior, privacy obligations, and network
+failure. A live observation is useful when it is bounded and clearly labeled
+as one observation rather than a production conclusion.
+
+Before running, declare the model identifier or date, decision target, case and
+evaluator revisions, request limit, time limit, token limit, spend limit,
+redaction policy, and human approval state. These fields make the observation
+auditable and keep a recording from silently becoming an unbounded experiment.
+
+Use the current official Claude documentation for syntax, SDK behavior, hooks,
+stop reasons, and monitoring fields. Preserve provider-specific evidence at the
+adapter boundary, then map it into the same report vocabulary used by the
+offline labs.
+
+If the request cannot run, record `unavailable` or `not_evaluated` according to
+the declared rule. Do not silently retry until a convenient result appears.
+The attempt and the retry limit are part of the evidence.
+
+The cost of a live demo without bounds is a lesson that cannot be reproduced
+and may spend money or expose data. The cost of treating one successful request
+as a release result is false confidence.
+
+#### Learner practice 🧪
+
+Complete a local live-observation manifest with:
+
+`provider`, `model`, `model_snapshot_or_date`, `decision_target`,
+`request_limit`, `time_limit_seconds`, `token_limit`, `spend_limit_usd`,
+`redaction_policy`, and `human_approval`.
+
+Add the exact condition that should produce `unavailable`.
+
+#### What this lesson does not prove ⚠️
+
+One live observation does not prove model quality, generalization, production
+safety, cost stability, or release readiness. It only extends the bounded
+evidence contract with one provider observation.
+
+### Lesson 39: Production Observability Capstone
+
+*15–20 minutes*
+
+**Lab connection:** Lab 6 — Observe the agent before you trust the dashboard
+
+#### Learner objective
+
+By the end of this lesson, you can investigate a production-style agent trace,
+create a regression case, and make a bounded operational decision.
+
+#### Core lesson
+
+The production observability capstone connects the course's two evidence paths.
+First, reconstruct the agent run from telemetry. Then evaluate the behavior
+against the declared contract. Finally, decide what operational action follows.
+
+Begin with completeness. Can we identify the workflow, revisions, spans,
+terminal state, and privacy status? If not, mark the result
+`not_evaluated` and explain what evidence is missing. Do not let a successful
+transport or a fluent final answer fill the gap.
+
+Next, inspect findings across dimensions. A tool may be unauthorized, a state
+transition may be missing, a retry loop may exceed budget, or a raw payload may
+violate the retention boundary. Keep these findings separate because they have
+different owners and different fixes.
+
+Convert the important failure into a safe regression case. Record the mechanism,
+expected outcome, evidence requirement, and dataset role. Then make the
+decision: release, hold, revise, rollback, or escalate. Name the owner,
+monitoring signal, rollback trigger, and review date.
+
+In the demo, run Lab 6 and complete the evidence template. The candidate
+decision should be blocked because the trace set contains planted failures.
+The learner's report should explain what would have to change before a bounded
+release could be reconsidered.
+
+The cost of a capstone that only displays a dashboard is that it stops before
+accountability. The cost of a capstone that only writes an evaluation score is
+that it cannot guide incident response. The useful artifact connects evidence
+to action.
+
+#### Learner practice 🧪
+
+Complete a capstone report with:
+
+1. decision and scope;
+2. trace schema and revisions;
+3. telemetry completeness;
+4. operational signals and budgets;
+5. privacy and retention boundary;
+6. incident findings and owners;
+7. regression cases created;
+8. release, hold, revise, rollback, or escalate action; and
+9. limitations and next evidence.
+
+> **Learner checkpoint — review the capstone**
+>
+> Ask a peer:
+>
+> 1. Can they reconstruct the agent path?
+> 2. Can they distinguish a missing trace from a failed task?
+> 3. Can they identify the owner and next safe action?
+
+#### What this lesson does not prove ⚠️
+
+A completed capstone does not prove production readiness. It demonstrates a
+repeatable reasoning path from telemetry to evaluation to action. Deployment,
+access controls, real traffic, on-call response, and environment-specific
+validation remain outside this synthetic course artifact.
+
+### Module practice check 📝
+
+> [!TIP]
+> Answer these before moving to the next module:
+>
+> 1. What trace finding is important enough to become a regression case?
+> 2. Which evidence would justify release, and which would require rollback?
+> 3. What does the production capstone still not prove?
+
+## Module 10 — Security and assurance controls
+
+**Hands-on outcome:** Threat-model an agent, enforce authority and data boundaries, protect telemetry, and test monitoring resilience.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Assets and actors"] --> B["Trust boundaries"]
+    B --> C["Identity and least privilege"]
+    C --> D["Validated side effect"]
+    B --> E["Telemetry privacy"]
+    E --> F["Audit and response"]
+    D --> G["Monitor the monitor"]
+    F --> G
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef red fill:#F3D6D2,stroke:#B44B45,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    class A,B blue
+    class C,D,E orange
+    class F red
+    class G sage
+```
+
+### Lesson 40: Threat Modeling and Trust Boundaries
+
+*12–15 minutes*
+
+**Lab connection:** Lab 7 — Test the agent security boundary
+
+#### Learner objective
+
+By the end of this lesson, you can draw the trust boundaries around an agent
+workflow and turn the highest-cost abuse paths into evaluation cases.
+
+#### Core lesson
+
+A threat model is a structured description of what could go wrong, who could
+cause it, what the system could expose or change, and which controls should
+prevent or detect it. It is not a prediction of every attack. It is a way to
+make the expensive paths visible before choosing tests.
+
+Start with assets: credentials, customer data, state-changing tools, model
+instructions, evaluation evidence, and service availability. Then identify
+actors and entry points: users, retrieved documents, tool results, plugins,
+network endpoints, and operators.
+
+A trust boundary is the point where the authority, data sensitivity, or
+ownership changes. A retrieved document is not trusted merely because the
+agent can read it. A tool result is not an instruction merely because it came
+from a registered tool. The evaluation should record that boundary explicitly.
+
+For each high-cost path, name a preventive control, a detection signal, and a
+response action. If an untrusted field can cause an unauthorized write, the
+control is not only “the model should resist.” It may also include tool
+authorization, argument validation, approval, audit evidence, and rollback.
+
+#### Learner practice 🧪
+
+Draw one workflow with four labels: asset, untrusted input, trust boundary, and
+state-changing action. Add one preventive, detective, and response control.
+
+#### What this lesson does not prove ⚠️
+
+A threat model does not prove that an implementation enforces every control. It
+identifies what must be tested and who needs to own the evidence.
+
+### Lesson 41: Identity, Least Privilege, and Secrets
+
+*12–15 minutes*
+
+**Lab connection:** Lab 7 — Test the agent security boundary
+
+#### Learner objective
+
+By the end of this lesson, you can evaluate whether an agent has the right
+identity, tool scope, credential boundary, and approval evidence for an action.
+
+#### Core lesson
+
+Authentication answers “who is calling?” Authorization answers “what may that
+identity do?” An agent evaluation needs both because a valid user request can
+still be routed through an over-privileged service identity.
+
+Least privilege means granting only the authority required for the declared
+task. Evaluate the tool scope, resource scope, tenant scope, and action scope
+separately. A tool can be valid but still unauthorized for this user, record, or
+workflow state.
+
+Secrets should remain behind a controlled service boundary. The model can
+request an approved action, but the raw token, password, or signing key should
+not become prompt content or ordinary trace content. Rotate credentials without
+changing the learner’s synthetic evidence.
+
+For a state-changing action, require an authority record before the call and an
+audit record after it. If either is missing, the result is not a successful
+security check just because the tool returned `ok`.
+
+#### Learner practice 🧪
+
+Write an authorization contract containing `principal`, `resource_scope`,
+`action_scope`, `approval_required`, `credential_boundary`, and `audit_event`.
+
+#### What this lesson does not prove ⚠️
+
+Synthetic authorization metadata does not prove that a deployed identity system,
+secret store, or audit service enforces the same boundary.
+
+### Lesson 42: Data, Network, and Supply-Chain Controls
+
+*12–15 minutes*
+
+**Lab connection:** Lab 7 — Test the agent security boundary
+
+#### Learner objective
+
+By the end of this lesson, you can evaluate data boundaries, network egress,
+output validation, and dependency or tool provenance as separate controls.
+
+#### Core lesson
+
+A data boundary answers which information this run may read, transform, or
+return. Tenant isolation is an explicit check: a successful lookup in the wrong
+tenant is a security failure, not a useful result.
+
+Network egress is another boundary. A tool should have an approved destination,
+method, and purpose. The fact that a URL is reachable does not make it an
+authorized destination. Test denied destinations and unexpected redirects with
+synthetic names.
+
+Output validation is the control between model text and a side effect. Parse the
+structure, validate the values, check authorization, and apply idempotency or
+approval before writing. A syntactically valid output can still request a
+dangerous or duplicate action.
+
+Supply-chain evidence includes the tool definition revision, dependency
+revision, model revision, and policy revision. Without those identities, a
+failure may be impossible to reproduce.
+
+#### Learner practice 🧪
+
+Choose one tool and define its allowed tenant, network destination, output
+schema, tool revision, and dependency revision.
+
+#### What this lesson does not prove ⚠️
+
+Recording a policy field does not prove that a network gateway, validator, or
+dependency scanner enforced it.
+
+### Lesson 43: Telemetry Security and Auditability
+
+*12–15 minutes*
+
+**Lab connection:** Lab 7 — Test the agent security boundary
+
+#### Learner objective
+
+By the end of this lesson, you can protect evaluation and observability evidence
+with classification, access, retention, deletion, and audit controls.
+
+#### Core lesson
+
+Telemetry is not automatically safe because it was emitted by a monitoring
+library. Prompts, outputs, tool arguments, retrieved documents, and identifiers
+can contain sensitive information. Start with the decision: retain only what is
+needed to explain or evaluate it.
+
+Classification makes the boundary operational. Metadata may be broadly visible.
+Redacted content may support debugging. Restricted content may require a
+separate access path. Content that must not be retained should be rejected at
+the collection boundary, not merely hidden in a dashboard.
+
+Access is part of auditability. Record who viewed or changed evidence, why,
+which role authorized it, and whether the access was allowed. Deletion should
+also be testable; a policy that says “delete after 30 days” is incomplete if no
+one can verify deletion.
+
+Incident evidence may need a preservation exception, but that exception should
+have an owner, scope, expiration, and access log. Otherwise an incident becomes
+an excuse to retain everything forever.
+
+#### Learner practice 🧪
+
+Create a field policy with `data_class`, `purpose`, `access_role`,
+`retention_period`, `deletion_check`, and `audit_required`.
+
+#### What this lesson does not prove ⚠️
+
+A synthetic field policy does not prove that a deployed telemetry backend
+enforces access, deletion, or tamper resistance.
+
+### Lesson 44: Monitor the Monitor and Resilience
+
+*12–15 minutes*
+
+**Lab connection:** Lab 8 — Build the local telemetry vertical slice
+
+#### Learner objective
+
+By the end of this lesson, you can detect telemetry loss, alert failure,
+resource exhaustion, and unsafe fallback instead of treating silence as health.
+
+#### Core lesson
+
+Monitoring the application is not enough. We also need to monitor whether the
+monitoring path is receiving, preserving, and exporting evidence. A missing span
+can mean a healthy run, a dropped event, a collector outage, or an instrumented
+code path that never ran.
+
+Add telemetry health signals: records received, records rejected, records
+dropped, export latency, queue depth, and the age of the newest record. A
+dashboard should distinguish “no failures observed” from “no evidence arrived.”
+
+Alert quality has two sides. Precision asks how many alerts represent real
+conditions. Recall asks how many planted or known conditions were detected.
+Neither is meaningful without a declared consequence and review process.
+
+Resilience includes rate limits, backpressure, bounded retries, safe fallback,
+and shutdown. A fallback that bypasses authorization or logging is not a safe
+fallback. A retry loop that protects availability by multiplying side effects
+is also a failure.
+
+#### Learner practice 🧪
+
+Define five telemetry-health metrics, one alert rule, one fallback rule, and one
+condition that must stop the workflow.
+
+#### What this lesson does not prove ⚠️
+
+The local pipeline demonstrates control logic; it does not prove capacity,
+latency, availability, or alert delivery in a deployed environment.
+
+### Module practice check 📝
+
+> [!TIP]
+> Answer these before moving to the next module:
+>
+> 1. What asset, actor, trust boundary, and consequence belong in your threat model?
+> 2. Which authority, data, network, or side-effect control is release-blocking?
+> 3. What telemetry failure would make the result unavailable rather than green?
+
+## Lab 7: Test the agent security boundary 🛡️
+
+This lab is included here so you can threat-model an agent, inspect authority and data boundaries, and test security evidence without using live credentials or production data.
+
+### Lab 7: Test the agent security boundary 🛡️
+
+This lab teaches security as a set of observable controls around an agent:
+trust boundaries, identity, least privilege, tenant scope, network egress,
+output validation, approval, telemetry access, and audit evidence.
+
+The fixtures are synthetic and harmless. No credentials, live endpoints, raw
+provider payloads, or production data are used.
+
+#### What you will learn
+
+You will inspect:
+
+- trust-boundary and threat-model evidence;
+- principal, resource scope, action scope, and approval;
+- credential exposure and secret boundaries;
+- tenant and network egress policy;
+- output validation before a side effect;
+- tool and dependency provenance;
+- telemetry access, retention, deletion, and audit evidence; and
+- idempotency and stale-state controls.
+
+#### Run it
+
+From the repository root:
+
+```bash
+uv run python labs/07-security-controls/run_lab.py
+```
+
+To save a local report:
+
+```bash
+uv run python labs/07-security-controls/run_lab.py --output /tmp/security-report.json
+```
+
+#### Expected result
+
+The suite should pass because it catches planted failures. The candidate release
+decision should be `block` because the synthetic set contains unauthorized,
+cross-tenant, secret-exposure, unsafe-output, provenance, and missing-approval
+cases.
+
+#### Workflow map
+
+```text
+asset and actor
+      |
+      v
+trust boundary ---> identity and least privilege
+      |                    |
+      v                    v
+data and network ---> validated side effect
+      |
+      v
+telemetry privacy ---> audit and response
+```
+
+#### Evidence to inspect
+
+Review:
+
+- `control_results`
+- `case_results`
+- `negative_controls`
+- `incident_findings`
+- `coverage_summary`
+- `candidate_release_decision`
+- `evidence_template`
+
+#### What this does not prove
+
+The lab proves that the evaluator catches the declared synthetic control
+failures. It does not prove that an identity provider, secret store, network
+gateway, validator, or telemetry backend enforces the same controls.
+
+#### Optional extension
+
+Map each synthetic control to a real service boundary in a system you are
+authorized to inspect. Do not copy credentials, private payloads, or private
+logs into the course repository.
+
+## Module 11 — Continuous assurance and production implementation
+
+**Hands-on outcome:** Run a local telemetry path, detect drift and side-effect risk, and produce a security-aware assurance decision.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Instrument"] --> B["Collect and redact"]
+    B --> C["Store and query"]
+    C --> D["Alert and investigate"]
+    D --> E["Evaluate and recalibrate"]
+    E --> F["Approve, hold, or rollback"]
+    F --> A
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    classDef red fill:#F3D6D2,stroke:#B44B45,color:#16324F,stroke-width:2px
+    class A,B blue
+    class C,D orange
+    class E,F sage
+```
+
+### Lesson 45: Build a Local Telemetry Vertical Slice
+
+*15–18 minutes*
+
+**Lab connection:** Lab 8 — Build the local telemetry vertical slice
+
+#### Learner objective
+
+By the end of this lesson, you can follow one agent run from instrumentation
+through collection, storage, query, alert, and evaluation case.
+
+#### Core lesson
+
+A vertical slice is a complete working path across the system, not a separate
+piece of each layer. This lesson follows one synthetic agent run from its
+instrumented events to a local backend record, a dashboard-style query, an
+alert, and a regression case.
+
+The important design choice is to preserve identity across every stage. The
+trace ID connects the workflow, model, tool, state, and terminal events. The
+revision fields tell us which application, policy, model, and evaluator
+produced the evidence.
+
+The collector boundary is where we validate required fields, redact content,
+and count rejected or dropped records. The backend is not allowed to silently
+repair missing evidence. A missing terminal event should remain visible as
+incomplete.
+
+The final step connects operations to evaluation. A detected unauthorized tool
+or missing telemetry path becomes a minimized, safe regression case rather than
+an unstructured ticket.
+
+#### Learner practice 🧪
+
+Draw the six stages: instrument, collect, process, store, query, and act. Add
+one failure mode and one evidence field at each stage.
+
+#### What this lesson does not prove ⚠️
+
+The local vertical slice proves the control path is runnable, not that a
+production collector or backend has sufficient scale, durability, or access
+control.
+
+### Lesson 46: Drift, Feedback, and Evaluator Recalibration
+
+*12–15 minutes*
+
+**Lab connection:** Lab 8 — Build the local telemetry vertical slice
+
+#### Learner objective
+
+By the end of this lesson, you can detect changes in traffic, behavior,
+evaluator agreement, and user outcomes that require remeasurement.
+
+#### Core lesson
+
+Drift means that the relationship between the system, its inputs, its users, or
+the decision rule changes over time. Data drift changes the input distribution.
+Model drift changes behavior. Evaluator drift changes the measurement process.
+Concept drift changes what counts as a correct or acceptable outcome.
+
+Do not choose a threshold because it sounds familiar. Define the signal, the
+comparison window, the consequence, and the owner. A distribution change may
+trigger sampling and review rather than an automatic rollback.
+
+Human feedback is part of the measurement loop. Sample normal and high-risk
+cases, compare evaluator decisions with calibrated human labels, and inspect
+new failure categories. If the evaluator is no longer aligned with the
+decision, the result is measurement drift even if the score looks stable.
+
+#### Learner practice 🧪
+
+Define one drift signal, baseline window, review threshold, owner, and action.
+State whether the action is sample, recalibrate, hold, or rollback.
+
+#### What this lesson does not prove ⚠️
+
+A synthetic distribution comparison does not establish that a deployed monitor
+will detect real-world drift or that the chosen threshold is statistically
+adequate.
+
+### Lesson 47: Side Effects, Concurrency, and Human Approval
+
+*12–15 minutes*
+
+**Lab connection:** Lab 7 — Test the agent security boundary
+
+#### Learner objective
+
+By the end of this lesson, you can evaluate duplicate actions, concurrent
+updates, idempotency, compensation, and human approval gates.
+
+#### Core lesson
+
+An agent can produce the right text and still create harm through a duplicate
+write, stale state, or partial workflow. Evaluate the side effect separately
+from the model response.
+
+Idempotency means repeating the same request does not create an additional
+unintended effect. Require a stable action key and inspect whether the tool
+recognized a duplicate. For concurrent workflows, record the state version
+read, the version written, and whether the update was accepted.
+
+Not every action is reversible. A compensation path is the declared action that
+limits damage after a partial failure. If the action is high impact or
+irreversible, require human approval before execution and preserve the approval
+identity in the trace.
+
+#### Learner practice 🧪
+
+Write an action contract with `idempotency_key`, `state_version`,
+`approval_required`, `approval_id`, `compensation_action`, and `audit_event`.
+
+#### What this lesson does not prove ⚠️
+
+Synthetic side-effect checks do not prove transactional behavior or exactly-once
+delivery in a distributed production system.
+
+### Lesson 48: Continuous Assurance Capstone
+
+*15–20 minutes*
+
+**Lab connection:** Lab 8 — Build the local telemetry vertical slice
+
+#### Learner objective
+
+By the end of this lesson, you can connect security controls, telemetry
+health, evaluation evidence, incident response, and a bounded release decision.
+
+#### Core lesson
+
+Continuous assurance is the loop that keeps a decision honest after the first
+evaluation. It combines security controls, application behavior, telemetry
+health, evaluator quality, human review, incident response, and change history.
+
+The capstone must distinguish three things: the agent may have failed, the
+monitor may have failed, or the evidence may be incomplete. Those states require
+different actions. A missing trace is not proof of a safe run, and a blocked
+tool is not proof that the overall workflow is unusable.
+
+Write the release decision only after checking control coverage, telemetry
+completeness, high-risk findings, drift signals, and ownership. The decision
+should name what changed, what evidence was inspected, what remains uncertain,
+and what action follows.
+
+#### Learner practice 🧪
+
+Produce a bounded report with: decision, revision, security controls, telemetry
+health, evaluation findings, uncertainty, owner, rollback trigger, and next
+review date.
+
+#### What this lesson does not prove ⚠️
+
+The capstone does not certify a deployed agent as secure, observable, reliable,
+or compliant. It demonstrates the evidence and ownership structure required for
+those claims to be investigated.
+
+### Module practice check 📝
+
+> [!TIP]
+> Answer these before moving to the next module:
+>
+> 1. Where can evidence be lost between instrumentation and action?
+> 2. What drift or side-effect signal would trigger recalibration or a hold?
+> 3. Which claim does your final assurance report still not prove?
+
+## Lab 8: Build the local telemetry vertical slice 📡
+
+This lab is included here so you can follow evidence from instrumentation through collection, redaction, local storage, query, alerting, and regression-case creation.
+
+### Lab 8: Build the local telemetry vertical slice 📡
+
+This lab follows a synthetic agent run through instrumentation, collection,
+redaction, local storage, dashboard-style queries, alerting, and regression-case
+creation.
+
+It is intentionally standard-library-only. The local pipeline makes the
+control path runnable without requiring an OpenTelemetry package, collector,
+vendor backend, API key, or network access. An optional extension maps the same
+fields to a real local backend.
+
+#### What you will learn
+
+You will inspect:
+
+- stable trace and span identity;
+- instrumentation and revision fields;
+- collector validation and redaction;
+- accepted, rejected, and dropped telemetry;
+- local backend records and dashboard-style metrics;
+- application findings versus telemetry-pipeline findings;
+- alerts and candidate incidents; and
+- trace-to-regression-case conversion.
+
+#### Run it
+
+From the repository root:
+
+```bash
+uv run python labs/08-telemetry-vertical-slice/run_lab.py
+```
+
+To inspect every pipeline stage:
+
+```bash
+uv run python labs/08-telemetry-vertical-slice/run_lab.py --show-stages
+```
+
+To save a local report:
+
+```bash
+uv run python labs/08-telemetry-vertical-slice/run_lab.py --output /tmp/telemetry-report.json
+```
+
+#### Expected result
+
+The pipeline suite should pass because it catches:
+
+- an unauthorized tool event;
+- a raw-content event that must be redacted or rejected;
+- a missing span;
+- a dropped record;
+- an exporter failure; and
+- a monitoring rule that must not turn missing evidence into a green result.
+
+The candidate release decision should be `block` because the synthetic run set
+contains findings and telemetry-health failures.
+
+#### Workflow map
+
+```text
+instrument --> collect --> validate/redact --> store
+     |            |             |              |
+     v            v             v              v
+ revisions    loss counts   privacy status   query
+                                                  |
+                                                  v
+                                      alert --> incident --> case
+```
+
+#### What this does not prove
+
+The lab proves that a local deterministic pipeline can preserve and evaluate
+declared telemetry boundaries. It does not prove production scale, durability,
+network security, alert delivery, or backend access control.
+
+#### Optional real-backend extension
+
+Map the local fields to OpenTelemetry GenAI semantic conventions, then run one
+authorized local collector and backend. Record which fields were transformed,
+dropped, sampled, or redacted. Keep this extension optional so the core course
+remains reproducible.
+
 #### Related implementation
 
 The release workflow builds on the public [Agent Assurance Harness](https://github.com/julie-elkins/agent-assurance-harness), including its benchmark reporting, change-impact, run-manifest, and rollback-rehearsal patterns. The earlier [Claude Architect Lab](https://github.com/julie-elkins/claude-architect-lab) remains useful for refreshing agent loops, tool boundaries, and context before evaluating release behavior.
@@ -2539,12 +4062,15 @@ The release workflow builds on the public [Agent Assurance Harness](https://gith
 - `course/lesson-scripts/` — editable lesson and recording source.
 - `labs/` — runnable learner labs.
 - `slides/` — PowerPoint source and recording assets.
+- `labs/06-production-observability/` — offline trace and incident observability lab.
+- `labs/07-security-controls/` — synthetic security boundary and assurance controls lab.
+- `labs/08-telemetry-vertical-slice/` — local instrumentation, collection, query, and monitor-health lab.
 - `course/VISUAL-SYSTEM.md` — colors and diagram conventions.
 - `scripts/build_guide.py` — reproducible guide builder.
 
 ## What this course does not prove ⚠️
 
-The course uses public synthetic examples and an offline first path. Its results do not establish live Claude quality, production safety, business impact, or learner adoption outside the declared scenario. A release decision remains bounded by its revision, case set, evidence, evaluator configuration, and date.
+The course uses public synthetic examples and an offline-first path. Its results do not establish live Claude quality, production safety, business impact, or learner adoption outside the declared scenario. The security and observability tracks teach production-oriented control paths, not a guarantee that any deployed system is secure, compliant, observable, or operationally complete. A release decision remains bounded by its revision, case set, evidence, evaluator configuration, control coverage, telemetry completeness, and date.
 
 To rebuild this guide after editing the source files:
 
