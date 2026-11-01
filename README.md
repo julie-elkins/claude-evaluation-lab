@@ -61,7 +61,7 @@ fixtures rather than live Claude requests. They do not require a Claude API key.
 The course is organized as eleven modules and 48 lessons. The course map and
 [source coverage matrix](course/SOURCE_COVERAGE_MATRIX.md) show how the
 historical lecture concepts, current harness controls, and
-production-observability references map into the learner path.
+production-assurance references map into the learner path.
 
 1. Evaluation foundations
 2. Human review and evaluation cases
@@ -74,6 +74,20 @@ production-observability references map into the learner path.
 9. Continuous evaluation and the production capstone
 10. Security and assurance controls
 11. Continuous assurance and production implementation
+
+## Course visual legend
+
+The learner guide uses the cream visual system documented in
+[course/VISUAL-SYSTEM.md](course/VISUAL-SYSTEM.md). These icons make the
+purpose of each section visible while you move through the course:
+
+- 📘 Fundamentals — prerequisite concepts and vocabulary.
+- 🔬 Runnable lab — a hands-on experiment with synthetic evidence.
+- 🧪 Learner practice — an action to complete after the lesson.
+- 📝 Module practice check — questions to answer before moving on.
+- ⚠️ Evidence limitation — what the result does not prove.
+- 🛡️ Security control — authority, privacy, or side-effect boundary.
+- 📡 Telemetry workflow — instrumentation, collection, monitoring, or alerting.
 
 ## Runnable labs
 
