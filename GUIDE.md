@@ -113,6 +113,43 @@ defined capability such as a lookup, file operation, or state-changing action.
 The evaluation must inspect more than the final text when the path itself can
 create risk.
 
+##### Agent system under test
+
+Before choosing a metric, name the system and the unit of evaluation. For an
+agent, record:
+
+- the request or task;
+- the environment, including available data, tools, policies, and state;
+- the context and memory visible to the agent;
+- the stopping criteria, meaning the conditions that end the run;
+- the scorer or decision rule, meaning how the observed behavior becomes a
+  finding; and
+- the final task outcome and the trajectory that produced it.
+
+The same prompt can produce different evidence in different environments. A
+tool call that is valid in one environment may be unauthorized in another, and
+a final answer that looks correct may have been produced through an unsafe
+path. The system under test is the whole bounded workflow, not only the model
+response.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Request"] --> B["Environment"]
+    B --> C["Agent path"]
+    C --> D["Stopping criteria"]
+    D --> E["Scorer and decision rule"]
+    C --> F["Final outcome"]
+    classDef cream fill:#F7F1E8,stroke:#16324F,color:#16324F,stroke-width:2px
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    class A cream
+    class B,C blue
+    class D,E orange
+    class F sage
+```
+
 ##### Evaluation basics
 
 A case is one test situation with its input, context, expected behavior, observed
@@ -121,6 +158,46 @@ limits the decision. A semantic outcome is whether the requested task actually
 reached its declared goal; it is different from transport status, which only
 says that a request returned successfully.
 
+##### Measurement foundations
+
+The evaluation measures a **construct**, meaning the capability or quality it
+claims to measure. **Validity** asks whether the evaluation measures that
+construct. **Reliability** asks whether the measurement is reasonably
+consistent when the declared conditions are repeated. A reliable evaluation can
+still be invalid if it consistently measures the wrong thing.
+
+**Sensitivity** is the evaluator's ability to catch the failures it is meant to
+catch. **Specificity** is its ability to avoid failing acceptable cases. A
+**false positive** reports a failure when the behavior was acceptable. A
+**false negative** reports a pass when a real failure was present. **Calibration**
+means checking the evaluator against trusted examples or human-reviewed cases
+before relying on its result.
+
+Keep these questions separate:
+
+1. Did the workflow behave correctly?
+2. Did the evaluator identify that behavior correctly?
+3. Was the evidence sufficient to decide?
+
+##### Retrieval, memory, and environment
+
+When an agent uses retrieved context or memory, evaluate those components
+separately from the final answer:
+
+- **retrieval recall** asks whether the needed evidence was found;
+- **context relevance** asks whether the retrieved material belongs to the task;
+- **context sufficiency** asks whether enough evidence was available;
+- **grounding** asks whether the answer used the available evidence correctly;
+- **memory write correctness** asks whether the right information was stored;
+- **memory read correctness** asks whether the right information was later used;
+  and
+- **stale or conflicting memory** tests whether the agent notices and handles
+  outdated or contradictory state.
+
+Reset or version the environment between cases. Otherwise one case can leave
+state that changes the next case, making a passing or failing result impossible
+to attribute.
+
 ##### Decision discipline
 
 A threshold is the rule that turns evidence into an action, such as release,
@@ -128,6 +205,25 @@ hold, revise, or escalate. Uncertainty is the part of the result that could
 change because of sampling, repeated runs, evaluator variation, or missing
 evidence. Ownership means a named person or role is responsible for acting on
 the result.
+
+##### Sampling and uncertainty
+
+An evaluation result describes the cases and runs that were measured; it does
+not automatically describe every future user or workflow. Define the target
+population, the sampling rule, the case count, and the high-risk slices before
+interpreting the result.
+
+Use repeated runs when the agent or evaluator is nondeterministic. Report the
+size and direction of a change, not only whether a threshold was crossed. A
+confidence interval is a range that communicates uncertainty around an estimate;
+it does not repair biased cases, a flawed evaluator, or missing evidence. An
+effect is practically important when it changes the decision or risk, even if
+it is not large in percentage points.
+
+For a baseline and variant, keep the cases and decision rule matched, identify
+what changed, and inspect both the aggregate and the risk slices. A small
+overall improvement cannot justify release if a high-impact slice regressed or
+the evaluator became less valid.
 
 ##### Observability and evaluation
 
@@ -334,6 +430,10 @@ live requests.
 > 3. What would count as a deliberately degraded case?
 > 4. What should happen if required evidence is missing?
 > 5. Who owns the action after the result is reported?
+> 6. What environment, stopping criteria, and scorer define the system under test?
+> 7. How would you distinguish workflow correctness from evaluator correctness?
+> 8. What retrieval, memory, or state evidence could be missing?
+> 9. What uncertainty or high-risk slice could change the decision?
 
 If you cannot answer one of these, that is not a reason to stop. It tells you
 which question to make explicit while you work through the first module.
@@ -853,7 +953,13 @@ By the end of this lesson, you can explain why an evaluation case is evidence ab
 
 #### Core lesson
 
-An evaluation case is a deliberately chosen situation used to test a decision. It is more than a prompt and a model response. A useful case records the input, relevant context, expected behavior, observed behavior, evidence, and the decision that follows.
+An evaluation case is a deliberately chosen situation used to test a decision. It is more than a prompt and a model response. A useful case records the request, the environment and context, the expected behavior, the stopping criteria, the observed behavior, the evidence, the scorer or decision rule, and the decision that follows.
+
+The environment is part of the case. It includes the available tools, data,
+policies, state, and permissions. The stopping criteria say when the run is
+complete, refused, failed, or requires escalation. The scorer or decision rule
+states how the observed path becomes a finding. Without those fields, two
+reviewers may evaluate the same response against different assumptions.
 
 That distinction matters because a collection of interesting examples can still leave the important paths untested. If every example is a normal success, the evaluation may tell us that the system works when nothing goes wrong. It does not tell us whether the system handles ambiguity, missing context, conflicting evidence, authorization boundaries, or recovery after a failed action.
 
@@ -869,7 +975,9 @@ In the demo, inspect the existing synthetic cases and identify which decision ea
 
 Create a case table with these columns:
 
-`case_id`, `risk`, `input_condition`, `expected_semantic_outcome`, `required_evidence`, `failure_if_missing`.
+`case_id`, `risk`, `request`, `environment`, `input_condition`,
+`expected_semantic_outcome`, `stopping_criteria`, `scorer_or_decision_rule`,
+`required_evidence`, `failure_if_missing`.
 
 Add one case for a normal path, one for missing evidence, one for conflicting evidence, one for an unauthorized action, and one for recovery after a failed attempt. Mark which cases are release-blocking and explain why.
 
@@ -1799,6 +1907,14 @@ By the end of this lesson, you can extract checkable claims from an answer and e
 
 Factuality evaluation asks whether the answer’s claims are supported by evidence. Start by separating the response into atomic claims: statements that can be checked independently. A single paragraph may contain a correct date, an unsupported recommendation, and a claim about an action that never occurred.
 
+If the workflow retrieves context, evaluate retrieval before evaluating
+grounding. Retrieval recall asks whether the needed evidence was found.
+Context relevance asks whether the retrieved material belongs to the task.
+Context sufficiency asks whether enough evidence was available to answer safely.
+Grounding asks whether the response used that available evidence correctly. A
+grounded answer cannot be expected when the required evidence was never
+retrieved, so those findings must remain separate.
+
 For each claim, record the evidence source, the support status, and the risk if the claim is wrong. Useful statuses include supported, unsupported, contradicted, and ambiguous. “Ambiguous” means the available evidence does not justify a confident decision; it is not the same as supported.
 
 Keep evidence support separate from source authority. A source can be authoritative but irrelevant to the specific claim. A relevant source can be low quality. The evaluation should record both questions: is this the right evidence, and does the evidence actually support the claim?
@@ -1813,7 +1929,9 @@ The cost of skipping claim extraction is that fluent prose becomes the unit of t
 
 Take a six-sentence synthetic answer and create:
 
-`claim_id`, `claim_text`, `evidence_ids`, `support_status`, `risk`, `review_action`.
+`case_id`, `retrieved_evidence_ids`, `required_evidence_ids`,
+`retrieval_status`, `claim_id`, `claim_text`, `evidence_ids`,
+`support_status`, `risk`, `review_action`.
 
 Write a final decision that explains whether one unsupported claim blocks the answer or triggers review.
 
@@ -1996,6 +2114,11 @@ Context matters because the same argument can mean different things in different
 
 State matters because the agent may claim success without changing the expected system state. Record the state before the call, the requested transition, the tool result, and the state after the call. A successful response from the tool is not proof that the intended transition occurred.
 
+Memory is part of state. Evaluate whether the agent wrote the right information,
+retrieved the right information later, and handled stale or conflicting memory.
+Reset or version the environment between cases so that one learner exercise
+does not silently change the evidence for the next one.
+
 In the demo, inspect a synthetic trace where the tool call passes schema validation but targets the wrong location. Then inspect a trace where the argument is correct but the expected state change is absent. These are different findings and require different fixes.
 
 The cost of checking only the schema is dangerous precision: the system reports a valid call while performing the wrong action. The cost of ignoring state is false completion: the agent says the work is done when the system remains unchanged.
@@ -2004,7 +2127,9 @@ The cost of checking only the schema is dangerous precision: the system reports 
 
 For one synthetic tool call, define:
 
-`intended_target`, `authorized_scope`, `required_context`, `expected_before_state`, `expected_after_state`.
+`intended_target`, `authorized_scope`, `required_context`, `memory_before`,
+`memory_after`, `environment_revision`, `expected_before_state`,
+`expected_after_state`.
 
 Create one passing trace and one trace that is schema-valid but semantically wrong.
 
@@ -2026,6 +2151,12 @@ By the end of this lesson, you can evaluate an agent trajectory, meaning the seq
 
 An agent trajectory is the ordered sequence of what the agent observed, decided, attempted, and recovered from. The final answer is only one view of that sequence. Two agents can produce the same final wording while one used an authorized path and the other made an unsafe or unsupported detour.
 
+Record the environment alongside the trajectory: available tools, relevant
+context and memory, policy revision, permissions, and state revision. Also
+declare the stopping criteria before the run. Without those boundaries, a
+trajectory cannot be compared fairly with another run, and a premature stop can
+look like successful completion.
+
 Evaluate the trajectory in stages: observation, planning, action, result, and recovery. Record which evidence was available at each stage, which tool was selected, what arguments were sent, how the result changed the next step, and whether the agent reached a valid terminal state.
 
 Distinguish retry from recovery. A retry repeats an attempt. Recovery changes the plan or escalates because the previous attempt failed. Repeated retries can waste budget, duplicate side effects, or hide the fact that the agent has no safe next step.
@@ -2040,7 +2171,9 @@ The cost of evaluating only final answers is that process failures disappear. Th
 
 Annotate a five-step synthetic trajectory with:
 
-`observation`, `decision`, `tool`, `arguments`, `result`, `recovery_action`, `terminal_state`.
+`environment_revision`, `policy_revision`, `memory_revision`, `observation`,
+`decision`, `tool`, `arguments`, `result`, `recovery_action`,
+`stopping_criteria`, `terminal_state`.
 
 Choose pass, fail, or escalate. Explain whether the final answer would change your decision and why.
 
@@ -2354,6 +2487,14 @@ Use matched cases whenever possible. The baseline and variant should receive the
 
 Uncertainty means the result could vary because of sampling, judge randomness, case mix, or run-to-run behavior. Repeated runs can reveal instability. Confidence intervals or other uncertainty summaries can communicate the likely range, but they do not fix biased sampling or a flawed evaluator.
 
+For a simple comparison, report the number of cases, the baseline result, the
+variant result, the change between them, and the uncertainty around the
+estimate. A confidence interval is a range around an estimate, not a guarantee
+that the true value is inside it. An effect size describes how much the result
+changed; practical significance asks whether that change affects the decision.
+For nondeterministic agents, repeat the same case and report how often the
+desired outcome appears rather than treating one successful run as stable.
+
 Slices are subsets of cases grouped by a meaningful property, such as high-risk actions, missing context, long trajectories, or boundary conditions. An overall improvement can hide a regression in a high-risk slice. Report the slice result even when the aggregate is better.
 
 In the demo, compare a baseline and variant on the same synthetic cases. Report overall outcomes, high-risk slice outcomes, failures caught by negative controls, and any change in cost or latency. The decision should not be based on a single average.
@@ -2364,7 +2505,9 @@ The cost of an uncontrolled comparison is an attribution error. We may ship a ch
 
 Write a comparison plan for a baseline and one variant:
 
-`change`, `held_constant`, `case_set`, `primary_metric`, `blocking_findings`, `high_risk_slices`, `repeat_count`, `decision_rule`.
+`change`, `held_constant`, `case_set`, `case_count`, `primary_metric`,
+`baseline_result`, `variant_result`, `uncertainty_summary`, `effect_size`,
+`blocking_findings`, `high_risk_slices`, `repeat_count`, `decision_rule`.
 
 Add one result pattern that would cause you to reject the variant despite an aggregate improvement.
 
@@ -2424,6 +2567,14 @@ The capstone report is not a score dump. It is a decision record. Start with the
 
 Then map the evidence. Include the case set, data roles, deterministic checks, semantic or human evaluation, agent trajectory findings, negative controls, high-risk slices, uncertainty, and any benchmark evidence. Preserve the underlying findings so a reader can see how the conclusion was reached.
 
+For every important failure, perform error analysis: classify the likely cause,
+identify the evidence supporting that classification, and name the next action.
+Useful categories include case or data, model or prompt, retrieval or memory,
+tool routing, tool execution, policy or authorization, evaluator, and telemetry.
+Do not call a case a model failure when the evaluator or environment prevented a
+valid conclusion. If the cause is uncertain, keep the finding unresolved and
+assign a follow-up investigation.
+
 State the decision and the action separately. “Release” is an action. “The variant meets the evidence contract for the bounded use case” is the conclusion that supports it. Other outcomes include revise, hold, escalate, or rollback. If evidence is missing or conflicting, say so instead of converting uncertainty into a pass.
 
 Write limitations in operational terms. Explain what the evaluation did not test, which assumptions it relies on, and what future evidence is required. Name the owner, monitoring signal, rollback trigger, and review date. A report without ownership is a historical artifact; it does not control what happens next.
@@ -2443,10 +2594,11 @@ Complete a report with these sections:
 3. case inventory and data split,
 4. evaluator layers,
 5. findings and high-risk slices,
-6. negative controls,
-7. limitations and uncertainty,
-8. release or revision action,
-9. owner, monitoring, and rollback trigger.
+6. failure analysis and evidence supporting each cause,
+7. negative controls,
+8. limitations and uncertainty,
+9. release or revision action,
+10. owner, monitoring, and rollback trigger.
 
 > **Learner checkpoint — peer-review the report**
 >

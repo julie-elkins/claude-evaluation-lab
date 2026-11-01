@@ -11,14 +11,22 @@ By the end of this lesson, you can evaluate an agent trajectory, meaning the seq
 ## Slide and recording plan
 
 1. **The final answer is not the whole run** — observe, plan, act, recover.
-2. **Trajectory evidence** — decisions, tools, arguments, state, and terminal outcome.
-3. **Recovery versus retry** — a retry is not recovery unless the failure is addressed.
-4. **Demo: guarded and unguarded paths**.
-5. **Practice: annotate a trajectory and choose the final decision**.
+2. **The environment is part of the trajectory** — tools, context, memory, policy, and state.
+3. **Trajectory evidence** — decisions, tools, arguments, state, and terminal outcome.
+4. **Recovery versus retry** — a retry is not recovery unless the failure is addressed.
+5. **Stopping criteria** — define when the run completes, refuses, fails, or escalates.
+6. **Demo: guarded and unguarded paths**.
+7. **Practice: annotate a trajectory and choose the final decision**.
 
 ## Speaker script
 
 An agent trajectory is the ordered sequence of what the agent observed, decided, attempted, and recovered from. The final answer is only one view of that sequence. Two agents can produce the same final wording while one used an authorized path and the other made an unsafe or unsupported detour.
+
+Record the environment alongside the trajectory: available tools, relevant
+context and memory, policy revision, permissions, and state revision. Also
+declare the stopping criteria before the run. Without those boundaries, a
+trajectory cannot be compared fairly with another run, and a premature stop can
+look like successful completion.
 
 Evaluate the trajectory in stages: observation, planning, action, result, and recovery. Record which evidence was available at each stage, which tool was selected, what arguments were sent, how the result changed the next step, and whether the agent reached a valid terminal state.
 
@@ -41,7 +49,9 @@ The cost of evaluating only final answers is that process failures disappear. Th
 
 Annotate a five-step synthetic trajectory with:
 
-`observation`, `decision`, `tool`, `arguments`, `result`, `recovery_action`, `terminal_state`.
+`environment_revision`, `policy_revision`, `memory_revision`, `observation`,
+`decision`, `tool`, `arguments`, `result`, `recovery_action`,
+`stopping_criteria`, `terminal_state`.
 
 Choose pass, fail, or escalate. Explain whether the final answer would change your decision and why.
 

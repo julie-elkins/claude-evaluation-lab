@@ -30,6 +30,10 @@ def main() -> int:
 
     visual_sections = {
         "\n## Fundamentals 📘": 1,
+        "\n##### Agent system under test": 1,
+        "\n##### Measurement foundations": 1,
+        "\n##### Retrieval, memory, and environment": 1,
+        "\n##### Sampling and uncertainty": 1,
         "\n### Runnable labs 🔬": 1,
         "\n#### Learner practice 🧪": 48,
         "\n#### What this lesson does not prove ⚠️": 48,

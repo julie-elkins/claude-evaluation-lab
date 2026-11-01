@@ -10,15 +10,22 @@ By the end of this lesson, you can explain why an evaluation case is evidence ab
 
 ## Slide and recording plan
 
-1. **The evaluation case is the unit of evidence** — prompt, context, expected behavior, observed result, and decision.
-2. **A useful case set has shape** — normal, boundary, missing, conflicting, unauthorized, and failure cases.
-3. **Coverage is a claim** — show a case matrix with rows for scenarios and columns for expected outcome, evidence, and risk.
-4. **Demo: inspect the starter case inventory** — begin from the synthetic semantic-outcomes examples.
-5. **Practice: add three cases** — one boundary case, one missing-evidence case, and one recovery case.
+1. **The evaluation case is the unit of evidence** — request, environment, expected behavior, observed result, and decision.
+2. **Declare the stopping criteria and scorer** — say when the run ends and how behavior becomes a finding.
+3. **A useful case set has shape** — normal, boundary, missing, conflicting, unauthorized, and failure cases.
+4. **Coverage is a claim** — show a case matrix with rows for scenarios and columns for expected outcome, evidence, and risk.
+5. **Demo: inspect the starter case inventory** — begin from the synthetic semantic-outcomes examples.
+6. **Practice: add three cases** — one boundary case, one missing-evidence case, and one recovery case.
 
 ## Speaker script
 
-An evaluation case is a deliberately chosen situation used to test a decision. It is more than a prompt and a model response. A useful case records the input, relevant context, expected behavior, observed behavior, evidence, and the decision that follows.
+An evaluation case is a deliberately chosen situation used to test a decision. It is more than a prompt and a model response. A useful case records the request, the environment and context, the expected behavior, the stopping criteria, the observed behavior, the evidence, the scorer or decision rule, and the decision that follows.
+
+The environment is part of the case. It includes the available tools, data,
+policies, state, and permissions. The stopping criteria say when the run is
+complete, refused, failed, or requires escalation. The scorer or decision rule
+states how the observed path becomes a finding. Without those fields, two
+reviewers may evaluate the same response against different assumptions.
 
 That distinction matters because a collection of interesting examples can still leave the important paths untested. If every example is a normal success, the evaluation may tell us that the system works when nothing goes wrong. It does not tell us whether the system handles ambiguity, missing context, conflicting evidence, authorization boundaries, or recovery after a failed action.
 
@@ -42,7 +49,9 @@ In the demo, inspect the existing synthetic cases and identify which decision ea
 
 Create a case table with these columns:
 
-`case_id`, `risk`, `input_condition`, `expected_semantic_outcome`, `required_evidence`, `failure_if_missing`.
+`case_id`, `risk`, `request`, `environment`, `input_condition`,
+`expected_semantic_outcome`, `stopping_criteria`, `scorer_or_decision_rule`,
+`required_evidence`, `failure_if_missing`.
 
 Add one case for a normal path, one for missing evidence, one for conflicting evidence, one for an unauthorized action, and one for recovery after a failed attempt. Mark which cases are release-blocking and explain why.
 

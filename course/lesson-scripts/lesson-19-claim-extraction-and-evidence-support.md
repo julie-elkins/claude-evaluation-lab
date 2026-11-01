@@ -11,14 +11,23 @@ By the end of this lesson, you can extract checkable claims from an answer and e
 ## Slide and recording plan
 
 1. **A response is not one fact** — it contains multiple claims with different risks.
-2. **Claim extraction** — identify atomic, checkable statements.
-3. **Evidence support** — supported, unsupported, conflicting, or ambiguous.
-4. **Demo: claim-level inspection** — show why one overall score hides a failure.
-5. **Practice: build a claim/evidence table**.
+2. **Retrieval is a separate evaluation layer** — measure whether the needed evidence was found before judging the answer.
+3. **Claim extraction** — identify atomic, checkable statements.
+4. **Evidence support** — supported, unsupported, conflicting, or ambiguous.
+5. **Demo: claim-level inspection** — show why one overall score hides a failure.
+6. **Practice: build a retrieval and claim/evidence table**.
 
 ## Speaker script
 
 Factuality evaluation asks whether the answer’s claims are supported by evidence. Start by separating the response into atomic claims: statements that can be checked independently. A single paragraph may contain a correct date, an unsupported recommendation, and a claim about an action that never occurred.
+
+If the workflow retrieves context, evaluate retrieval before evaluating
+grounding. Retrieval recall asks whether the needed evidence was found.
+Context relevance asks whether the retrieved material belongs to the task.
+Context sufficiency asks whether enough evidence was available to answer safely.
+Grounding asks whether the response used that available evidence correctly. A
+grounded answer cannot be expected when the required evidence was never
+retrieved, so those findings must remain separate.
 
 For each claim, record the evidence source, the support status, and the risk if the claim is wrong. Useful statuses include supported, unsupported, contradicted, and ambiguous. “Ambiguous” means the available evidence does not justify a confident decision; it is not the same as supported.
 
@@ -41,7 +50,9 @@ The cost of skipping claim extraction is that fluent prose becomes the unit of t
 
 Take a six-sentence synthetic answer and create:
 
-`claim_id`, `claim_text`, `evidence_ids`, `support_status`, `risk`, `review_action`.
+`case_id`, `retrieved_evidence_ids`, `required_evidence_ids`,
+`retrieval_status`, `claim_id`, `claim_text`, `evidence_ids`,
+`support_status`, `risk`, `review_action`.
 
 Write a final decision that explains whether one unsupported claim blocks the answer or triggers review.
 

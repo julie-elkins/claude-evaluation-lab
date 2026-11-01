@@ -25,10 +25,34 @@ defined.
 The reference system or process used for comparison. Without a baseline, an
 improvement claim has no controlled point of reference.
 
+## Construct
+
+The capability or quality an evaluation claims to measure, such as groundedness,
+tool authorization, or task completion. An evaluation can be reliable while
+measuring the wrong construct.
+
 ## Drift
 
 A change in inputs, system behavior, evaluator behavior, or the meaning of an
 acceptable outcome that can make an earlier measurement less reliable.
+
+## Effect size
+
+The amount by which a measured result changes between a baseline and a variant.
+Effect size describes magnitude; practical significance asks whether the change
+matters to the decision.
+
+## Environment
+
+The bounded context in which an agent runs, including available tools, data,
+policies, permissions, memory, and state. Changing the environment can change
+the meaning of an evaluation result.
+
+## Failure analysis
+
+The structured review of why a case failed or could not be evaluated. It
+classifies the likely cause, supporting evidence, owner, and next action rather
+than assigning every failure to the model.
 
 ## Idempotency
 
@@ -65,6 +89,31 @@ The practice of collecting enough telemetry—traces, events, and metrics—to
 explain what a system did. Observability explains the path; evaluation judges
 whether the path met a declared requirement.
 
+## Reliability
+
+The degree to which a measurement is reasonably consistent when the declared
+conditions are repeated. Reliability does not establish that the measurement is
+valid.
+
+## Sensitivity and specificity
+
+Sensitivity is the ability to catch the failures an evaluator is intended to
+catch. Specificity is the ability to avoid failing acceptable cases. A false
+negative misses a real failure; a false positive reports a failure that was not
+present.
+
+## Validity
+
+The degree to which an evaluation measures the construct it claims to measure.
+Validity requires evidence about the task, cases, evaluator, and decision
+boundary; a high score alone does not establish it.
+
+## Retrieval recall
+
+Whether the retrieval layer found the evidence needed for the task. Retrieval
+recall is separate from context relevance, context sufficiency, and answer
+grounding.
+
 ## Evidence contract
 
 The explicit list of evidence that must exist before a result can support its
@@ -79,6 +128,11 @@ finding or score.
 
 A case kept away from evaluator tuning and used later to estimate performance on
 cases the method did not help shape.
+
+## Confidence interval
+
+A range used to communicate uncertainty around an estimate. It does not repair
+biased cases, a flawed evaluator, or missing evidence.
 
 ## Inter-rater agreement
 

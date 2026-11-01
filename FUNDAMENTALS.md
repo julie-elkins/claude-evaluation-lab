@@ -44,6 +44,43 @@ defined capability such as a lookup, file operation, or state-changing action.
 The evaluation must inspect more than the final text when the path itself can
 create risk.
 
+### Agent system under test
+
+Before choosing a metric, name the system and the unit of evaluation. For an
+agent, record:
+
+- the request or task;
+- the environment, including available data, tools, policies, and state;
+- the context and memory visible to the agent;
+- the stopping criteria, meaning the conditions that end the run;
+- the scorer or decision rule, meaning how the observed behavior becomes a
+  finding; and
+- the final task outcome and the trajectory that produced it.
+
+The same prompt can produce different evidence in different environments. A
+tool call that is valid in one environment may be unauthorized in another, and
+a final answer that looks correct may have been produced through an unsafe
+path. The system under test is the whole bounded workflow, not only the model
+response.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Request"] --> B["Environment"]
+    B --> C["Agent path"]
+    C --> D["Stopping criteria"]
+    D --> E["Scorer and decision rule"]
+    C --> F["Final outcome"]
+    classDef cream fill:#F7F1E8,stroke:#16324F,color:#16324F,stroke-width:2px
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    class A cream
+    class B,C blue
+    class D,E orange
+    class F sage
+```
+
 ### Evaluation basics
 
 A case is one test situation with its input, context, expected behavior, observed
@@ -52,6 +89,46 @@ limits the decision. A semantic outcome is whether the requested task actually
 reached its declared goal; it is different from transport status, which only
 says that a request returned successfully.
 
+### Measurement foundations
+
+The evaluation measures a **construct**, meaning the capability or quality it
+claims to measure. **Validity** asks whether the evaluation measures that
+construct. **Reliability** asks whether the measurement is reasonably
+consistent when the declared conditions are repeated. A reliable evaluation can
+still be invalid if it consistently measures the wrong thing.
+
+**Sensitivity** is the evaluator's ability to catch the failures it is meant to
+catch. **Specificity** is its ability to avoid failing acceptable cases. A
+**false positive** reports a failure when the behavior was acceptable. A
+**false negative** reports a pass when a real failure was present. **Calibration**
+means checking the evaluator against trusted examples or human-reviewed cases
+before relying on its result.
+
+Keep these questions separate:
+
+1. Did the workflow behave correctly?
+2. Did the evaluator identify that behavior correctly?
+3. Was the evidence sufficient to decide?
+
+### Retrieval, memory, and environment
+
+When an agent uses retrieved context or memory, evaluate those components
+separately from the final answer:
+
+- **retrieval recall** asks whether the needed evidence was found;
+- **context relevance** asks whether the retrieved material belongs to the task;
+- **context sufficiency** asks whether enough evidence was available;
+- **grounding** asks whether the answer used the available evidence correctly;
+- **memory write correctness** asks whether the right information was stored;
+- **memory read correctness** asks whether the right information was later used;
+  and
+- **stale or conflicting memory** tests whether the agent notices and handles
+  outdated or contradictory state.
+
+Reset or version the environment between cases. Otherwise one case can leave
+state that changes the next case, making a passing or failing result impossible
+to attribute.
+
 ### Decision discipline
 
 A threshold is the rule that turns evidence into an action, such as release,
@@ -59,6 +136,25 @@ hold, revise, or escalate. Uncertainty is the part of the result that could
 change because of sampling, repeated runs, evaluator variation, or missing
 evidence. Ownership means a named person or role is responsible for acting on
 the result.
+
+### Sampling and uncertainty
+
+An evaluation result describes the cases and runs that were measured; it does
+not automatically describe every future user or workflow. Define the target
+population, the sampling rule, the case count, and the high-risk slices before
+interpreting the result.
+
+Use repeated runs when the agent or evaluator is nondeterministic. Report the
+size and direction of a change, not only whether a threshold was crossed. A
+confidence interval is a range that communicates uncertainty around an estimate;
+it does not repair biased cases, a flawed evaluator, or missing evidence. An
+effect is practically important when it changes the decision or risk, even if
+it is not large in percentage points.
+
+For a baseline and variant, keep the cases and decision rule matched, identify
+what changed, and inspect both the aggregate and the risk slices. A small
+overall improvement cannot justify release if a high-impact slice regressed or
+the evaluator became less valid.
 
 ### Observability and evaluation
 
@@ -265,6 +361,10 @@ live requests.
 > 3. What would count as a deliberately degraded case?
 > 4. What should happen if required evidence is missing?
 > 5. Who owns the action after the result is reported?
+> 6. What environment, stopping criteria, and scorer define the system under test?
+> 7. How would you distinguish workflow correctness from evaluator correctness?
+> 8. What retrieval, memory, or state evidence could be missing?
+> 9. What uncertainty or high-risk slice could change the decision?
 
 If you cannot answer one of these, that is not a reason to stop. It tells you
 which question to make explicit while you work through the first module.

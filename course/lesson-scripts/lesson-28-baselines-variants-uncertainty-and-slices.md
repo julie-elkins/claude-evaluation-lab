@@ -12,7 +12,7 @@ By the end of this lesson, you can compare a baseline with a variant while prese
 
 1. **Baseline versus variant** — change one meaningful factor at a time.
 2. **Matched cases** — same inputs, evidence, and decision rules.
-3. **Uncertainty** — repeated runs, confidence intervals, and unstable results.
+3. **Uncertainty in plain numbers** — sample size, repeated runs, confidence intervals, and effect size.
 4. **Slices** — inspect high-risk or boundary groups separately.
 5. **Demo and practice: write a controlled comparison**.
 
@@ -23,6 +23,14 @@ A baseline is the reference system or process against which a variant is compare
 Use matched cases whenever possible. The baseline and variant should receive the same cases, evidence, instructions, and decision policy. If the case set changes at the same time as the system, we cannot tell what caused the result.
 
 Uncertainty means the result could vary because of sampling, judge randomness, case mix, or run-to-run behavior. Repeated runs can reveal instability. Confidence intervals or other uncertainty summaries can communicate the likely range, but they do not fix biased sampling or a flawed evaluator.
+
+For a simple comparison, report the number of cases, the baseline result, the
+variant result, the change between them, and the uncertainty around the
+estimate. A confidence interval is a range around an estimate, not a guarantee
+that the true value is inside it. An effect size describes how much the result
+changed; practical significance asks whether that change affects the decision.
+For nondeterministic agents, repeat the same case and report how often the
+desired outcome appears rather than treating one successful run as stable.
 
 Slices are subsets of cases grouped by a meaningful property, such as high-risk actions, missing context, long trajectories, or boundary conditions. An overall improvement can hide a regression in a high-risk slice. Report the slice result even when the aggregate is better.
 
@@ -41,7 +49,9 @@ The cost of an uncontrolled comparison is an attribution error. We may ship a ch
 
 Write a comparison plan for a baseline and one variant:
 
-`change`, `held_constant`, `case_set`, `primary_metric`, `blocking_findings`, `high_risk_slices`, `repeat_count`, `decision_rule`.
+`change`, `held_constant`, `case_set`, `case_count`, `primary_metric`,
+`baseline_result`, `variant_result`, `uncertainty_summary`, `effect_size`,
+`blocking_findings`, `high_risk_slices`, `repeat_count`, `decision_rule`.
 
 Add one result pattern that would cause you to reject the variant despite an aggregate improvement.
 
