@@ -24,21 +24,24 @@ def main() -> int:
         return 1
 
     lesson_headings = actual.count("\n### Lesson ")
-    if lesson_headings != 30:
-        print(f"Expected 30 lesson headings, found {lesson_headings}", file=sys.stderr)
+    if lesson_headings != 48:
+        print(f"Expected 48 lesson headings, found {lesson_headings}", file=sys.stderr)
         return 1
 
     visual_sections = {
         "\n## Fundamentals 📘": 1,
         "\n### Runnable labs 🔬": 1,
-        "\n#### Learner practice 🧪": 30,
-        "\n#### What this lesson does not prove ⚠️": 30,
-        "\n### Module practice check 📝": 5,
+        "\n#### Learner practice 🧪": 48,
+        "\n#### What this lesson does not prove ⚠️": 48,
+        "\n### Module practice check 📝": 11,
         "\n## Lab 1: Transport success is not task success 🔬": 1,
         "\n## Lab 2: Build a case set before you trust the score 🔬": 1,
         "\n## Lab 3: Layer the evaluator before you trust the judge 🔬": 1,
         "\n## Lab 4: Evaluate the path, not only the final answer 🔬": 1,
         "\n## Lab 5: Turn evaluation evidence into a release decision 🔬": 1,
+        "\n## Lab 6: Observe the agent before you trust the dashboard 🔬": 1,
+        "\n## Lab 7: Test the agent security boundary 🛡️": 1,
+        "\n## Lab 8: Build the local telemetry vertical slice 📡": 1,
         "\n##### Terminal states 🚦": 1,
     }
     for marker, expected_count in visual_sections.items():
@@ -65,7 +68,10 @@ def main() -> int:
         "labs/03-automated-evaluators/README.md",
         "labs/04-agent-behavior/README.md",
         "labs/05-release-capstone/README.md",
-        "labs/06-live-claude-adapter/README.md",
+        "labs/06-production-observability/README.md",
+        "labs/07-security-controls/README.md",
+        "labs/08-telemetry-vertical-slice/README.md",
+        "labs/07-live-claude-adapter/README.md",
         "https://github.com/julie-elkins/claude-architect-lab",
         "https://github.com/julie-elkins/agent-assurance-harness",
         "https://github.com/julie-elkins/agent-systems-design-guide",
@@ -73,6 +79,9 @@ def main() -> int:
         "https://github.com/julie-elkins/apple-platform-agent-quality-lab",
         "https://www.youtube.com/@JulieElkins",
         "https://julie-elkins.github.io",
+        "https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/",
+        "https://github.com/Arize-ai/phoenix",
+        "https://github.com/langfuse/langfuse",
     ]
     missing = [link for link in required_links if link not in actual]
     if missing:
@@ -81,7 +90,7 @@ def main() -> int:
             print(f"  {link}", file=sys.stderr)
         return 1
 
-    print("GUIDE.md is current and contains all 30 lessons.")
+    print("GUIDE.md is current and contains all 48 lessons.")
     return 0
 
 

@@ -1,7 +1,8 @@
 # LLM & Agent Evaluation Lab
 
 Hands-on lessons for building and interpreting LLM and agent evaluations, using
-Claude as a running provider example.
+Claude as a running provider example, then connecting those evaluations to
+production-oriented assurance.
 
 This course uses the public
 [Agent Assurance Harness](https://github.com/julie-elkins/agent-assurance-harness)
@@ -18,12 +19,15 @@ You will build an evaluation workflow that can distinguish:
   identical text;
 - a model score from evidence that supports a release decision;
 - a passing average from a blocking high-risk failure; and
-- a benchmark result from evidence that your own use case works.
+- a benchmark result from evidence that your own use case works;
+- a complete-looking trace from a trace that is complete enough to investigate;
+- an operational signal from a quality or safety finding; and
+- a production-style failure from a regression case that can be rerun.
 
 ## Start here
 
-Read the [learner guide](GUIDE.md). It contains the fundamentals, all 30
-learner-facing lessons, all five runnable labs, diagrams, and module practice
+Read the [learner guide](GUIDE.md). It contains the fundamentals, all 48
+learner-facing lessons, all eight runnable labs, diagrams, and module practice
 checks in one reading path. You should not need to move between lesson folders
 to follow the course.
 
@@ -49,21 +53,27 @@ For optional video walkthroughs and related projects, visit
 - Comfort reading JSON and using a terminal. Python experience is helpful but
   not required for the introductory labs.
 
-The first five labs are offline and synthetic, meaning they use bounded local
+The required labs are offline and synthetic, meaning they use bounded local
 fixtures rather than live Claude requests. They do not require a Claude API key.
 
 ## Learning path
 
-The course is organized as five modules and 30 lessons. The course map and
+The course is organized as eleven modules and 48 lessons. The course map and
 [source coverage matrix](course/SOURCE_COVERAGE_MATRIX.md) show how the
-historical lecture concepts and the current harness controls map into the
-learner path.
+historical lecture concepts, current harness controls, and
+production-observability references map into the learner path.
 
 1. Evaluation foundations
 2. Human review and evaluation cases
 3. Automated checks and LLM-as-a-judge
 4. Factuality, safety, and agent evaluation
 5. Regression, release decisions, and the capstone
+6. Production observability foundations
+7. Instrumentation and operational signals
+8. Privacy, monitoring, and incident response
+9. Continuous evaluation and the production capstone
+10. Security and assurance controls
+11. Continuous assurance and production implementation
 
 ## Runnable labs
 
@@ -81,10 +91,17 @@ does and does not prove.
    safety, tool use, authorization, state, and recovery.
 5. [Release capstone](labs/05-release-capstone/README.md) — compare revisions,
    inspect high-risk slices, and make a bounded release recommendation.
+6. [Production observability](labs/06-production-observability/README.md) —
+   inspect traces, operational signals, privacy boundaries, and incident
+   evidence.
+7. [Security controls](labs/07-security-controls/README.md) — test trust
+   boundaries, least privilege, telemetry access, and side-effect controls.
+8. [Telemetry vertical slice](labs/08-telemetry-vertical-slice/README.md) —
+   follow local evidence from instrumentation through alerting and regression.
 
 Optional:
 
-- [Live-Claude adapter](labs/06-live-claude-adapter/README.md) — connect one
+- [Live-Claude adapter](labs/07-live-claude-adapter/README.md) — connect one
   live provider observation to the same evidence contract under explicit
   request, time, token, spend, and privacy limits.
 
@@ -123,7 +140,7 @@ GUIDE.md      generated learner guide for the full course
 FUNDAMENTALS.md prerequisite concepts and readiness check
 GLOSSARY.md   course vocabulary
 course/       lesson source, map, and reusable templates
-labs/         five runnable learner labs
+labs/         eight runnable learner labs plus an optional live adapter
 slides/       slide outlines and recording guidance
 scripts/      course validation and setup helpers
 tests/        standard-library contract tests for the course labs
@@ -133,12 +150,26 @@ tests/        standard-library contract tests for the course labs
 
 Available now:
 
-- the complete 30-lesson learner guide and recording scripts;
-- five offline, deterministic labs covering Modules 1–5;
+- the complete 48-lesson learner guide and recording scripts;
+- eight offline, deterministic labs covering Modules 1–11;
 - the source coverage matrix, fundamentals, glossary, and cream visual system;
 - validation scripts for the generated guide; and
 - a local CI contract that rebuilds the guide and runs every lab; and
-- links to the companion design guide, Apple lab, harness, website, and videos.
+- links to the companion design guide, Apple lab, harness, website, videos,
+  OpenTelemetry, Phoenix, and Langfuse.
+
+Reference courses and standards used for the advanced track:
+
+- [Stanford Engineering AI Agents](https://cs329z.stanford.edu/) — agent
+  evaluation and reliability framing.
+- [Evaluating AI Agents](https://www.deeplearning.ai/courses/evaluating-ai-agents)
+  — trace-to-evaluation and component-evaluation patterns.
+- [Hugging Face Agents Course](https://huggingface.co/learn/agents-course/bonus-unit2/what-is-agent-observability-and-evaluation)
+  — the observability and evaluation distinction.
+- [OWASP GenAI Security Project](https://genai.owasp.org/llm-top-10/) —
+  security threat categories for generative AI systems.
+- [NIST Generative AI Profile](https://www.nist.gov/itl/ai-risk-management-framework/ai-rmf-generative-ai-profile)
+  — risk management and post-deployment assurance.
 
 Planned or optional next steps:
 

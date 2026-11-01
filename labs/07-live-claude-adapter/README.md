@@ -2,7 +2,7 @@
 
 This is an optional extension for learners who want to connect the course
 evidence contract to a live Claude request. It is not required for the course
-and is intentionally separate from the five offline labs.
+and is intentionally separate from the eight offline labs.
 
 ## Why this is optional
 

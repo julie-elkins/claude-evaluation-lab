@@ -179,6 +179,202 @@ flowchart LR
             "What owner, monitoring signal, and rollback trigger belong in the final report?",
         ],
     },
+    {
+        "number": 6,
+        "title": "Production observability foundations",
+        "start": 31,
+        "end": 32,
+        "outcome": "Distinguish observability from evaluation and define the trace evidence an agent workflow needs.",
+        "diagram": r"""
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Agent run"] --> B["Telemetry"]
+    B --> C["Trace and events"]
+    C --> D["Debug or investigate"]
+    C --> E["Evaluation case"]
+    E --> F["Decision"]
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    class A,B blue
+    class C orange
+    class D,E sage
+    class F orange
+```
+""",
+        "practice": [
+            "Which production question requires a trace, and which requires an evaluation?",
+            "What fields are required to reconstruct the agent path?",
+            "What would make a trace incomplete rather than merely unsuccessful?",
+        ],
+    },
+    {
+        "number": 7,
+        "title": "Instrumentation and operational signals",
+        "start": 33,
+        "end": 34,
+        "outcome": "Map agent behavior to provider-neutral spans, metrics, budgets, and service-level objectives.",
+        "diagram": r"""
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart TB
+    A["Workflow span"] --> B["Model span"]
+    A --> C["Tool span"]
+    A --> D["State and terminal event"]
+    B --> E["Tokens and latency"]
+    C --> F["Authorization and result"]
+    D --> G["Outcome and evidence"]
+    E --> H["Budget and SLO"]
+    F --> H
+    G --> H
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    class A,B,C,D blue
+    class E,F,G orange
+    class H sage
+```
+""",
+        "practice": [
+            "Which signal shows the agent was slow, and which shows that it was wrong?",
+            "What budget or service-level objective would block release?",
+            "Which provider-specific field should be mapped to a provider-neutral field?",
+        ],
+    },
+    {
+        "number": 8,
+        "title": "Privacy, monitoring, and incident response",
+        "start": 35,
+        "end": 36,
+        "outcome": "Design redaction, retention, alerting, ownership, and rollback boundaries for agent evidence.",
+        "diagram": r"""
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Raw event"] --> B["Redact and classify"]
+    B --> C["Retain minimum evidence"]
+    C --> D["Detect threshold"]
+    D --> E["Owner investigates"]
+    E --> F{"Containment needed?"}
+    F -->|yes| G["Rollback or disable"]
+    F -->|no| H["Document and monitor"]
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef red fill:#F3D6D2,stroke:#B44B45,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    class A,B,C blue
+    class D,E,F orange
+    class G red
+    class H sage
+```
+""",
+        "practice": [
+            "Which event fields are safe to retain, and which require redaction?",
+            "What threshold turns a signal into an incident?",
+            "Who owns containment, communication, and the follow-up regression case?",
+        ],
+    },
+    {
+        "number": 9,
+        "title": "Continuous evaluation and production capstone",
+        "start": 37,
+        "end": 39,
+        "outcome": "Turn production-style traces into regression cases and make a bounded release, hold, revise, or rollback decision.",
+        "diagram": r"""
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Trace sample"] --> B["Review and classify"]
+    B --> C["Evaluation case"]
+    C --> D["Regression run"]
+    D --> E["Compare revision"]
+    E --> F{"Decision"}
+    F -->|release| G["Monitor"]
+    F -->|hold or revise| H["Change and rerun"]
+    F -->|rollback| I["Contain"]
+    G --> B
+    H --> C
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    classDef red fill:#F3D6D2,stroke:#B44B45,color:#16324F,stroke-width:2px
+    class A,B,C blue
+    class D,E,F orange
+    class G,H sage
+    class I red
+```
+""",
+        "practice": [
+            "What trace finding is important enough to become a regression case?",
+            "Which evidence would justify release, and which would require rollback?",
+            "What does the production capstone still not prove?",
+        ],
+    },
+    {
+        "number": 10,
+        "title": "Security and assurance controls",
+        "start": 40,
+        "end": 44,
+        "outcome": "Threat-model an agent, enforce authority and data boundaries, protect telemetry, and test monitoring resilience.",
+        "diagram": r"""
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Assets and actors"] --> B["Trust boundaries"]
+    B --> C["Identity and least privilege"]
+    C --> D["Validated side effect"]
+    B --> E["Telemetry privacy"]
+    E --> F["Audit and response"]
+    D --> G["Monitor the monitor"]
+    F --> G
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef red fill:#F3D6D2,stroke:#B44B45,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    class A,B blue
+    class C,D,E orange
+    class F red
+    class G sage
+```
+""",
+        "practice": [
+            "What asset, actor, trust boundary, and consequence belong in your threat model?",
+            "Which authority, data, network, or side-effect control is release-blocking?",
+            "What telemetry failure would make the result unavailable rather than green?",
+        ],
+    },
+    {
+        "number": 11,
+        "title": "Continuous assurance and production implementation",
+        "start": 45,
+        "end": 48,
+        "outcome": "Run a local telemetry path, detect drift and side-effect risk, and produce a security-aware assurance decision.",
+        "diagram": r"""
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Instrument"] --> B["Collect and redact"]
+    B --> C["Store and query"]
+    C --> D["Alert and investigate"]
+    D --> E["Evaluate and recalibrate"]
+    E --> F["Approve, hold, or rollback"]
+    F --> A
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    classDef red fill:#F3D6D2,stroke:#B44B45,color:#16324F,stroke-width:2px
+    class A,B blue
+    class C,D orange
+    class E,F sage
+```
+""",
+        "practice": [
+            "Where can evidence be lost between instrumentation and action?",
+            "What drift or side-effect signal would trigger recalibration or a hold?",
+            "Which claim does your final assurance report still not prove?",
+        ],
+    },
 ]
 
 
@@ -301,13 +497,13 @@ def render_module(module: dict[str, object], lessons: list[Path]) -> str:
 
 def build() -> str:
     lesson_paths = sorted(LESSON_DIR.glob("lesson-*.md"), key=lesson_number)
-    expected = list(range(1, 31))
+    expected = list(range(1, 49))
     actual = [lesson_number(path) for path in lesson_paths]
     if actual != expected:
         raise ValueError(f"Expected lessons {expected}, found {actual}")
 
     parts = [
-        "# LLM & Agent Evaluation Lab — Learner Guide",
+        "# LLM & Agent Evaluation Lab — From Offline Evidence to Production-Oriented Assurance",
         "",
         "<!-- GENERATED FILE. Edit course/lesson-scripts or FUNDAMENTALS.md, then run `uv run python scripts/build_guide.py`. -->",
         "",
@@ -315,7 +511,7 @@ def build() -> str:
         "",
         "## Start here",
         "",
-        "This course teaches you to design and interpret evaluations for LLM applications and agents, using Claude as a running provider example. You will learn to connect a declared decision to representative cases, evidence, evaluator layers, and a bounded release action.",
+        "This course is a build-along path for learning how to evaluate and observe LLM applications and agents, using Claude as a running provider example. You will connect a declared decision to representative cases, evidence, evaluator layers, telemetry, security controls, monitoring, and a bounded release action.",
         "",
         "If you are new to evaluation work, start with the [fundamentals](FUNDAMENTALS.md) below. If you want the shortest working path, read Module 1 and run [Lab 1](labs/01-semantic-outcomes/README.md) before continuing.",
         "",
@@ -349,7 +545,7 @@ def build() -> str:
         "uv run python labs/01-semantic-outcomes/run_lab.py",
         "```",
         "",
-        "The first five labs are offline and synthetic. They require no Claude API key and demonstrate the path from transport status to a bounded release decision.",
+        "The required labs are offline and synthetic. They require no Claude API key and demonstrate the path from transport status to a bounded release decision, then from an agent trace to security controls, telemetry health, an incident, and a regression case.",
         "",
         "## Continue learning",
         "",
@@ -357,6 +553,9 @@ def build() -> str:
         "- [Julie’s public site](https://julie-elkins.github.io) — projects, learning paths, and design principles.",
         "- [Agent Systems Design Guide](https://github.com/julie-elkins/agent-systems-design-guide) — shared design reasoning and report vocabulary.",
         "- [Apple Platform Agent Quality Lab](https://github.com/julie-elkins/apple-platform-agent-quality-lab) — native macOS implementation of the evaluation boundary.",
+        "- [OpenTelemetry GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/) — provider-neutral trace and metric vocabulary.",
+        "- [Phoenix](https://github.com/Arize-ai/phoenix) — optional local observability backend for trace inspection.",
+        "- [Langfuse](https://github.com/langfuse/langfuse) — optional comparison point for trace, evaluation, dataset, and experiment workflows.",
         "",
         "### Runnable labs 🔬",
         "",
@@ -365,10 +564,13 @@ def build() -> str:
         "- [Lab 3: Layer the evaluator before you trust the judge](labs/03-automated-evaluators/README.md)",
         "- [Lab 4: Evaluate the path, not only the final answer](labs/04-agent-behavior/README.md)",
         "- [Lab 5: Turn evaluation evidence into a release decision](labs/05-release-capstone/README.md)",
+        "- [Lab 6: Observe the agent before you trust the dashboard](labs/06-production-observability/README.md)",
+        "- [Lab 7: Test the agent security boundary](labs/07-security-controls/README.md)",
+        "- [Lab 8: Build the local telemetry vertical slice](labs/08-telemetry-vertical-slice/README.md)",
         "",
         "### Optional live-Claude extension",
         "",
-        "The required path stays offline and deterministic. If you want to attach one live Claude observation, use the [bounded live-Claude adapter guide](labs/06-live-claude-adapter/README.md) only after declaring request, time, token, spend, model, revision, and privacy limits.",
+        "The required path stays offline and deterministic. If you want to attach one live Claude observation, use the [bounded live-Claude adapter guide](labs/07-live-claude-adapter/README.md) only after declaring request, time, token, spend, model, revision, and privacy limits.",
         "",
         "## Fundamentals 📘",
         "",
@@ -466,6 +668,39 @@ def build() -> str:
                     "",
                 ]
             )
+        elif module["number"] == 6:
+            parts.extend(
+                [
+                    "## Lab 6: Observe the agent before you trust the dashboard 🔬",
+                    "",
+                    "This lab is included here so you can inspect a provider-neutral trace contract, operational signals, privacy boundaries, incident findings, and the trace-to-test-case loop without requiring a live provider.",
+                    "",
+                    render_lab(ROOT / "labs" / "06-production-observability" / "README.md"),
+                    "",
+                ]
+            )
+        elif module["number"] == 10:
+            parts.extend(
+                [
+                    "## Lab 7: Test the agent security boundary 🛡️",
+                    "",
+                    "This lab is included here so you can threat-model an agent, inspect authority and data boundaries, and test security evidence without using live credentials or production data.",
+                    "",
+                    render_lab(ROOT / "labs" / "07-security-controls" / "README.md"),
+                    "",
+                ]
+            )
+        elif module["number"] == 11:
+            parts.extend(
+                [
+                    "## Lab 8: Build the local telemetry vertical slice 📡",
+                    "",
+                    "This lab is included here so you can follow evidence from instrumentation through collection, redaction, local storage, query, alerting, and regression-case creation.",
+                    "",
+                    render_lab(ROOT / "labs" / "08-telemetry-vertical-slice" / "README.md"),
+                    "",
+                ]
+            )
             parts.extend(
                 [
                     "#### Related implementation",
@@ -485,12 +720,15 @@ def build() -> str:
             "- `course/lesson-scripts/` — editable lesson and recording source.",
             "- `labs/` — runnable learner labs.",
             "- `slides/` — PowerPoint source and recording assets.",
+            "- `labs/06-production-observability/` — offline trace and incident observability lab.",
+            "- `labs/07-security-controls/` — synthetic security boundary and assurance controls lab.",
+            "- `labs/08-telemetry-vertical-slice/` — local instrumentation, collection, query, and monitor-health lab.",
             "- `course/VISUAL-SYSTEM.md` — colors and diagram conventions.",
             "- `scripts/build_guide.py` — reproducible guide builder.",
             "",
             "## What this course does not prove ⚠️",
             "",
-            "The course uses public synthetic examples and an offline first path. Its results do not establish live Claude quality, production safety, business impact, or learner adoption outside the declared scenario. A release decision remains bounded by its revision, case set, evidence, evaluator configuration, and date.",
+            "The course uses public synthetic examples and an offline-first path. Its results do not establish live Claude quality, production safety, business impact, or learner adoption outside the declared scenario. The security and observability tracks teach production-oriented control paths, not a guarantee that any deployed system is secure, compliant, observable, or operationally complete. A release decision remains bounded by its revision, case set, evidence, evaluator configuration, control coverage, telemetry completeness, and date.",
             "",
             "To rebuild this guide after editing the source files:",
             "",
