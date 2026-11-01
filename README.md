@@ -56,6 +56,14 @@ For optional video walkthroughs and related projects, visit
 The required labs are offline and synthetic, meaning they use bounded local
 fixtures rather than live Claude requests. They do not require a Claude API key.
 
+## Reuse and licensing
+
+Runnable code is licensed under the [MIT License](LICENSE). Educational
+material—including lessons, diagrams, lab explanations, and slide guidance—is
+licensed under [Creative Commons Attribution 4.0 International](CONTENT-LICENSE.md).
+This split keeps software reuse permissive while requiring attribution when
+course content is reused or adapted.
+
 ## Learning path
 
 The course is organized as eleven modules and 48 lessons. The course map and
@@ -115,8 +123,8 @@ does and does not prove.
 
 Optional:
 
-- [Live-Claude adapter](labs/07-live-claude-adapter/README.md) — connect one
-  live provider observation to the same evidence contract under explicit
+- [Optional live-Claude adapter](labs/optional-live-claude-adapter/README.md) —
+  connect one live provider observation to the same evidence contract under explicit
   request, time, token, spend, and privacy limits.
 
 ## Quick start
@@ -168,7 +176,8 @@ Available now:
 - eight offline, deterministic labs covering Modules 1–11;
 - the source coverage matrix, fundamentals, glossary, and cream visual system;
 - validation scripts for the generated guide; and
-- a local CI contract that rebuilds the guide and runs every lab; and
+- a CI contract that rebuilds the guide, runs the contract tests, and runs all
+  eight required labs; and
 - links to the companion design guide, Apple lab, harness, website, videos,
   OpenTelemetry, Phoenix, and Langfuse.
 
@@ -185,13 +194,14 @@ Reference courses and standards used for the advanced track:
 - [NIST Generative AI Profile](https://www.nist.gov/itl/ai-risk-management-framework/ai-rmf-generative-ai-profile)
   — risk management and post-deployment assurance.
 
-Planned or optional next steps:
+Separate recording deliverable:
 
-- the full editable PowerPoint deck and lesson-by-lesson recording assets.
+- the full editable PowerPoint deck and lesson-by-lesson recording assets are
+  maintained separately from this learner-facing repository.
 
 Synthetic lab results are learning evidence, not proof of live Claude quality,
 production safety, or business impact.
 
 The repository contains the learner guide, lesson scripts, lab implementations,
 and recording guidance. The editable PowerPoint deck remains a separate
-recording deliverable until it is added under `slides/`.
+recording deliverable.
