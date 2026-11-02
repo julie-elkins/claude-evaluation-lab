@@ -42,6 +42,16 @@ Notice that each finding contains a reason code, severity, and action. The next
 step is not merely to close the alert; it is to create a regression case that
 prevents the same failure from becoming invisible.
 
+Use the companion
+[AI Evaluation Incident Response guide](https://github.com/julie-elkins/agent-assurance-harness/blob/main/docs/AI_EVALUATION_INCIDENT_RESPONSE.md)
+when the incident may be in the measurement system rather than only in the
+agent. It provides a checklist for false-green reports, missing evidence,
+evaluator drift, case-set changes, telemetry gaps, containment, re-evaluation,
+and release disposition. If an unsafe tool action or external side effect may
+also have occurred, use the harness's
+[AI Incident Response guide](https://github.com/julie-elkins/agent-assurance-harness/blob/main/docs/AI_INCIDENT_RESPONSE.md)
+in parallel.
+
 The cost of alerting without ownership is silent accumulation. The cost of
 rollback without rehearsal is discovering during an incident that the recovery
 path depends on the system that is failing.

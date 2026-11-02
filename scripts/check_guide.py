@@ -80,6 +80,7 @@ def main() -> int:
         "labs/optional-codex-agent-adapter/README.md",
         "https://github.com/julie-elkins/claude-architect-lab",
         "https://github.com/julie-elkins/agent-assurance-harness",
+        "https://github.com/julie-elkins/agent-assurance-harness/blob/main/docs/AI_EVALUATION_INCIDENT_RESPONSE.md",
         "https://github.com/julie-elkins/agent-systems-design-guide",
         "https://github.com/julie-elkins/agent-systems-design-guide/blob/main/REPORT_VOCABULARY.md",
         "https://github.com/julie-elkins/apple-platform-agent-quality-lab",
