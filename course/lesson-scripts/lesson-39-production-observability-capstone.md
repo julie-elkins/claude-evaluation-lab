@@ -15,7 +15,9 @@ create a regression case, and make a bounded operational decision.
 2. **Trace reconstruction** — what happened and what is missing?
 3. **Operational findings** — quality, safety, cost, privacy, and telemetry.
 4. **Incident to regression** — preserve the lesson without copying the data.
-5. **Final decision** — release, hold, revise, rollback, or escalate.
+5. **Offline-to-online-to-offline assurance loop**.
+6. **Shadow and A/B evaluation boundaries**.
+7. **Final decision** — release, hold, revise, rollback, or escalate.
 
 ## Speaker script
 
@@ -38,6 +40,20 @@ expected outcome, evidence requirement, and dataset role. Then make the
 decision: release, hold, revise, rollback, or escalate. Name the owner,
 monitoring signal, rollback trigger, and review date.
 
+The production loop does not end when the dashboard turns green. Start with an
+offline baseline, make a bounded release, observe online behavior, triage and
+review candidate failures, minimize and sanitize the evidence, and add the
+appropriate case to a regression or held-out set. Rerun the offline evaluation
+before using the new evidence to support the next release decision.
+
+There are two useful online comparison patterns. In **shadow testing**, a
+candidate receives copied traffic but its result is not shown to the user and
+its tools cannot create side effects. Shadow evidence can reveal unexpected
+inputs and cost or latency changes, but it does not prove that the candidate is
+safe to expose. In **A/B testing**, an assignment rule sends different users to
+different versions. A/B results can compare outcomes, but they require privacy
+controls, harm guardrails, predefined success criteria, and a rollback plan.
+
 In the demo, run Lab 6 and complete the evidence template. The candidate
 decision should be blocked because the trace set contains planted failures.
 The learner's report should explain what would have to change before a bounded
@@ -54,6 +70,11 @@ to action.
   /tmp/observability-report.json`.
 - Fill the incident and regression sections from the report.
 - State explicitly that the run is synthetic and offline.
+- Show the offline-to-online-to-offline loop as a design pattern, not as a live
+  traffic experiment.
+- Compare shadow testing and A/B testing in a short boundary table:
+  who sees the result, whether side effects are allowed, what evidence is
+  collected, and what safety controls are required.
 - Recording boundary: do not imply the capstone represents a production
   deployment or live Claude quality.
 
@@ -68,8 +89,9 @@ Complete a capstone report with:
 5. privacy and retention boundary;
 6. incident findings and owners;
 7. regression cases created;
-8. release, hold, revise, rollback, or escalate action; and
-9. limitations and next evidence.
+8. online-signal interpretation and feedback limitations;
+9. release, hold, revise, rollback, or escalate action; and
+10. limitations and next evidence.
 
 > **Learner checkpoint — review the capstone**
 >
@@ -84,4 +106,6 @@ Complete a capstone report with:
 A completed capstone does not prove production readiness. It demonstrates a
 repeatable reasoning path from telemetry to evaluation to action. Deployment,
 access controls, real traffic, on-call response, and environment-specific
-validation remain outside this synthetic course artifact.
+validation remain outside this synthetic course artifact. The course's
+shadow and A/B discussion is conceptual; it does not authorize live traffic
+experimentation or prove that a feedback signal is a valid outcome label.
