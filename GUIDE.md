@@ -317,6 +317,71 @@ or that the state transition was missing; it cannot explain the finding if the
 trace omitted the tool span, authorization context, or state before and after
 the call.
 
+##### Offline and online evaluation
+
+**Offline evaluation** means testing a bounded set of cases outside live user
+traffic. The inputs, environment, evaluator, and decision rule can be versioned
+and repeated, so offline evaluation is the safest place to compare revisions
+and catch known regressions before release.
+
+**Online evaluation** means collecting and interpreting evidence from live
+usage or from a shadow run. A **shadow run** executes a candidate workflow
+against copied traffic without showing its result to the user or allowing it
+to create side effects. Online evidence reveals unexpected inputs, changing
+traffic, and production-specific failures, but it adds privacy, labeling,
+cost, latency, and operational risks.
+
+Neither path is sufficient by itself. Offline evaluation can miss cases that
+were not represented in the test data. Online evaluation can produce noisy or
+biased signals and may not have a trusted label for whether the task truly
+succeeded. A live signal is evidence to investigate, not automatic ground
+truth.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Offline baseline"] --> B["Bounded release"]
+    B --> C["Online observation"]
+    C --> D["Triage and human review"]
+    D --> E["Minimize and sanitize failure"]
+    E --> F["Regression or held-out case"]
+    F --> A
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    class A,F blue
+    class B,C orange
+    class D,E sage
+```
+
+Use this loop to connect production observations back to repeatable
+measurement:
+
+- **Explicit feedback** is a rating, comment, thumbs-up, thumbs-down, or
+  human label supplied directly by a user or reviewer.
+- **Implicit feedback** is a behavior signal such as rephrasing a question,
+  retrying a request, abandoning a workflow, or asking the same question
+  again.
+- Both types are proxies, meaning indirect signals that may correlate with
+  success without proving it. Record the signal definition, sampling rule,
+  privacy boundary, and alternative explanations before using it in a decision.
+- A feedback event should normally create a review candidate or evaluation
+  case. It should not silently become a pass/fail label.
+
+Keep evaluation-set roles distinct:
+
+- A **smoke set** is a small, fast set of critical checks run on every change.
+- A **regression set** contains known failure mechanisms that must not return.
+- A **broad evaluation set** provides wider coverage for deeper comparisons.
+- A **held-out set** is kept separate from evaluator tuning so it can provide
+  a less-biased check of generalization.
+
+**A/B testing** routes different users to different versions so their outcomes
+can be compared under a declared assignment rule. It can provide comparative
+evidence, but it requires guardrails, privacy controls, a rollback plan, and
+predefined success and harm criteria. It does not replace offline safety or
+regression checks.
+
 ##### Production telemetry basics
 
 Before collecting data, define a minimum trace contract:
@@ -3627,6 +3692,20 @@ expected outcome, evidence requirement, and dataset role. Then make the
 decision: release, hold, revise, rollback, or escalate. Name the owner,
 monitoring signal, rollback trigger, and review date.
 
+The production loop does not end when the dashboard turns green. Start with an
+offline baseline, make a bounded release, observe online behavior, triage and
+review candidate failures, minimize and sanitize the evidence, and add the
+appropriate case to a regression or held-out set. Rerun the offline evaluation
+before using the new evidence to support the next release decision.
+
+There are two useful online comparison patterns. In **shadow testing**, a
+candidate receives copied traffic but its result is not shown to the user and
+its tools cannot create side effects. Shadow evidence can reveal unexpected
+inputs and cost or latency changes, but it does not prove that the candidate is
+safe to expose. In **A/B testing**, an assignment rule sends different users to
+different versions. A/B results can compare outcomes, but they require privacy
+controls, harm guardrails, predefined success criteria, and a rollback plan.
+
 In the demo, run Lab 6 and complete the evidence template. The candidate
 decision should be blocked because the trace set contains planted failures.
 The learner's report should explain what would have to change before a bounded
@@ -3648,8 +3727,9 @@ Complete a capstone report with:
 5. privacy and retention boundary;
 6. incident findings and owners;
 7. regression cases created;
-8. release, hold, revise, rollback, or escalate action; and
-9. limitations and next evidence.
+8. online-signal interpretation and feedback limitations;
+9. release, hold, revise, rollback, or escalate action; and
+10. limitations and next evidence.
 
 > **Learner checkpoint — review the capstone**
 >
@@ -3664,7 +3744,9 @@ Complete a capstone report with:
 A completed capstone does not prove production readiness. It demonstrates a
 repeatable reasoning path from telemetry to evaluation to action. Deployment,
 access controls, real traffic, on-call response, and environment-specific
-validation remain outside this synthetic course artifact.
+validation remain outside this synthetic course artifact. The course's
+shadow and A/B discussion is conceptual; it does not authorize live traffic
+experimentation or prove that a feedback signal is a valid outcome label.
 
 ### Module practice check 📝
 
@@ -4094,16 +4176,45 @@ cases, compare evaluator decisions with calibrated human labels, and inspect
 new failure categories. If the evaluator is no longer aligned with the
 decision, the result is measurement drift even if the score looks stable.
 
+Feedback can also arrive indirectly. Explicit feedback means a rating,
+comment, or human label. Implicit feedback means behavior such as a retry,
+rephrased question, abandoned workflow, or repeated request. These signals can
+help us find cases that deserve review, but none of them proves by itself that
+the agent failed. A retry may mean the user is exploring. A missing rating may
+mean the user was satisfied, busy, or unable to respond.
+
+Before using feedback in an evaluation, record who generated it, how it was
+sampled, what privacy boundary applies, and what alternative explanations
+remain. Compare a sample of feedback-derived cases with calibrated human
+review. Keep the original feedback signal separate from the evaluator label so
+we can tell whether the problem is user experience, workflow behavior, or
+measurement.
+
+The full assurance loop is: establish an offline baseline, make a bounded
+release, observe online signals, triage and review candidate failures, minimize
+and sanitize the evidence, then add an appropriate regression or held-out case
+before rerunning the offline evaluation. This loop turns monitoring into
+learning without copying raw production content into a public dataset.
+
 #### Learner practice 🧪
 
 Define one drift signal, baseline window, review threshold, owner, and action.
 State whether the action is sample, recalibrate, hold, or rollback.
 
+Then complete the following for one feedback signal:
+
+1. Is it explicit or implicit?
+2. What behavior does it measure, and what does it not prove?
+3. What sampling and privacy rule applies?
+4. What alternative explanation could produce the same signal?
+5. What human-review or evaluator check is required before it becomes a case?
+
 #### What this lesson does not prove ⚠️
 
 A synthetic distribution comparison does not establish that a deployed monitor
 will detect real-world drift or that the chosen threshold is statistically
-adequate.
+adequate. Synthetic feedback examples do not establish that live user behavior
+is correctly labeled, representative, or safe to retain.
 
 ### Lesson 47: Side Effects, Concurrency, and Human Approval
 

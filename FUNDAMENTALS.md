@@ -189,6 +189,71 @@ or that the state transition was missing; it cannot explain the finding if the
 trace omitted the tool span, authorization context, or state before and after
 the call.
 
+### Offline and online evaluation
+
+**Offline evaluation** means testing a bounded set of cases outside live user
+traffic. The inputs, environment, evaluator, and decision rule can be versioned
+and repeated, so offline evaluation is the safest place to compare revisions
+and catch known regressions before release.
+
+**Online evaluation** means collecting and interpreting evidence from live
+usage or from a shadow run. A **shadow run** executes a candidate workflow
+against copied traffic without showing its result to the user or allowing it
+to create side effects. Online evidence reveals unexpected inputs, changing
+traffic, and production-specific failures, but it adds privacy, labeling,
+cost, latency, and operational risks.
+
+Neither path is sufficient by itself. Offline evaluation can miss cases that
+were not represented in the test data. Online evaluation can produce noisy or
+biased signals and may not have a trusted label for whether the task truly
+succeeded. A live signal is evidence to investigate, not automatic ground
+truth.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Offline baseline"] --> B["Bounded release"]
+    B --> C["Online observation"]
+    C --> D["Triage and human review"]
+    D --> E["Minimize and sanitize failure"]
+    E --> F["Regression or held-out case"]
+    F --> A
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    class A,F blue
+    class B,C orange
+    class D,E sage
+```
+
+Use this loop to connect production observations back to repeatable
+measurement:
+
+- **Explicit feedback** is a rating, comment, thumbs-up, thumbs-down, or
+  human label supplied directly by a user or reviewer.
+- **Implicit feedback** is a behavior signal such as rephrasing a question,
+  retrying a request, abandoning a workflow, or asking the same question
+  again.
+- Both types are proxies, meaning indirect signals that may correlate with
+  success without proving it. Record the signal definition, sampling rule,
+  privacy boundary, and alternative explanations before using it in a decision.
+- A feedback event should normally create a review candidate or evaluation
+  case. It should not silently become a pass/fail label.
+
+Keep evaluation-set roles distinct:
+
+- A **smoke set** is a small, fast set of critical checks run on every change.
+- A **regression set** contains known failure mechanisms that must not return.
+- A **broad evaluation set** provides wider coverage for deeper comparisons.
+- A **held-out set** is kept separate from evaluator tuning so it can provide
+  a less-biased check of generalization.
+
+**A/B testing** routes different users to different versions so their outcomes
+can be compared under a declared assignment rule. It can provide comparative
+evidence, but it requires guardrails, privacy controls, a rollback plan, and
+predefined success and harm criteria. It does not replace offline safety or
+regression checks.
+
 ### Production telemetry basics
 
 Before collecting data, define a minimum trace contract:
