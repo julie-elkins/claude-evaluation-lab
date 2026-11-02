@@ -579,11 +579,11 @@ prompt, tools, data, policy, and evaluator produced the result. Otherwise a
 passing result may belong to a different system than the one we are about to
 change.
 
-The Agent Assurance Harness gives us a small, inspectable example. It records
-transport status, semantic outcome, retry count, estimated cost, evaluator
-status, and missing evidence. It does not pretend that those fields prove live
-model quality. It tells us what was observed for one declared synthetic
-scenario.
+The [Agent Assurance Harness](https://github.com/julie-elkins/agent-assurance-harness)
+gives us a small, inspectable example. It records transport status, semantic
+outcome, retry count, estimated cost, evaluator status, and missing evidence.
+It does not pretend that those fields prove live model quality. It tells us
+what was observed for one declared synthetic scenario.
 
 That distinction is important because evaluation results are often reused beyond
 their original scope. A result from a small test set may be repeated in a slide
