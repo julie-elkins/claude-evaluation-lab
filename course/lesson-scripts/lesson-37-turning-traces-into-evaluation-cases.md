@@ -17,7 +17,9 @@ a bounded evaluation case without copying sensitive content.
 3. **Minimize and synthesize** — preserve the decision boundary, not the raw
    payload.
 4. **Add to the right data role** — calibration, regression, or held-out.
-5. **Demo: inspect Lab 6 `trace_to_case`**.
+5. **Trace-to-evaluator design skill** — inspect evidence, find patterns, and
+   draft a use-case-specific evaluator.
+6. **Demo: inspect Lab 6 `trace_to_case`**.
 
 ## Speaker script
 
@@ -35,6 +37,14 @@ Choose the data role. A newly discovered failure may belong in a regression set
 so the known problem cannot return. It may also need a calibration case if the
 rubric is unclear. Keep it out of a held-out measurement set when it was used
 to shape the evaluator.
+
+The optional [Trace-to-Evaluator Design
+Skill](../TRACE_TO_EVALUATOR_SKILL.md) makes this reasoning repeatable. It
+profiles trace completeness, groups recurring failure mechanisms, drafts an
+evaluator contract, proposes minimized or synthetic cases, and checks the
+evaluator against negative controls. It is a design assistant, not an approval
+authority. The human owner still decides whether the evaluator measures the
+right construct and whether the data may be retained or shared.
 
 In the demo, inspect `trace_to_case`. The lab proposes a case identifier and
 next evaluator, but a human still owns the decision to accept, transform, or
@@ -59,7 +69,9 @@ Take one synthetic trace finding and write:
 2. the minimum safe case input;
 3. the expected outcome;
 4. the evidence requirement; and
-5. the dataset role.
+5. the dataset role;
+6. the evaluator layer that should detect it; and
+7. the negative control that would challenge a false pass.
 
 ## What this lesson does not prove
 

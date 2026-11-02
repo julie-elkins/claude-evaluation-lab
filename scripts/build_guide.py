@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 LESSON_DIR = ROOT / "course" / "lesson-scripts"
 OUTPUT = ROOT / "GUIDE.md"
 OPTIONAL_CODEX_TRACK = ROOT / "course" / "OPTIONAL_CODEX_TRACK.md"
+TRACE_TO_EVALUATOR_SKILL = ROOT / "course" / "TRACE_TO_EVALUATOR_SKILL.md"
 
 MODULES = [
     {
@@ -577,6 +578,8 @@ def build() -> str:
         "",
         render_lab(OPTIONAL_CODEX_TRACK),
         "",
+        render_lab(TRACE_TO_EVALUATOR_SKILL),
+        "",
         "## Fundamentals 📘",
         "",
         render_fundamentals(),
@@ -729,6 +732,7 @@ def build() -> str:
             "- `labs/07-security-controls/` — synthetic security boundary and assurance controls lab.",
             "- `labs/08-telemetry-vertical-slice/` — local instrumentation, collection, query, and monitor-health lab.",
             "- `labs/optional-codex-agent-adapter/` — synthetic coding-agent trajectory, diff, test, scope, and safety evaluation lab.",
+            "- `course/TRACE_TO_EVALUATOR_SKILL.md` — optional workflow for inspecting traces and drafting use-case-specific evaluators.",
             "- `course/VISUAL-SYSTEM.md` — colors and diagram conventions.",
             "- `scripts/build_guide.py` — reproducible guide builder.",
             "",

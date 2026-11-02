@@ -68,6 +68,7 @@ def main() -> int:
         "FUNDAMENTALS.md",
         "GLOSSARY.md",
         "course/VISUAL-SYSTEM.md",
+        "course/TRACE_TO_EVALUATOR_SKILL.md",
         "labs/01-semantic-outcomes/README.md",
         "labs/02-case-design/README.md",
         "labs/03-automated-evaluators/README.md",
@@ -109,6 +110,7 @@ def main() -> int:
         "sandboxing",
         "context management",
         "human-in-the-loop",
+        "trace-to-evaluator design skill",
     ]
     missing_concepts = [
         concept for concept in required_concepts if concept not in actual.lower()
