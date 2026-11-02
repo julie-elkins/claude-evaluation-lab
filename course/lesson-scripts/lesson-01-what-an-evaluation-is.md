@@ -15,7 +15,10 @@ against a declared decision, rather than as a single score attached to a model.
 2. Evaluation is a decision-support workflow.
 3. A score is not the same thing as evidence.
 4. The evaluation layers: task, path, usage, and decision.
-5. Preview: the false-pass lab.
+5. The agent development lifecycle: define, build, test, release, deploy,
+   monitor, and learn.
+6. From manual discovery to a durable evaluation.
+7. Preview: the false-pass lab.
 
 ## Speaker script
 
@@ -57,6 +60,19 @@ as if it were a production guarantee. A benchmark score may be quoted as if it
 answered a customer-specific question. A successful request may be reported as
 task completion even though the response is empty.
 
+Manual inspection is a good way to discover a failure. It becomes a durable
+evaluation only when we preserve the case, declare the evaluator, version the
+inputs and workflow, and define the experiment and action that should follow.
+That is the move from “I saw something go wrong” to “we can detect this failure
+again and make a bounded decision about it.”
+
+Keep the lifecycle visible: define the decision, build the workflow and
+controls, test representative cases, release with approval and rollback,
+deploy within a bounded environment, monitor the evidence, and turn safe
+findings back into new regression or held-out cases. The same evaluation
+vocabulary works across those phases, but the evidence and decision are not
+identical.
+
 We will keep asking one question throughout this course: what decision does this
 evidence support, and what does it not support?
 
@@ -77,7 +93,8 @@ Choose one Claude workflow you care about. Write one sentence beginning:
 
 > “I need evidence to decide whether…”
 
-Then list one thing that sentence does not decide.
+Then list one thing that sentence does not decide, and identify which lifecycle
+phase you are in: define, build, test, release, deploy, monitor, or learn.
 
 ## What this lesson does not prove
 

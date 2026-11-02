@@ -39,6 +39,11 @@ modules teach evaluation foundations; the remaining modules connect evaluation
 evidence to security controls and production-oriented assurance without making
 live provider access a prerequisite.
 
+The course follows an agent development lifecycle: define, build, test,
+release, deploy, monitor, and learn. Manual inspection helps discover failures;
+the durable course artifact turns important findings into versioned cases,
+evaluators, experiments, and actions.
+
 ### Module 1 — Evaluation foundations
 
 1. What an evaluation is—and what it is not
@@ -46,7 +51,8 @@ live provider access a prerequisite.
 3. Transport status versus semantic outcome
 4. Evidence contracts and terminal states
 
-Hands-on outcome: identify a false pass in the existing teaching lab.
+Hands-on outcome: identify a false pass in the existing teaching lab and place
+the finding in the agent development lifecycle.
 
 ### Module 2 — Evaluation cases and human review
 
@@ -84,8 +90,9 @@ calibration evidence, and a deliberately degraded case.
 24. Tool arguments, context, and state changes
 25. Evaluating multi-step agent trajectories and recovery
 
-Hands-on outcome: evaluate an agent workflow without allowing a plausible final
-answer to hide a failed path, unsafe action, or missing evidence.
+Hands-on outcome: evaluate an agent workflow at step, end-to-end, trajectory,
+and thread/session scope without allowing a plausible final answer to hide a
+failed path, unsafe action, or missing evidence.
 
 ### Module 5 — Regression and release decisions
 
@@ -95,16 +102,17 @@ answer to hide a failed path, unsafe action, or missing evidence.
 29. Revision binding, drift, release decisions, rollback, and monitoring
 30. Capstone: produce an evaluation report and release recommendation
 
-Hands-on outcome: run a bounded comparison and write a decision that names
-blocking failures, uncertainty, and limitations.
+Hands-on outcome: run a bounded comparison, check deployment-readiness
+boundaries, and write a decision that names blocking failures, uncertainty, and
+limitations.
 
 ### Module 6 — Production observability foundations
 
 31. Observability versus evaluation
 32. The agent telemetry model and trace contract
 
-Hands-on outcome: define what a production trace must contain before it can
-support debugging or an evaluation decision.
+Hands-on outcome: define what a production trace and thread/session identity
+must contain before it can support debugging or an evaluation decision.
 
 ### Module 7 — Instrumentation and operational signals
 
@@ -129,8 +137,9 @@ retain.
 38. Connecting a bounded live Claude observation
 39. Production observability capstone
 
-Hands-on outcome: investigate a synthetic production trace, turn the failure
-into a regression case, and make a bounded release or rollback decision.
+Hands-on outcome: investigate a synthetic production trace, route an online
+evaluator finding to a declared action, turn the failure into a regression case,
+and make a bounded release or rollback decision.
 
 ### Module 10 — Security and assurance controls
 
@@ -150,8 +159,9 @@ protect telemetry evidence, and detect monitoring-path failure.
 47. Side effects, concurrency, and human approval
 48. Continuous assurance capstone
 
-Hands-on outcome: follow telemetry from instrumentation to action, test drift and
-side-effect controls, and produce a security-aware assurance decision.
+Hands-on outcome: follow telemetry from instrumentation to action, test drift,
+side-effect controls, and review-queue or dataset-promotion boundaries, and
+produce a security-aware assurance decision.
 
 ### Optional extension — Codex coding-agent evaluation
 
@@ -195,8 +205,10 @@ trace-to-evaluation workflows, Hugging Face's agent observability unit for the
 observability/evaluation distinction, and OpenTelemetry's GenAI semantic
 conventions for provider-neutral telemetry vocabulary. OWASP's GenAI Security
 Project and NIST's Generative AI Profile inform the security and post-deployment
-assurance extensions. These are reference points for design and currentness
-checks, not copied course content.
+assurance extensions. LangChain Academy's Building Reliable Agents with
+LangSmith course informs the tracing, thread grouping, evaluator-scope,
+offline/online, and production feedback-loop additions. These are reference
+points for design and currentness checks, not copied course content.
 
 ## Continue learning
 
@@ -205,7 +217,7 @@ checks, not copied course content.
 - [Agent Systems Design Guide](https://github.com/julie-elkins/agent-systems-design-guide) — shared design reasoning and report vocabulary.
 - [Apple Platform Agent Quality Lab](https://github.com/julie-elkins/apple-platform-agent-quality-lab) — native macOS implementation of the evaluation boundary.
 - [OpenTelemetry GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/gen-ai/) — provider-neutral trace and metric vocabulary; verify the current convention status before recording.
-- [Phoenix](https://github.com/Arize-ai/phoenix) and [Langfuse](https://github.com/langfuse/langfuse) — optional observability backends for comparing local trace workflows.
+- [Phoenix](https://github.com/Arize-ai/phoenix), [Langfuse](https://github.com/langfuse/langfuse), and [LangSmith](https://docs.langchain.com/langsmith/observability-quickstart) — optional observability backends for comparing local trace, thread, dataset, evaluator, feedback, and automation workflows.
 - [Codex](https://developers.openai.com/codex/) and the [Codex SDK](https://developers.openai.com/codex/sdk/) — optional coding-agent and programmatic integration references.
 - [Stanford Engineering AI Agents](https://cs329z.stanford.edu/) — agent evaluation and reliability framing.
 - [Evaluating AI Agents](https://www.deeplearning.ai/courses/evaluating-ai-agents) — trace-to-evaluation and component-evaluation patterns.
