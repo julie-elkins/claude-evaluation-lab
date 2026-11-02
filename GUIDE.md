@@ -3283,6 +3283,12 @@ In the demo, inspect `trace-cost-spike-001` and `trace-retry-loop-001`. The
 metrics remain visible, and the evaluator applies explicit thresholds. This is
 why a dashboard should show both the measurement and the action rule.
 
+These signals become incident triggers when they cross a declared threshold or
+when the evidence path itself fails. The companion
+[AI Evaluation Incident Response guide](https://github.com/julie-elkins/agent-assurance-harness/blob/main/docs/AI_EVALUATION_INCIDENT_RESPONSE.md)
+shows how to distinguish a behavior regression from an evaluator, telemetry,
+case-set, or release-gate failure before choosing containment.
+
 The cost of aggregate metrics without slices is hidden risk. A healthy average
 can hide a high-risk workflow that is slow, expensive, or unsafe every time.
 
@@ -3420,6 +3426,16 @@ In the demo, inspect the incident findings produced from the Lab 6 traces.
 Notice that each finding contains a reason code, severity, and action. The next
 step is not merely to close the alert; it is to create a regression case that
 prevents the same failure from becoming invisible.
+
+Use the companion
+[AI Evaluation Incident Response guide](https://github.com/julie-elkins/agent-assurance-harness/blob/main/docs/AI_EVALUATION_INCIDENT_RESPONSE.md)
+when the incident may be in the measurement system rather than only in the
+agent. It provides a checklist for false-green reports, missing evidence,
+evaluator drift, case-set changes, telemetry gaps, containment, re-evaluation,
+and release disposition. If an unsafe tool action or external side effect may
+also have occurred, use the harness's
+[AI Incident Response guide](https://github.com/julie-elkins/agent-assurance-harness/blob/main/docs/AI_INCIDENT_RESPONSE.md)
+in parallel.
 
 The cost of alerting without ownership is silent accumulation. The cost of
 rollback without rehearsal is discovering during an incident that the recovery

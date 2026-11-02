@@ -40,6 +40,12 @@ In the demo, inspect `trace-cost-spike-001` and `trace-retry-loop-001`. The
 metrics remain visible, and the evaluator applies explicit thresholds. This is
 why a dashboard should show both the measurement and the action rule.
 
+These signals become incident triggers when they cross a declared threshold or
+when the evidence path itself fails. The companion
+[AI Evaluation Incident Response guide](https://github.com/julie-elkins/agent-assurance-harness/blob/main/docs/AI_EVALUATION_INCIDENT_RESPONSE.md)
+shows how to distinguish a behavior regression from an evaluator, telemetry,
+case-set, or release-gate failure before choosing containment.
+
 The cost of aggregate metrics without slices is hidden risk. A healthy average
 can hide a high-risk workflow that is slow, expensive, or unsafe every time.
 
