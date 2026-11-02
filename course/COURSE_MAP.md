@@ -170,6 +170,14 @@ coding-agent lab](../labs/optional-codex-agent-adapter/README.md) after the
 agent, observability, security, and release modules. The extension is not a
 numbered lesson and does not change the required 48-lesson path.
 
+### Optional extension — Trace-to-Evaluator Design Skill
+
+Use the [Trace-to-Evaluator Design Skill](TRACE_TO_EVALUATOR_SKILL.md) after
+Lessons 32 and 37. It provides a reusable workflow for profiling approved or
+synthetic traces, identifying recurring failure mechanisms, drafting evaluator
+contracts, creating minimized cases, and validating negative controls. It does
+not add a required lab, execute production tools, or replace human approval.
+
 ## Production pattern
 
 Every lesson will have:

@@ -131,6 +131,10 @@ Optional:
 - [Optional Codex coding-agent evaluation](labs/optional-codex-agent-adapter/README.md) —
   evaluate repository scope, commands, tests, patch evidence, safety, and
   human review without requiring live Codex access.
+- [Optional Trace-to-Evaluator Design Skill](course/TRACE_TO_EVALUATOR_SKILL.md) —
+  inspect approved or synthetic traces, identify recurring failure mechanisms,
+  and draft a use-case-specific evaluator without treating the recommendation
+  as production approval.
 
 ## Quick start
 

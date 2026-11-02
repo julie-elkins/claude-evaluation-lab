@@ -82,6 +82,7 @@ below rather than left implicit in the repository.
 | Privacy boundary | Redaction, retention, access ownership, and public-data limits. | Lesson 35 | Catch a raw-content trace and write a retention rule. |
 | Incident response | Alert thresholds, severity, ownership, containment, rollback, and review. | Lesson 36 | Turn Lab 6 findings into incident records. |
 | Continuous evaluation | Trace sampling, failure classification, safe minimization, regression cases, drift review, and release decisions. | Lessons 37–39 and 46–48 | Generate trace-to-case candidates, recalibrate, and complete the capstone. |
+| Trace-to-evaluator design | Trace evidence profiling, recurring failure mechanisms, evaluator-contract drafting, minimized case creation, negative controls, and human adoption decision. | Lesson 37; optional `TRACE_TO_EVALUATOR_SKILL.md` | Apply the workflow to synthetic Lab 6 traces; real traces remain private and approved. |
 | Live provider extension | Bounded model, request, time, token, spend, privacy, and approval limits. | Lesson 38 and optional adapter | Keep live access separate from the required path. |
 | Security threat model | Assets, actors, entry points, trust boundaries, consequences, and preventive, detective, and response controls. | Lesson 40 and Lab 7 | Draw a synthetic abuse path and inspect control coverage. |
 | Identity and authority | Principal, least privilege, tenant scope, credential isolation, approval, and audit evidence. | Lesson 41 and Lab 7 | Catch over-privileged, secret-exposing, and missing-approval cases. |
