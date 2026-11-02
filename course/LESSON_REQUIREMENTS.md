@@ -75,3 +75,16 @@ Every script needs to answer:
 3. What failure would otherwise look like a pass?
 4. What should the learner run, inspect, or write?
 5. What does the result not prove?
+
+## Optional provider-boundary gate
+
+The optional Codex track is ready only when it:
+
+- treats Codex as a coding-agent boundary rather than only a model provider;
+- evaluates task interpretation, trajectory, commands, scope, safety, diff,
+  tests, terminal state, and completion evidence;
+- includes a deliberately degraded synthetic run;
+- keeps live Codex access optional and bounded;
+- preserves provider-neutral report vocabulary; and
+- states that one live coding-agent run does not prove code quality, security,
+  reliability, or merge readiness.

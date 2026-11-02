@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 LESSON_DIR = ROOT / "course" / "lesson-scripts"
 OUTPUT = ROOT / "GUIDE.md"
+OPTIONAL_CODEX_TRACK = ROOT / "course" / "OPTIONAL_CODEX_TRACK.md"
 
 MODULES = [
     {
@@ -511,7 +512,7 @@ def build() -> str:
         "",
         "## Start here",
         "",
-        "This course is a build-along path for learning how to evaluate and observe LLM applications and agents, using Claude as a running provider example. You will connect a declared decision to representative cases, evidence, evaluator layers, telemetry, security controls, monitoring, and a bounded release action.",
+        "This course is a build-along path for learning how to evaluate and observe LLM applications and agents, using Claude as a running provider example and Codex as an optional coding-agent evaluation boundary. You will connect a declared decision to representative cases, evidence, evaluator layers, telemetry, security controls, monitoring, and a bounded release action.",
         "",
         "If you are new to evaluation work, start with the [fundamentals](FUNDAMENTALS.md) below. If you want the shortest working path, read Module 1 and run [Lab 1](labs/01-semantic-outcomes/README.md) before continuing.",
         "",
@@ -571,6 +572,8 @@ def build() -> str:
         "### Optional live-Claude extension",
         "",
         "The required path stays offline and deterministic. If you want to attach one live Claude observation, use the [optional bounded live-Claude adapter guide](labs/optional-live-claude-adapter/README.md) only after declaring request, time, token, spend, model, revision, and privacy limits.",
+        "",
+        render_lab(OPTIONAL_CODEX_TRACK),
         "",
         "## Fundamentals 📘",
         "",
@@ -723,12 +726,13 @@ def build() -> str:
             "- `labs/06-production-observability/` — offline trace and incident observability lab.",
             "- `labs/07-security-controls/` — synthetic security boundary and assurance controls lab.",
             "- `labs/08-telemetry-vertical-slice/` — local instrumentation, collection, query, and monitor-health lab.",
+            "- `labs/optional-codex-agent-adapter/` — synthetic coding-agent trajectory, diff, test, scope, and safety evaluation lab.",
             "- `course/VISUAL-SYSTEM.md` — colors and diagram conventions.",
             "- `scripts/build_guide.py` — reproducible guide builder.",
             "",
             "## What this course does not prove ⚠️",
             "",
-            "The course uses public synthetic examples and an offline-first path. Its results do not establish live Claude quality, production safety, business impact, or learner adoption outside the declared scenario. The security, observability, and assurance tracks teach production-oriented control paths, not a guarantee that any deployed system is secure, compliant, observable, or operationally complete. A release decision remains bounded by its revision, case set, evidence, evaluator configuration, control coverage, telemetry completeness, and date.",
+            "The course uses public synthetic examples and an offline-first path. Its results do not establish live Claude or Codex quality, production safety, business impact, or learner adoption outside the declared scenario. The security, observability, and assurance tracks teach production-oriented control paths, not a guarantee that any deployed system is secure, compliant, observable, or operationally complete. A release decision remains bounded by its revision, case set, evidence, evaluator configuration, control coverage, telemetry completeness, and date.",
             "",
             "To rebuild this guide after editing the source files:",
             "",

@@ -1,8 +1,9 @@
 # LLM & Agent Evaluation Lab
 
 Hands-on lessons for building and interpreting LLM and agent evaluations, using
-Claude as a running provider example, then connecting those evaluations to
-production-oriented assurance.
+Claude as a running provider example and Codex as an optional coding-agent
+evaluation boundary, then connecting those evaluations to production-oriented
+assurance.
 
 This course uses the public
 [Agent Assurance Harness](https://github.com/julie-elkins/agent-assurance-harness)
@@ -54,7 +55,8 @@ For optional video walkthroughs and related projects, visit
   not required for the introductory labs.
 
 The required labs are offline and synthetic, meaning they use bounded local
-fixtures rather than live Claude requests. They do not require a Claude API key.
+fixtures rather than live Claude or Codex requests. They do not require a
+provider API key.
 
 ## Reuse and licensing
 
@@ -126,6 +128,9 @@ Optional:
 - [Optional live-Claude adapter](labs/optional-live-claude-adapter/README.md) —
   connect one live provider observation to the same evidence contract under explicit
   request, time, token, spend, and privacy limits.
+- [Optional Codex coding-agent evaluation](labs/optional-codex-agent-adapter/README.md) —
+  evaluate repository scope, commands, tests, patch evidence, safety, and
+  human review without requiring live Codex access.
 
 ## Quick start
 
@@ -162,7 +167,7 @@ GUIDE.md      generated learner guide for the full course
 FUNDAMENTALS.md prerequisite concepts and readiness check
 GLOSSARY.md   course vocabulary
 course/       lesson source, map, and reusable templates
-labs/         eight runnable learner labs plus an optional live adapter
+labs/         eight runnable learner labs plus optional provider extensions
 slides/       slide outlines and recording guidance
 scripts/      course validation and setup helpers
 tests/        standard-library contract tests for the course labs
@@ -179,7 +184,7 @@ Available now:
 - a CI contract that rebuilds the guide, runs the contract tests, and runs all
   eight required labs; and
 - links to the companion design guide, Apple lab, harness, website, videos,
-  OpenTelemetry, Phoenix, and Langfuse.
+  OpenTelemetry, Phoenix, Langfuse, and the optional Codex coding-agent track.
 
 Reference courses and standards used for the advanced track:
 

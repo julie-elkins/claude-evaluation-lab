@@ -6,7 +6,7 @@ This is the complete learner-facing course in one reading path. The lesson scrip
 
 ## Start here
 
-This course is a build-along path for learning how to evaluate and observe LLM applications and agents, using Claude as a running provider example. You will connect a declared decision to representative cases, evidence, evaluator layers, telemetry, security controls, monitoring, and a bounded release action.
+This course is a build-along path for learning how to evaluate and observe LLM applications and agents, using Claude as a running provider example and Codex as an optional coding-agent evaluation boundary. You will connect a declared decision to representative cases, evidence, evaluator layers, telemetry, security controls, monitoring, and a bounded release action.
 
 If you are new to evaluation work, start with the [fundamentals](FUNDAMENTALS.md) below. If you want the shortest working path, read Module 1 and run [Lab 1](labs/01-semantic-outcomes/README.md) before continuing.
 
@@ -66,6 +66,65 @@ The required labs are offline and synthetic. They require no Claude API key and 
 ### Optional live-Claude extension
 
 The required path stays offline and deterministic. If you want to attach one live Claude observation, use the [optional bounded live-Claude adapter guide](labs/optional-live-claude-adapter/README.md) only after declaring request, time, token, spend, model, revision, and privacy limits.
+
+### Optional Codex coding-agent extension 🔬
+
+The required course path remains offline, synthetic, and provider-neutral. This
+optional extension adds a second agent boundary: evaluating a coding agent that
+can inspect a repository, choose commands, edit files, run tests, and report
+completion.
+
+Codex is not treated as merely another model provider. A coding-agent result
+includes a repository diff, test evidence, command and tool trajectory, scope
+boundaries, and safety evidence. The same evaluation contract still applies:
+declare the decision, required evidence, failure cost, stopping condition, and
+human owner before inspecting the result.
+
+#### When to use it
+
+Use this extension after Labs 4–8, when you understand trajectories,
+observability, security controls, and release decisions.
+
+Run the [optional Codex coding-agent evaluation lab](labs/optional-codex-agent-adapter/README.md)
+to evaluate a synthetic healthy run and a deliberately degraded run.
+
+#### Coding-agent evaluation dimensions
+
+- [ ] The agent interpreted the declared task.
+- [ ] The agent inspected only the relevant repository scope.
+- [ ] Commands were permitted and bounded.
+- [ ] No destructive command or secret-access attempt occurred.
+- [ ] The changed-file set stayed within scope.
+- [ ] Required tests ran and their results were preserved.
+- [ ] The diff is reviewable and tied to the task.
+- [ ] The agent stopped at the declared terminal state.
+- [ ] The completion claim is supported by evidence.
+- [ ] Human review and rollback remain explicit.
+
+#### Provider-neutral mapping
+
+| Course concept | Coding-agent evidence |
+| --- | --- |
+| Semantic outcome | The requested repository change actually works. |
+| Trajectory | File inspection, commands, edits, tests, retries, and stopping. |
+| Evidence contract | Diff, changed-file list, test result, terminal state, and policy evidence. |
+| Security boundary | No secret access, destructive command, or unauthorized side effect. |
+| Release decision | Merge, hold, revise, or rollback based on the patch evidence. |
+
+#### Optional live path
+
+After the synthetic lab is understood, attach one approved Codex run to the same
+contract. Keep the live path optional because credentials, changing product
+behaviour, repository access, cost, and privacy obligations reduce
+reproducibility.
+
+Use the current [Codex documentation](https://developers.openai.com/codex/)
+and [Codex SDK documentation](https://developers.openai.com/codex/sdk/) for
+current syntax. Preserve provider-specific evidence at the adapter boundary,
+then map it into the course's provider-neutral report vocabulary.
+
+One live coding-agent run does not prove general code quality, security,
+reliability, or merge readiness.
 
 ## Fundamentals 📘
 
@@ -4217,12 +4276,13 @@ The release workflow builds on the public [Agent Assurance Harness](https://gith
 - `labs/06-production-observability/` — offline trace and incident observability lab.
 - `labs/07-security-controls/` — synthetic security boundary and assurance controls lab.
 - `labs/08-telemetry-vertical-slice/` — local instrumentation, collection, query, and monitor-health lab.
+- `labs/optional-codex-agent-adapter/` — synthetic coding-agent trajectory, diff, test, scope, and safety evaluation lab.
 - `course/VISUAL-SYSTEM.md` — colors and diagram conventions.
 - `scripts/build_guide.py` — reproducible guide builder.
 
 ## What this course does not prove ⚠️
 
-The course uses public synthetic examples and an offline-first path. Its results do not establish live Claude quality, production safety, business impact, or learner adoption outside the declared scenario. The security, observability, and assurance tracks teach production-oriented control paths, not a guarantee that any deployed system is secure, compliant, observable, or operationally complete. A release decision remains bounded by its revision, case set, evidence, evaluator configuration, control coverage, telemetry completeness, and date.
+The course uses public synthetic examples and an offline-first path. Its results do not establish live Claude or Codex quality, production safety, business impact, or learner adoption outside the declared scenario. The security, observability, and assurance tracks teach production-oriented control paths, not a guarantee that any deployed system is secure, compliant, observable, or operationally complete. A release decision remains bounded by its revision, case set, evidence, evaluator configuration, control coverage, telemetry completeness, and date.
 
 To rebuild this guide after editing the source files:
 
