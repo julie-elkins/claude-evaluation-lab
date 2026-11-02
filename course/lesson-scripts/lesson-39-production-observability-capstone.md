@@ -16,8 +16,11 @@ create a regression case, and make a bounded operational decision.
 3. **Operational findings** — quality, safety, cost, privacy, and telemetry.
 4. **Incident to regression** — preserve the lesson without copying the data.
 5. **Offline-to-online-to-offline assurance loop**.
-6. **Shadow and A/B evaluation boundaries**.
-7. **Final decision** — release, hold, revise, rollback, or escalate.
+6. **Online evaluator to action** — score, filter, review, investigate, and
+   promote.
+7. **Scale and triage** — sampling, grouping, prioritization, and cost control.
+8. **Shadow and A/B evaluation boundaries**.
+9. **Final decision** — release, hold, revise, rollback, or escalate.
 
 ## Speaker script
 
@@ -46,6 +49,26 @@ review candidate failures, minimize and sanitize the evidence, and add the
 appropriate case to a regression or held-out set. Rerun the offline evaluation
 before using the new evidence to support the next release decision.
 
+In a production-oriented system, the online evaluator should lead to an
+explicit action path. A trace arrives, an online evaluator scores or classifies
+it, and an automation filters the result using a declared rule. The automation
+may route the trace to human review, mark it as a dataset candidate, open an
+investigation, or raise an alert. Preserve the input signal, evaluator
+revision, rule, reason, owner, and resulting status; an automated route is not
+the same thing as a verified label.
+
+At larger volumes, add controls for sampling, grouping or clustering related
+failure mechanisms, prioritizing high-risk cases, limiting evaluator cost and
+latency, managing human-review queues, and defining when a reviewed case may
+enter a regression or held-out dataset. The required lab remains small and
+offline. This is the production design extension learners should be able to
+describe before adopting a hosted backend.
+
+Tools such as LangSmith, Phoenix, or Langfuse can host pieces of this workflow,
+including traces, threads, datasets, evaluators, feedback, and automations.
+The platform is an implementation choice; it does not establish that the
+evaluator is valid or that the evidence supports a release decision.
+
 There are two useful online comparison patterns. In **shadow testing**, a
 candidate receives copied traffic but its result is not shown to the user and
 its tools cannot create side effects. Shadow evidence can reveal unexpected
@@ -72,6 +95,11 @@ to action.
 - State explicitly that the run is synthetic and offline.
 - Show the offline-to-online-to-offline loop as a design pattern, not as a live
   traffic experiment.
+- Show the online-evaluator action loop with a synthetic trace, a declared
+  filter, and one routed action.
+- Discuss sampling, failure grouping, high-risk prioritization, evaluator
+  volume/cost limits, human-review queues, and dataset-promotion rules as
+  optional production-scale extensions.
 - Compare shadow testing and A/B testing in a short boundary table:
   who sees the result, whether side effects are allowed, what evidence is
   collected, and what safety controls are required.
@@ -90,8 +118,11 @@ Complete a capstone report with:
 6. incident findings and owners;
 7. regression cases created;
 8. online-signal interpretation and feedback limitations;
-9. release, hold, revise, rollback, or escalate action; and
-10. limitations and next evidence.
+9. online evaluator revision, routing rule, action owner, and resulting status;
+10. scale controls for sampling, prioritization, review queues, and evaluator
+    cost;
+11. release, hold, revise, rollback, or escalate action; and
+12. limitations and next evidence.
 
 > **Learner checkpoint — review the capstone**
 >

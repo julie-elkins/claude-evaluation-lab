@@ -184,7 +184,8 @@ Available now:
 - a CI contract that rebuilds the guide, runs the contract tests, and runs all
   eight required labs; and
 - links to the companion design guide, Apple lab, harness, website, videos,
-  OpenTelemetry, Phoenix, Langfuse, and the optional Codex coding-agent track.
+  OpenTelemetry, Phoenix, Langfuse, LangSmith, and the optional Codex
+  coding-agent track.
 
 Reference courses and standards used for the advanced track:
 
@@ -194,6 +195,10 @@ Reference courses and standards used for the advanced track:
   — trace-to-evaluation and component-evaluation patterns.
 - [Hugging Face Agents Course](https://huggingface.co/learn/agents-course/bonus-unit2/what-is-agent-observability-and-evaluation)
   — the observability and evaluation distinction.
+- [Building Reliable Agents with LangSmith](https://academy.langchain.com/courses/take/building-reliable-agents)
+  — tracing, thread grouping, offline and online evaluation, evaluators, and
+  production feedback loops. This is an optional comparison point, not a
+  required hosted-backend lab.
 - [OWASP GenAI Security Project](https://genai.owasp.org/llm-top-10/) —
   security threat categories for generative AI systems.
 - [NIST Generative AI Profile](https://www.nist.gov/itl/ai-risk-management-framework/ai-rmf-generative-ai-profile)

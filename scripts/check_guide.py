@@ -89,6 +89,7 @@ def main() -> int:
         "https://opentelemetry.io/docs/specs/semconv/gen-ai/",
         "https://github.com/Arize-ai/phoenix",
         "https://github.com/langfuse/langfuse",
+        "https://docs.langchain.com/langsmith/observability-quickstart",
         "https://developers.openai.com/codex/",
         "https://developers.openai.com/codex/sdk/",
     ]
@@ -97,6 +98,25 @@ def main() -> int:
         print("Missing required guide links:", file=sys.stderr)
         for link in missing:
             print(f"  {link}", file=sys.stderr)
+        return 1
+
+    required_concepts = [
+        "creating an evaluation",
+        "agent development lifecycle",
+        "thread or session evaluation",
+        "online evaluator",
+        "durable execution",
+        "sandboxing",
+        "context management",
+        "human-in-the-loop",
+    ]
+    missing_concepts = [
+        concept for concept in required_concepts if concept not in actual.lower()
+    ]
+    if missing_concepts:
+        print("Missing required guide concepts:", file=sys.stderr)
+        for concept in missing_concepts:
+            print(f"  {concept}", file=sys.stderr)
         return 1
 
     print("GUIDE.md is current and contains all 48 lessons.")

@@ -13,10 +13,11 @@ By the end of this lesson, you can evaluate an agent trajectory, meaning the seq
 1. **The final answer is not the whole run** — observe, plan, act, recover.
 2. **The environment is part of the trajectory** — tools, context, memory, policy, and state.
 3. **Trajectory evidence** — decisions, tools, arguments, state, and terminal outcome.
-4. **Recovery versus retry** — a retry is not recovery unless the failure is addressed.
-5. **Stopping criteria** — define when the run completes, refuses, fails, or escalates.
-6. **Demo: guarded and unguarded paths**.
-7. **Practice: annotate a trajectory and choose the final decision**.
+4. **Evaluation scope** — step, end-to-end, trajectory, and thread/session.
+5. **Recovery versus retry** — a retry is not recovery unless the failure is addressed.
+6. **Stopping criteria** — define when the run completes, refuses, fails, or escalates.
+7. **Demo: guarded and unguarded paths**.
+8. **Practice: annotate a trajectory and choose the final decision**.
 
 ## Speaker script
 
@@ -29,6 +30,18 @@ trajectory cannot be compared fairly with another run, and a premature stop can
 look like successful completion.
 
 Evaluate the trajectory in stages: observation, planning, action, result, and recovery. Record which evidence was available at each stage, which tool was selected, what arguments were sent, how the result changed the next step, and whether the agent reached a valid terminal state.
+
+Choose the evaluation scope deliberately. A step or unit evaluation checks one
+model call, tool call, retrieval result, or state transition. An end-to-end
+evaluation checks the complete task outcome. A trajectory evaluation checks the
+ordered path. A thread or session evaluation groups multiple turns into one
+continuing conversation or workflow session.
+
+Thread-level evaluation matters when state persists across turns. Check whether
+the agent remembers an earlier constraint, preserves authorization, handles
+conflicting or stale memory, avoids repeating a side effect, and reaches a
+conversation-level terminal state. One turn can look correct while the thread
+fails because an earlier error contaminates later decisions.
 
 Distinguish retry from recovery. A retry repeats an attempt. Recovery changes the plan or escalates because the previous attempt failed. Repeated retries can waste budget, duplicate side effects, or hide the fact that the agent has no safe next step.
 
@@ -53,7 +66,10 @@ Annotate a five-step synthetic trajectory with:
 `decision`, `tool`, `arguments`, `result`, `recovery_action`,
 `stopping_criteria`, `terminal_state`.
 
-Choose pass, fail, or escalate. Explain whether the final answer would change your decision and why.
+Add `thread_id`, `turn_index`, `conversation_terminal_state`, and the memory
+or state carried from the previous turn. Choose whether you are evaluating a
+step, end-to-end task, trajectory, or thread/session. Then choose pass, fail, or
+escalate. Explain whether the final answer would change your decision and why.
 
 ## What this lesson does not prove
 

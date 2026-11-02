@@ -13,8 +13,11 @@ By the end of this lesson, you can connect evaluation evidence to a revision, re
 1. **An evaluation is a change decision** — revision, release, hold, or rollback.
 2. **Revision binding** — identify exactly what was tested.
 3. **Rollback rehearsal** — prove the recovery path before release.
-4. **Monitoring** — watch for drift, new failures, and evidence gaps.
-5. **Demo: inspect a run manifest and rollback record**.
+4. **Deployment readiness is broader than an evaluation pass**.
+5. **Runtime controls** — durable execution, sandboxing, context management,
+   and human approval.
+6. **Monitoring** — watch for drift, new failures, and evidence gaps.
+7. **Demo: inspect a run manifest and rollback record**.
 
 ## Speaker script
 
@@ -23,6 +26,19 @@ An evaluation report matters because it supports a change decision. The possible
 Bind the evidence to a precise revision. Record the model or prompt version, tool catalog, evaluator configuration, case set, harness revision, and run timestamp. Without revision binding, a later reader cannot tell whether the evidence applies to the system that is actually running.
 
 Rollback is the ability to return to a known acceptable state. A rollback rehearsal is a controlled test that proves the path exists and identifies who can trigger it. Rollback does not replace prevention; it limits the duration and impact of a bad release.
+
+Deployment readiness adds runtime questions that an offline result cannot
+answer. **Durable execution** means resuming from a checkpoint without
+repeating unsafe side effects. **Sandboxing** means isolating tools with
+restricted files, network access, credentials, and permissions. **Context
+management** controls memory, retrieved evidence, history, and instructions
+passed to the agent. **Human-in-the-loop** means a person reviews or approves a
+defined high-risk action before the side effect occurs.
+
+These controls should appear in the release record with the evidence owner and
+the limitation that remains. A passing evaluation can support a release
+decision, but it does not prove that the deployed runtime enforces every
+control.
 
 Monitoring is the ongoing observation of signals after release. Watch for new failure categories, changes in case mix, rising escalation, tool errors, latency or cost shifts, and evidence that the evaluator no longer reflects the workflow. Monitoring should include an owner and an action threshold.
 
@@ -43,7 +59,9 @@ Draft a release record with:
 
 `revision`, `case_set`, `evaluator_revision`, `blocking_findings`, `decision`, `rollback_trigger`, `rollback_owner`, `monitoring_signal`, `review_date`.
 
-Add one condition that would move the decision from release to hold.
+Add one condition that would move the decision from release to hold. Then name
+one runtime control—durable execution, sandboxing, context management, or human
+approval—and the evidence needed to verify it.
 
 ## What this lesson does not prove
 

@@ -13,13 +13,15 @@ identify when missing telemetry makes a result not evaluated.
 
 1. **Trace hierarchy** — session, turn, workflow, model, tool, state, and
    terminal event.
-2. **Required identity** — trace, session, workflow, model, agent, and
+2. **Turn, thread, and session identity** — group the evidence at the scope
+   being evaluated.
+3. **Required identity** — trace, session, workflow, model, agent, and
    evaluator revisions.
-3. **Required path evidence** — observations, decisions, tools, arguments,
+4. **Required path evidence** — observations, decisions, tools, arguments,
    results, and state transitions.
-4. **Completeness is a control** — missing terminal or tool evidence stays
+5. **Completeness is a control** — missing terminal or tool evidence stays
    visible.
-5. **Demo: inspect the incomplete Lab 6 trace**.
+6. **Demo: inspect the incomplete Lab 6 trace**.
 
 ## Speaker script
 
@@ -33,6 +35,13 @@ name, model revision, agent or policy revision, and evaluator revision. These
 fields bind the evidence to the system that produced it. Without revision
 binding, a trace from yesterday can be mistaken for evidence about today's
 workflow.
+
+Use `thread_id`, `turn_index`, or an equivalent identity when several turns
+belong to one continuing conversation. A thread-level evaluation may need to
+check memory consistency, cross-turn authorization, delayed outcomes, repeated
+side effects, and conversation termination. Preserve the turn-level terminal
+event as well as the conversation-level terminal outcome so a missing later
+event cannot disappear inside an apparently healthy session.
 
 The trace also needs the path: what context was available, what decision was
 made, which tool was selected, what arguments were sent, what result returned,
@@ -61,7 +70,8 @@ Write a trace contract for one workflow with these fields:
 
 `trace_id`, `session_id`, `workflow_name`, `model_revision`,
 `agent_revision`, `span_id`, `span_kind`, `terminal_state`,
-`redaction_status`.
+`redaction_status`, `thread_id`, `turn_index`,
+`conversation_terminal_state`, `memory_revision`.
 
 Mark each field as required, conditional, or forbidden to retain in raw form.
 

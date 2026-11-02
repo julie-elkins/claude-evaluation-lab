@@ -8,6 +8,18 @@ term matters to an evaluation decision.
 A system that can observe context, choose actions, call tools, and continue
 until it reaches a stopping condition.
 
+## Agent development lifecycle
+
+The sequence of defining, building, testing, releasing, deploying, monitoring,
+and learning from an agent workflow. Evaluation evidence changes with the
+decision in each phase.
+
+## Automation
+
+A rule that performs a follow-up action when evidence meets a condition, such
+as routing a trace to human review or creating an investigation candidate.
+Automation is not ground truth; its rule, reason, and owner must remain visible.
+
 ## Audit event
 
 A record of who or what accessed, approved, changed, or deleted an important
@@ -36,6 +48,12 @@ measuring the wrong construct.
 A change in inputs, system behavior, evaluator behavior, or the meaning of an
 acceptable outcome that can make an earlier measurement less reliable.
 
+## Durable execution
+
+Runtime behavior that resumes from a checkpoint after a failure without
+repeating unsafe side effects. An offline evaluation cannot prove that a
+deployed runtime resumes safely.
+
 ## Effect size
 
 The amount by which a measured result changes between a baseline and a variant.
@@ -47,6 +65,18 @@ matters to the decision.
 The bounded context in which an agent runs, including available tools, data,
 policies, permissions, memory, and state. Changing the environment can change
 the meaning of an evaluation result.
+
+## Context management
+
+Control of the memory, retrieved evidence, conversation history, and
+instructions passed to an agent. The goal is to keep stale, conflicting, or
+unauthorized context from silently changing the decision.
+
+## Sandboxing
+
+Isolating a tool or agent runtime with restricted files, network access,
+credentials, and permissions. A recorded sandbox field does not prove runtime
+enforcement.
 
 ## Failure analysis
 
@@ -207,6 +237,13 @@ refused, skipped, or not evaluated.
 Recorded traces, events, and metrics emitted by a running system. Telemetry is
 evidence about execution, but it may require evaluation before it supports a
 release decision.
+
+## Thread-level evaluation
+
+Evaluation of multiple turns grouped into one continuing conversation or
+workflow session. It can reveal memory inconsistency, cross-turn authorization
+failures, repeated side effects, delayed outcomes, or missing conversation
+termination that a single-turn check would miss.
 
 ## Trace
 

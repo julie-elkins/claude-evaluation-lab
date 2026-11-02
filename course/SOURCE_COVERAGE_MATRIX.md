@@ -17,8 +17,10 @@ left as assumed measurement vocabulary.
 | Foundation | Learner needs to understand | Course location | Hands-on treatment |
 | --- | --- | --- | --- |
 | Agent system under test | Request, environment, context and memory, tools, stopping criteria, scorer, trajectory, and final outcome. | Fundamentals; Lessons 5 and 25 | Write a case contract and annotate a bounded trajectory. |
+| Agent development lifecycle | Define, build, test, release, deploy, monitor, and learn; the evidence and decision change by phase. | Fundamentals; Lessons 1, 29, 39, and 46 | Place a discovered failure in the lifecycle and turn it into a durable case. |
 | Measurement foundations | Construct, validity, reliability, sensitivity, specificity, false positives, false negatives, and calibration. | Fundamentals; Lessons 7–9, 14, 16–18 | Compare workflow correctness, evaluator correctness, and evidence sufficiency. |
 | Retrieval, memory, and environment | Retrieval recall, context relevance, context sufficiency, grounding, memory read/write, stale state, and environment reset. | Fundamentals; Lessons 19, 24, and 25 | Build a retrieval-and-claim table and compare before/after memory and state. |
+| Evaluation scope | Step/unit, end-to-end, trajectory, and thread/session evaluation; turn-level success can differ from conversation-level success. | Fundamentals; Lessons 25 and 32 | Annotate a multi-turn synthetic trajectory with thread identity, memory, and conversation termination. |
 | Sampling and uncertainty | Target population, case count, repeated runs, confidence intervals, effect size, practical significance, and high-risk slices. | Fundamentals; Lessons 6, 9, 27–30, and 46 | Write a matched comparison and interpret aggregate and slice results. |
 | Failure analysis | Classify whether a finding came from data, model, prompt, retrieval, tool, policy, evaluator, or telemetry. | Lessons 29–30, 36–39, and 48 | Turn a failed case into a bounded cause hypothesis, owner, and next action. |
 
@@ -58,11 +60,15 @@ below rather than left implicit in the repository.
 | Deterministic evaluation | Correctness, schema, tool choice, arguments, authorization, state change, latency, cost, stop conditions. | Lessons 10, 23–25, and 28 | Synthetic scenario packs and teaching lab |
 | Semantic evaluation | Groundedness, relevance, unsupported claims, grader validity, and explicit abstention. | Lessons 13–22 | Content-assurance packs and evaluator checklist |
 | Evaluator layers | Deterministic checks cover schemas, tools, authorization, evidence, latency, and cost; semantic or agent grading must be calibrated or abstain. | Lessons 17 and 28 | Latest `Evaluator layers` checklist row |
-| Behavioral and trajectory evaluation | Multi-turn state, recovery, consistency, safety, and prompt injection. | Lessons 22–25 | Scenario packs, shadow execution, and agent workflow lab |
+| Behavioral and trajectory evaluation | Multi-turn state, recovery, consistency, safety, prompt injection, thread contamination, and conversation termination. | Lessons 22–25 and 32 | Scenario packs, shadow execution, and agent workflow lab |
 | Trace and observability | Trace completeness, revision binding, privacy boundary, and visible skipped/refused/failed states. | Lessons 4, 28–29, and 31–48 | Run manifests, evidence provenance, Labs 6–8 |
 | Controlled comparison | Correctness, safety, tool-call correctness, latency, cost, and user outcomes remain separate; thresholds and rerun policy precede interpretation. | Lessons 28–30 | Latest `Controlled variant comparison` checklist row |
 | Change management | Revision impact, stale evidence, reauthorization, release ownership, containment, and rollback. | Lesson 29 | Change-impact examples, reauthorization, ship gate, rollback rehearsal |
 | Monitoring and feedback | Production feedback, user outcomes, freshness, drift, telemetry health, and limitations. | Lessons 29 and 34–48 | Monitorability workbench, Labs 6–8, trace-to-case loop, and checklist |
+| Online evaluator action loop | Score or classify arriving traces, filter by a declared rule, and route to human review, dataset candidates, investigation, or alert. | Lessons 39 and 46; Fundamentals | Use a synthetic routing record that preserves evaluator revision, rule, reason, owner, and status. |
+| Production-scale triage | Sampling, grouping failure mechanisms, high-risk prioritization, evaluator volume/cost controls, human-review queues, and dataset-promotion rules. | Lessons 39 and 46 | Design an optional scale extension without making live traffic or a hosted backend required. |
+| Deployment readiness boundaries | Durable execution, sandboxing, context management, human approval, rollback, and trace completeness are runtime controls beyond an offline pass. | Fundamentals; Lessons 29, 41, 42, and 47 | Add one runtime control and its evidence to a release record. |
+| Platform-neutral implementation mapping | LangSmith, Phoenix, Langfuse, and OpenTelemetry can implement parts of the workflow; platform presence does not establish evaluator validity. | Lessons 32–34 and 39; README | Map concepts to optional backends while keeping the required learner path local and synthetic. |
 | Teaching workflow | Demo, hands-on lab, quick reference, feedback signal, and human approval boundary. | Every module and capstone | `SHOWCASE.md` launch-to-field path |
 
 ## Production observability coverage

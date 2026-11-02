@@ -44,6 +44,103 @@ defined capability such as a lookup, file operation, or state-changing action.
 The evaluation must inspect more than the final text when the path itself can
 create risk.
 
+### Creating an evaluation
+
+Creating an evaluation follows a four-step flow. The order matters because a
+dataset without a decision, or a score without a declared evaluator, can create
+confidence without usable evidence.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["1. Decide<br/>what to measure"] --> B["2. Create<br/>the dataset"]
+    B --> C["3. Create<br/>the evaluator"]
+    C --> D["4. Run<br/>the experiment"]
+    D --> E["Interpret evidence<br/>and act"]
+    classDef cream fill:#F7F1E8,stroke:#16324F,color:#16324F,stroke-width:2px
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    class A cream
+    class B blue
+    class C orange
+    class D sage
+    class E orange
+```
+
+1. **Decide on the evaluation.** Name the task, decision, failure cost, and
+   evidence that would show whether the agent is working well. This may include
+   response quality, task completion, tool correctness, latency, cost, safety,
+   or a combination of dimensions.
+2. **Create a dataset.** Build a versioned collection of cases that represents
+   the scenarios the decision must cover. Include inputs, expected behavior,
+   risk, environment, stopping criteria, and useful metadata. Keep golden,
+   calibration, regression, and held-out roles distinct.
+3. **Create an evaluator.** Define the logic that turns an observed result into
+   evidence. Use code-based checks for fixed requirements, an LLM-as-a-judge for
+   explicitly bounded semantic criteria, and human review for ambiguity,
+   high-impact cases, and calibration. Strong evaluation plans combine layers
+   rather than trusting one score.
+4. **Run an experiment.** Execute the dataset against the agent, apply the
+   evaluator to each result, preserve case-level findings, and aggregate only
+   after important failures remain visible. Compare revisions over time with
+   matched cases, risk slices, repeated runs, and a declared decision rule.
+
+The experiment produces evidence for a decision; it does not automatically prove
+general quality or production readiness. Record the agent, model, prompt, tool,
+case-set, evaluator, and environment revisions so another person can determine
+what the result actually applies to.
+
+### The agent development lifecycle
+
+The **agent development lifecycle (ADLC)** is the sequence of decisions that
+takes an agent from an idea to a monitored system and then turns field findings
+back into better tests. Evaluation belongs in every phase, but the evidence and
+decision change by phase.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Define<br/>task and decision"] --> B["Build<br/>workflow and controls"]
+    B --> C["Test<br/>cases and evaluators"]
+    C --> D["Release<br/>approval and rollback"]
+    D --> E["Deploy<br/>bounded exposure"]
+    E --> F["Monitor<br/>traces and feedback"]
+    F --> G["Learn<br/>new evaluation cases"]
+    G --> C
+    classDef cream fill:#F7F1E8,stroke:#16324F,color:#16324F,stroke-width:2px
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    class A cream
+    class B,C blue
+    class D,E orange
+    class F,G sage
+```
+
+In this course:
+
+- **Define** names the task, system under test, decision, failure cost, and
+  evidence contract.
+- **Build** makes the workflow, tools, context, memory, permissions, and
+  stopping rules inspectable.
+- **Test** uses representative cases, deterministic checks, semantic
+  evaluators, human calibration, and negative controls.
+- **Release** binds results to revisions and names approval, rollback, and
+  monitoring conditions.
+- **Deploy** means exposing a bounded revision to a runtime environment; it is
+  not established merely because an offline score passed.
+- **Monitor** uses traces, operational signals, online evaluators, and feedback
+  to find changes and failures.
+- **Learn** minimizes safe findings into regression or held-out cases so a
+  production observation can improve the next offline decision.
+
+Manual testing is useful for discovering failures. A **durable evaluation**
+turns a discovered failure into a versioned case, an evaluator, a repeatable
+experiment, and a declared action. The course uses manual inspection first,
+then makes important observations repeatable instead of leaving them in a
+one-time notebook or conversation.
+
 ### Agent system under test
 
 Before choosing a metric, name the system and the unit of evaluation. For an
@@ -88,6 +185,25 @@ result, and decision. Evidence is the recorded information that supports or
 limits the decision. A semantic outcome is whether the requested task actually
 reached its declared goal; it is different from transport status, which only
 says that a request returned successfully.
+
+Evaluation has several useful scopes:
+
+- **Step or unit evaluation** checks one model call, tool call, retrieval step,
+  state transition, or evaluator result.
+- **End-to-end evaluation** checks whether the complete workflow reached its
+  declared outcome.
+- **Trajectory evaluation** checks the ordered path of observations, decisions,
+  tools, results, retries, recovery, and stopping.
+- **Thread or session evaluation** checks several turns grouped into one
+  continuing conversation or workflow session. It can test memory consistency,
+  cross-turn authorization, conversation termination, delayed outcomes, and
+  whether an early failure contaminates later turns.
+
+A **thread** is the identity that groups related turns into one continuing
+conversation or workflow session. A final answer can pass at turn level while
+the thread fails because the agent forgot an earlier constraint, repeated a
+side effect, or never reached a valid conversation-level terminal state. Record
+the scope being evaluated rather than treating every trace as an isolated turn.
 
 ### Measurement foundations
 
@@ -226,6 +342,35 @@ flowchart LR
     class D,E sage
 ```
 
+Online evaluation needs an action path, not only a score:
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Trace arrives"] --> B["Online evaluator<br/>scores or classifies"]
+    B --> C["Automation<br/>filters by rule"]
+    C --> D["Human review"]
+    C --> E["Dataset candidate"]
+    C --> F["Investigation or alert"]
+    D --> G["Safe offline case"]
+    E --> G
+    G --> H["Regression or held-out rerun"]
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
+    class A blue
+    class B,C orange
+    class D,E,F sage
+    class G,H orange
+```
+
+An **online evaluator** applies a declared rule to a live or shadow trace as it
+arrives. An **automation** is a rule that performs a follow-up action when
+evidence meets a condition. The action may route a case to human review, mark a
+candidate for a dataset, open an investigation, or raise an alert. The
+automation is not ground truth: it must preserve the signal, rule, owner, and
+reason so the action can be reviewed.
+
 Use this loop to connect production observations back to repeatable
 measurement:
 
@@ -269,6 +414,24 @@ An operational metric is a measurement of how the system ran. A service-level
 objective, or SLO, is an explicit target for a signal over a defined window.
 Neither one replaces task-quality or safety evidence. A fast unauthorized tool
 call is still a failure.
+
+Deployment readiness has runtime controls that an offline evaluation cannot
+prove by itself:
+
+- **Durable execution** means the workflow can resume from a checkpoint after a
+  failure without repeating unsafe side effects.
+- **Sandboxing** means running tools in an isolated environment with restricted
+  files, network access, credentials, and permissions.
+- **Context management** means controlling the memory, retrieved evidence,
+  history, and instructions passed to the agent so stale or conflicting
+  context remains visible.
+- **Human-in-the-loop** means a person reviews or approves a defined high-risk
+  action before it can create the side effect.
+
+These controls belong in the release and deployment decision, along with
+rollback, trace completeness, and online-action ownership. This course teaches
+how to evaluate the evidence those controls would need; its synthetic labs do
+not prove that a deployed runtime enforces them.
 
 ### Privacy and incident basics
 
@@ -430,6 +593,9 @@ live requests.
 > 7. How would you distinguish workflow correctness from evaluator correctness?
 > 8. What retrieval, memory, or state evidence could be missing?
 > 9. What uncertainty or high-risk slice could change the decision?
+> 10. Is this a step, end-to-end, trajectory, or thread/session evaluation?
+> 11. What runtime control—durable execution, sandboxing, context management, or
+>     human approval—would the release decision also need to verify?
 
 If you cannot answer one of these, that is not a reason to stop. It tells you
 which question to make explicit while you work through the first module.
