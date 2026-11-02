@@ -46,6 +46,7 @@ def main() -> int:
         "\n## Lab 6: Observe the agent before you trust the dashboard 🔬": 1,
         "\n## Lab 7: Test the agent security boundary 🛡️": 1,
         "\n## Lab 8: Build the local telemetry vertical slice 📡": 1,
+        "\n### Optional Codex coding-agent extension 🔬": 1,
         "\n##### Terminal states 🚦": 1,
     }
     for marker, expected_count in visual_sections.items():
@@ -76,6 +77,7 @@ def main() -> int:
         "labs/07-security-controls/README.md",
         "labs/08-telemetry-vertical-slice/README.md",
         "labs/optional-live-claude-adapter/README.md",
+        "labs/optional-codex-agent-adapter/README.md",
         "https://github.com/julie-elkins/claude-architect-lab",
         "https://github.com/julie-elkins/agent-assurance-harness",
         "https://github.com/julie-elkins/agent-systems-design-guide",
@@ -86,6 +88,8 @@ def main() -> int:
         "https://opentelemetry.io/docs/specs/semconv/gen-ai/",
         "https://github.com/Arize-ai/phoenix",
         "https://github.com/langfuse/langfuse",
+        "https://developers.openai.com/codex/",
+        "https://developers.openai.com/codex/sdk/",
     ]
     missing = [link for link in required_links if link not in actual]
     if missing:

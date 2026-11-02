@@ -3,7 +3,8 @@
 Start with the generated [learner guide](../GUIDE.md). It contains the
 fundamentals, all 48 learner-facing lessons, all eight runnable labs, diagrams, and
 module practice checks in one reading path. This file remains the compact
-authoring map; the lesson scripts remain the editable recording source.
+authoring map; the lesson scripts and optional-track source remain the editable
+recording source.
 
 ## Working title
 
@@ -19,6 +20,10 @@ contracts are designed to remain useful across providers. The advanced track
 connects those evaluations to production-oriented assurance: telemetry, security
 controls, monitoring, incident response, and the trace-to-test-case feedback
 loop.
+
+The optional Codex track adds a coding-agent boundary. It evaluates repository
+scope, command and tool trajectory, patch evidence, tests, safety controls, and
+human review without making live Codex access a prerequisite.
 
 ## Audience and prerequisites
 
@@ -148,6 +153,13 @@ protect telemetry evidence, and detect monitoring-path failure.
 Hands-on outcome: follow telemetry from instrumentation to action, test drift and
 side-effect controls, and produce a security-aware assurance decision.
 
+### Optional extension — Codex coding-agent evaluation
+
+Use the [optional Codex track](OPTIONAL_CODEX_TRACK.md) and [synthetic
+coding-agent lab](../labs/optional-codex-agent-adapter/README.md) after the
+agent, observability, security, and release modules. The extension is not a
+numbered lesson and does not change the required 48-lesson path.
+
 ## Production pattern
 
 Every lesson will have:
@@ -194,6 +206,7 @@ checks, not copied course content.
 - [Apple Platform Agent Quality Lab](https://github.com/julie-elkins/apple-platform-agent-quality-lab) — native macOS implementation of the evaluation boundary.
 - [OpenTelemetry GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/gen-ai/) — provider-neutral trace and metric vocabulary; verify the current convention status before recording.
 - [Phoenix](https://github.com/Arize-ai/phoenix) and [Langfuse](https://github.com/langfuse/langfuse) — optional observability backends for comparing local trace workflows.
+- [Codex](https://developers.openai.com/codex/) and the [Codex SDK](https://developers.openai.com/codex/sdk/) — optional coding-agent and programmatic integration references.
 - [Stanford Engineering AI Agents](https://cs329z.stanford.edu/) — agent evaluation and reliability framing.
 - [Evaluating AI Agents](https://www.deeplearning.ai/courses/evaluating-ai-agents) — trace-to-evaluation and component-evaluation patterns.
 - [Hugging Face Agents Course](https://huggingface.co/learn/agents-course/bonus-unit2/what-is-agent-observability-and-evaluation) — observability and evaluation distinction.
