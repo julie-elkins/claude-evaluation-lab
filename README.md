@@ -227,6 +227,19 @@ Reference courses and standards used for the advanced track:
 - [NIST Generative AI Profile](https://www.nist.gov/itl/ai-risk-management-framework/ai-rmf-generative-ai-profile)
   — risk management and post-deployment assurance.
 
+Research reading that informs the evaluation design:
+
+- [Measurement to Meaning: A Validity-Centered Framework for AI Evaluation](https://arxiv.org/abs/2505.10573)
+  — construct validity, decision scope, and evidence boundaries.
+- [Establishing Best Practices for Building Rigorous Agentic Benchmarks and the Agentic Benchmark Checklist (ABC)](https://arxiv.org/abs/2507.02825)
+  — task setup, reward design, environment, benchmark, and reporting discipline.
+- [No Free Labels: Limitations of LLM-as-a-Judge Without Human Grounding](https://arxiv.org/abs/2503.05061)
+  — human grounding and calibration for model-based judges.
+- [Quantifying Variance in Evaluation Benchmarks](https://arxiv.org/abs/2406.10229)
+  — repeated measurement and uncertainty.
+- [Agent Evaluation Reliability](https://arxiv.org/abs/2610.00651)
+  — why more cases do not automatically repair a weak instrument.
+
 Separate recording deliverable:
 
 - the full editable PowerPoint deck and lesson-by-lesson recording assets are

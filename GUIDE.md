@@ -58,6 +58,17 @@ The required labs are offline and synthetic. They require no Claude API key and 
 - [LangSmith evaluation](https://docs.langchain.com/langsmith/evaluation), [automation rules](https://docs.langchain.com/langsmith/rules), and [annotation queues](https://docs.langchain.com/langsmith/annotation-queues) — optional review and dataset-promotion implementation references.
 - [LangGraph](https://docs.langchain.com/langgraph) — durable execution and human-in-the-loop implementation reference.
 
+### Evaluation research reading
+
+- [Measurement to Meaning: A Validity-Centered Framework for AI Evaluation](https://arxiv.org/abs/2505.10573) — construct validity, decision scope, and evidence boundaries.
+- [Establishing Best Practices for Building Rigorous Agentic Benchmarks and the Agentic Benchmark Checklist (ABC)](https://arxiv.org/abs/2507.02825) — task setup, reward design, environment, benchmark, and reporting discipline.
+- [No Free Labels: Limitations of LLM-as-a-Judge Without Human Grounding](https://arxiv.org/abs/2503.05061) — why model-based judges need human grounding and calibration.
+- [Quantifying Variance in Evaluation Benchmarks](https://arxiv.org/abs/2406.10229) — why repeated measurement and uncertainty matter before interpreting small differences.
+- [Agent Evaluation Reliability](https://arxiv.org/abs/2610.00651) — why adding tasks does not automatically repair an unreliable evaluation instrument.
+- [τ-bench](https://arxiv.org/abs/2406.12045) — tool-agent-user interaction and stateful evaluation.
+- [Lost in Simulation](https://arxiv.org/abs/2601.17087) — limitations of treating simulated users as human-user evidence.
+- [Beyond Function Calling](https://arxiv.org/abs/2606.25819v1) — tool-environment unreliability as part of the evaluation boundary.
+
 ### Runnable labs 🔬
 
 - [Lab 1: Transport success is not task success](labs/01-semantic-outcomes/README.md)
