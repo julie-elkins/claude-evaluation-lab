@@ -92,7 +92,8 @@ calibration evidence, and a deliberately degraded case.
 
 Hands-on outcome: evaluate an agent workflow at step, end-to-end, trajectory,
 and thread/session scope without allowing a plausible final answer to hide a
-failed path, unsafe action, or missing evidence.
+failed path, unsafe action, or missing evidence; compare flat and multi-agent
+paths using end-to-end evidence.
 
 ### Module 5 — Regression and release decisions
 
@@ -102,9 +103,10 @@ failed path, unsafe action, or missing evidence.
 29. Revision binding, drift, release decisions, rollback, and monitoring
 30. Capstone: produce an evaluation report and release recommendation
 
-Hands-on outcome: run a bounded comparison, check deployment-readiness
-boundaries, and write a decision that names blocking failures, uncertainty, and
-limitations.
+Hands-on outcome: run a bounded comparison, re-test model and architecture
+changes, use replay as a diagnostic filter, require full validation, check
+deployment-readiness boundaries, and write a decision that names blocking
+failures, uncertainty, and limitations.
 
 ### Module 6 — Production observability foundations
 
@@ -137,9 +139,11 @@ retain.
 38. Connecting a bounded live Claude observation
 39. Production observability capstone
 
-Hands-on outcome: investigate a synthetic production trace, route an online
-evaluator finding to a declared action, turn the failure into a regression case,
-and make a bounded release or rollback decision.
+Hands-on outcome: investigate a synthetic production trace, classify a
+root-cause hypothesis, separate replay from full validation, route an online
+evaluator finding to a declared action, compare architecture options when
+relevant, turn the failure into a regression case, and make a bounded release or
+rollback decision.
 
 ### Module 10 — Security and assurance controls
 
@@ -218,15 +222,27 @@ LangSmith course informs the tracing, thread grouping, evaluator-scope,
 offline/online, and production feedback-loop additions. These are reference
 points for design and currentness checks, not copied course content.
 
+Current official implementation references:
+
+- [Claude evaluation guidance](https://docs.anthropic.com/en/docs/build-with-claude/define-success) and [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/slash-commands) — success criteria, graders, skill evaluation, and model-upgrade re-baselining.
+- [Codex skills](https://developers.openai.com/codex/skills/create-skill), [`AGENTS.md`](https://developers.openai.com/codex/guides/agents-md), and [Codex evals](https://developers.openai.com/codex/use-cases/ai-app-evals) — instruction scope, coding-agent skills, baselines, fixtures, and evaluation workflows.
+- [LangSmith evaluation](https://docs.langchain.com/langsmith/evaluation), [automation rules](https://docs.langchain.com/langsmith/rules), and [annotation queues](https://docs.langchain.com/langsmith/annotation-queues) — offline/online evaluation, review routing, and dataset promotion.
+- [LangGraph](https://docs.langchain.com/langgraph) — durable execution and human-in-the-loop state boundaries.
+- [OpenTelemetry GenAI semantic conventions](https://github.com/open-telemetry/semantic-conventions-genai) — current provider-neutral vocabulary for model, agent, tool, evaluation, retrieval, and MCP telemetry.
+
 ## Continue learning
 
 - [Julie’s YouTube channel](https://www.youtube.com/@JulieElkins) — optional video walkthroughs.
 - [Julie’s public site](https://julie-elkins.github.io) — projects, learning paths, and design principles.
 - [Agent Systems Design Guide](https://github.com/julie-elkins/agent-systems-design-guide) — shared design reasoning and report vocabulary.
 - [Apple Platform Agent Quality Lab](https://github.com/julie-elkins/apple-platform-agent-quality-lab) — native macOS implementation of the evaluation boundary.
-- [OpenTelemetry GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/gen-ai/) — provider-neutral trace and metric vocabulary; verify the current convention status before recording.
+- [OpenTelemetry GenAI semantic conventions](https://github.com/open-telemetry/semantic-conventions-genai) — current provider-neutral vocabulary for model, agent, tool, evaluation, retrieval, and MCP telemetry.
 - [Phoenix](https://github.com/Arize-ai/phoenix), [Langfuse](https://github.com/langfuse/langfuse), and [LangSmith](https://docs.langchain.com/langsmith/observability-quickstart) — optional observability backends for comparing local trace, thread, dataset, evaluator, feedback, and automation workflows.
 - [Codex](https://developers.openai.com/codex/) and the [Codex SDK](https://developers.openai.com/codex/sdk/) — optional coding-agent and programmatic integration references.
+- [Claude evaluation guidance](https://docs.anthropic.com/en/docs/build-with-claude/define-success) and [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/slash-commands) — current success criteria, graders, skill evaluation, and re-baselining guidance.
+- [Codex skills](https://developers.openai.com/codex/skills/create-skill), [`AGENTS.md`](https://developers.openai.com/codex/guides/agents-md), and [Codex evals](https://developers.openai.com/codex/use-cases/ai-app-evals) — current instruction, skill, and evaluation guidance.
+- [LangSmith evaluation](https://docs.langchain.com/langsmith/evaluation), [automation rules](https://docs.langchain.com/langsmith/rules), and [annotation queues](https://docs.langchain.com/langsmith/annotation-queues) — optional review and dataset-promotion implementation references.
+- [LangGraph](https://docs.langchain.com/langgraph) — durable execution and human-in-the-loop implementation reference.
 - [Stanford Engineering AI Agents](https://cs329z.stanford.edu/) — agent evaluation and reliability framing.
 - [Evaluating AI Agents](https://www.deeplearning.ai/courses/evaluating-ai-agents) — trace-to-evaluation and component-evaluation patterns.
 - [Hugging Face Agents Course](https://huggingface.co/learn/agents-course/bonus-unit2/what-is-agent-observability-and-evaluation) — observability and evaluation distinction.

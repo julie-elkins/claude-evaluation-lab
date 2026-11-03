@@ -49,10 +49,14 @@ The required labs are offline and synthetic. They require no Claude API key and 
 - [Julie’s public site](https://julie-elkins.github.io) — projects, learning paths, and design principles.
 - [Agent Systems Design Guide](https://github.com/julie-elkins/agent-systems-design-guide) — shared design reasoning and report vocabulary.
 - [Apple Platform Agent Quality Lab](https://github.com/julie-elkins/apple-platform-agent-quality-lab) — native macOS implementation of the evaluation boundary.
-- [OpenTelemetry GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/gen-ai/) — provider-neutral trace and metric vocabulary; verify the current convention status before recording.
+- [OpenTelemetry GenAI semantic conventions](https://github.com/open-telemetry/semantic-conventions-genai) — current provider-neutral vocabulary for model, agent, tool, evaluation, retrieval, and MCP telemetry.
 - [Phoenix](https://github.com/Arize-ai/phoenix) — optional local observability backend for trace inspection.
 - [Langfuse](https://github.com/langfuse/langfuse) — optional comparison point for trace, evaluation, dataset, and experiment workflows.
 - [LangSmith](https://docs.langchain.com/langsmith/observability-quickstart) — optional comparison point for traces, threads, datasets, evaluators, feedback, and automations.
+- [Claude evaluation guidance](https://docs.anthropic.com/en/docs/build-with-claude/define-success) and [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/slash-commands) — current success criteria, graders, skill evaluation, and model-upgrade re-baselining.
+- [Codex skills](https://developers.openai.com/codex/skills/create-skill), [`AGENTS.md`](https://developers.openai.com/codex/guides/agents-md), and [Codex evals](https://developers.openai.com/codex/use-cases/ai-app-evals) — current instruction, skill, and evaluation guidance.
+- [LangSmith evaluation](https://docs.langchain.com/langsmith/evaluation), [automation rules](https://docs.langchain.com/langsmith/rules), and [annotation queues](https://docs.langchain.com/langsmith/annotation-queues) — optional review and dataset-promotion implementation references.
+- [LangGraph](https://docs.langchain.com/langgraph) — durable execution and human-in-the-loop implementation reference.
 
 ### Runnable labs 🔬
 
@@ -102,6 +106,36 @@ to evaluate a synthetic healthy run and a deliberately degraded run.
 - [ ] The agent stopped at the declared terminal state.
 - [ ] The completion claim is supported by evidence.
 - [ ] Human review and rollback remain explicit.
+
+#### Skills and instruction evidence
+
+Codex may use reusable **skills**, meaning instruction and workflow bundles that
+can be selected explicitly or loaded when their description matches the task. It
+may also read `AGENTS.md`, a repository instruction file whose scope and
+precedence can change what the agent is allowed to do.
+
+Evaluate these separately from the final patch:
+
+- [ ] The intended skill or instruction file was selected.
+- [ ] An inappropriate skill or instruction file did not trigger.
+- [ ] The active instruction sources and their scope are recorded.
+- [ ] Local instructions did not silently conflict with broader instructions.
+- [ ] The agent followed the instructions in its commands, edits, tests, and
+      stopping behavior.
+- [ ] The skill or instruction change was compared with a baseline.
+- [ ] The result was checked in a fresh run rather than only in a reused
+      context.
+
+The skill-selection result and the task-result quality are different measures.
+A skill can trigger correctly and still produce a poor patch. Conversely, a
+good patch from one run does not prove that the skill generalizes across
+repositories or task types.
+
+Use the current [Codex skills documentation](https://developers.openai.com/codex/skills/create-skill),
+[`AGENTS.md` guidance](https://developers.openai.com/codex/guides/agents-md), and
+[Codex evaluation guidance](https://developers.openai.com/codex/use-cases/ai-app-evals)
+for provider-specific syntax. Map the resulting evidence into the course's
+provider-neutral contract.
 
 #### Provider-neutral mapping
 
@@ -225,12 +259,37 @@ Group findings by mechanism, not only by wording. Useful categories include:
 - stale, conflicting, or missing memory and state;
 - retry loops, premature stopping, or unsafe recovery;
 - budget, latency, or cost violations;
+- model, prompt, skill, environment, tool, code, orchestration, or evaluator
+  defects;
+- stale architecture after a model upgrade, including unnecessary prompts,
+  skills, or subagents;
 - privacy, redaction, identity, or approval failures; and
 - telemetry loss or missing terminal evidence.
 
 Prioritize patterns by decision impact, frequency, high-risk exposure, and
 confidence in the evidence. A frequent low-risk formatting issue should not
 automatically outrank a rare unauthorized side effect.
+
+### Diagnose before editing
+
+Do not treat the first plausible fix as the root cause. A **root-cause
+hypothesis** is a testable explanation for why the observed failure occurred.
+Classify the hypothesis as model, prompt, skill, environment, tool, code,
+orchestration, evaluator, or data before changing the system. Record at least
+one competing explanation when the evidence is ambiguous.
+
+Use a failure-point replay as a diagnostic filter. A **replay** reruns from the
+turn where the failure occurred while holding earlier history fixed. It is
+useful for testing whether a proposed edit changes the known decision, but it
+cannot reveal an earlier divergence caused by that edit. A promising change
+must run from the beginning on the matched case set before it supports a
+release or architecture decision.
+
+If the proposed change alters the architecture, compare the flat and
+multi-agent paths at the end-to-end task level. A subagent that performs well
+in isolation does not prove that the primary agent completes the user's task
+more reliably. Preserve cost, latency, context, handoff, recovery, and
+side-effect evidence alongside the final outcome.
 
 ### 4. Draft the evaluator contract
 
@@ -246,6 +305,9 @@ required_evidence:
   - tool_authorization
   - state_before_and_after
   - conversation_terminal_state
+  - root_cause_hypothesis
+  - diagnostic_replay_result
+  - full_validation_result
 criteria:
   - id: authorization
     rule: "Every state-changing tool call has an approved scope."
@@ -302,8 +364,10 @@ The output should include:
 5. the generated or selected cases and their dataset roles;
 6. evaluator results and negative-control results;
 7. missing evidence and uncertainty;
-8. the owner and recommended next action; and
-9. what the analysis does not prove.
+8. root-cause hypothesis, competing explanation, and diagnostic replay result;
+9. full-validation result or the reason it is `not_evaluated`;
+10. the owner and recommended next action; and
+11. what the analysis does not prove.
 
 The human owner chooses whether to adopt, revise, or reject the evaluator. The
 skill may recommend `hold`, `revise`, `rerun`, or `not_evaluated`; it must not
@@ -318,6 +382,9 @@ silently convert those into release approval.
   evaluator discovery.
 - Never infer task success from a fluent answer when required path evidence is
   missing.
+- Never treat a failure-point replay as full validation.
+- Never keep a prompt, skill, or subagent solely because it improved an older
+  model; compare the current architecture against a flat baseline.
 - Preserve the evaluator revision, source trace window, sampling rule, and
   human owner.
 - Keep live provider access optional, bounded, and separate from the required
@@ -377,6 +444,24 @@ defined capability such as a lookup, file operation, or state-changing action.
 The evaluation must inspect more than the final text when the path itself can
 create risk.
 
+##### Agent architecture and skill evaluation
+
+A **flat agent** completes the workflow in one primary loop. A **multi-agent
+architecture** uses a primary agent plus one or more **subagents**, meaning
+secondary agents that perform specialized work. A **skill** is a reusable
+instruction and workflow bundle that an agent may load on demand. These are
+architecture choices, not automatic quality improvements.
+
+Evaluate the complete user task across the alternatives. Compare task outcome,
+trajectory, tool and permission correctness, context use, latency, cost,
+recovery, and side effects. A subagent or skill that looks successful in
+isolation may still make the overall workflow worse through handoff loss,
+stale instructions, duplicate work, or added failure points.
+
+After a model upgrade, re-baseline the architecture. Re-test prompts, skills,
+tools, and subagents instead of assuming that a workaround for an older model
+still earns its maintenance cost.
+
 ##### Creating an evaluation
 
 Creating an evaluation follows a four-step flow. The order matters because a
@@ -423,6 +508,19 @@ The experiment produces evidence for a decision; it does not automatically prove
 general quality or production readiness. Record the agent, model, prompt, tool,
 case-set, evaluator, and environment revisions so another person can determine
 what the result actually applies to.
+
+##### Diagnose before changing the prompt
+
+When a run fails, classify the likely root cause before editing. A **root-cause
+hypothesis** is a testable explanation for the failure; it may point to the
+model, prompt, skill, environment, tool, code, orchestration, evaluator, or
+data. A prompt change is only one possible intervention.
+
+Use a failure-point replay as a diagnostic filter. Replay holds the earlier
+history fixed and reruns from the observed failure, which makes a local
+comparison cheaper. It cannot show whether the change would have caused a new
+failure earlier in the run. Run the promising change from the beginning on the
+matched case set before using it as validation.
 
 ##### The agent development lifecycle
 
@@ -2682,6 +2780,22 @@ fails because an earlier error contaminates later decisions.
 
 Distinguish retry from recovery. A retry repeats an attempt. Recovery changes the plan or escalates because the previous attempt failed. Repeated retries can waste budget, duplicate side effects, or hide the fact that the agent has no safe next step.
 
+Architecture is also part of the trajectory. A **subagent** is a secondary
+agent invoked by a primary agent for specialized work. Compare a flat agent
+with a subagent design at the end-to-end task level: did the user get the
+expected outcome, were the tools and permissions correct, was the context
+managed safely, and did the extra handoff improve the result enough to justify
+its cost and latency? A subagent can look successful in isolation while the
+primary agent still loses state, misroutes the result, or fails to complete the
+user's task.
+
+After a model upgrade, re-evaluate the architecture rather than assuming that
+an old subagent remains useful. A stronger model may make a specialized
+subagent, prompt branch, or context workaround unnecessary. Keep a subagent
+when it provides a measured benefit such as parallel research, independent
+verification, or a genuinely different context boundary. The decision belongs
+to the end-to-end evidence, not to the existence of a polished subagent answer.
+
 The final decision should include both the semantic outcome and the process findings. A run that reaches the right answer through an unauthorized tool may still fail. A run that safely escalates because evidence is missing may be the correct outcome even though it does not complete the original task.
 
 In the demo, compare the guarded and unguarded semantic-outcomes paths. Inspect transport status, semantic outcome, missing evidence, retry count, approval requirement, and terminal state. The point is to show how the evidence contract keeps the final decision tied to the actual run.
@@ -2699,11 +2813,14 @@ Annotate a five-step synthetic trajectory with:
 Add `thread_id`, `turn_index`, `conversation_terminal_state`, and the memory
 or state carried from the previous turn. Choose whether you are evaluating a
 step, end-to-end task, trajectory, or thread/session. Then choose pass, fail, or
-escalate. Explain whether the final answer would change your decision and why.
+escalate. For an architecture comparison, record whether the workflow is flat
+or uses subagents, what evidence justifies the handoff, and whether the
+end-to-end result improved after accounting for cost, latency, context, and
+recovery. Explain whether the final answer would change your decision and why.
 
 #### What this lesson does not prove ⚠️
 
-A captured trajectory is only as complete as the instrumentation. Missing events can make an unsafe path look safe, so evidence completeness is itself an evaluation criterion.
+A captured trajectory is only as complete as the instrumentation. Missing events can make an unsafe path look safe, so evidence completeness is itself an evaluation criterion. One successful subagent run does not prove that a multi-agent architecture is better than a flat design or will remain useful after a model upgrade.
 
 ### Module practice check 📝
 
@@ -3007,6 +3124,13 @@ By the end of this lesson, you can compare a baseline with a variant while prese
 
 A baseline is the reference system or process against which a variant is compared. A variant is a changed model, prompt, tool policy, evaluator, or workflow. A useful comparison changes a defined factor and keeps the rest of the evaluation stable.
 
+An architecture variant may be a flat agent, a primary agent with subagents, or
+a primary agent using skills and tools instead of a separate agent. A **model
+upgrade** is a change to the model revision that can alter reasoning, tool
+calling, context use, cost, and the value of existing prompts or subagents.
+Record these as explicit changes. Do not preserve old scaffolding merely because
+it once improved an older model.
+
 Use matched cases whenever possible. The baseline and variant should receive the same cases, evidence, instructions, and decision policy. If the case set changes at the same time as the system, we cannot tell what caused the result.
 
 Uncertainty means the result could vary because of sampling, judge randomness, case mix, or run-to-run behavior. Repeated runs can reveal instability. Confidence intervals or other uncertainty summaries can communicate the likely range, but they do not fix biased sampling or a flawed evaluator.
@@ -3023,6 +3147,13 @@ Slices are subsets of cases grouped by a meaningful property, such as high-risk 
 
 In the demo, compare a baseline and variant on the same synthetic cases. Report overall outcomes, high-risk slice outcomes, failures caught by negative controls, and any change in cost or latency. The decision should not be based on a single average.
 
+For a model or architecture upgrade, use a two-stage check. First, use a
+failure-point replay as a **diagnostic filter**, meaning a cheap rerun that
+holds earlier history fixed and tests whether the proposed change affects the
+known decision. Then run the promising change from the beginning on the full
+matched case set. Replay can miss an earlier divergence, so it is not sufficient
+validation by itself.
+
 The cost of an uncontrolled comparison is an attribution error. We may ship a change because the score improved when the improvement actually came from easier cases, a changed evaluator, or random variation.
 
 #### Learner practice 🧪
@@ -3031,13 +3162,15 @@ Write a comparison plan for a baseline and one variant:
 
 `change`, `held_constant`, `case_set`, `case_count`, `primary_metric`,
 `baseline_result`, `variant_result`, `uncertainty_summary`, `effect_size`,
-`blocking_findings`, `high_risk_slices`, `repeat_count`, `decision_rule`.
+`blocking_findings`, `high_risk_slices`, `repeat_count`, `model_revision`,
+`prompt_revision`, `skill_set`, `architecture`, `subagent_policy`,
+`diagnostic_replay_result`, `full_validation_result`, `decision_rule`.
 
 Add one result pattern that would cause you to reject the variant despite an aggregate improvement.
 
 #### What this lesson does not prove ⚠️
 
-Matched comparisons improve attribution, but they do not prove generalization beyond the tested cases. Keep a held-out or newly sampled set for follow-up.
+Matched comparisons improve attribution, but they do not prove generalization beyond the tested cases. A replay result does not prove full-run safety, and a model upgrade that improves the aggregate score does not prove that every skill, prompt, subagent, or tool remains useful. Keep a held-out or newly sampled set for follow-up.
 
 ### Lesson 29: Revision, Release, Rollback, and Monitoring
 
@@ -3996,7 +4129,17 @@ a bounded evaluation case without copying sensitive content.
 Production telemetry becomes useful to evaluation when a finding can be
 reproduced as a case. Start by classifying the finding. Was the task wrong, the
 tool unauthorized, the state unchanged, the cost above budget, the trace
-incomplete, or the capture policy unsafe?
+incomplete, or the capture policy unsafe? Before editing a prompt, classify the
+likely root cause as a prompt, model, environment, tool, code, orchestration,
+evaluator, or data problem. The same visible failure can have different fixes,
+and changing the prompt first can hide the actual defect.
+
+Use a failure-point replay as a diagnostic filter. Replay means rerunning from
+the turn where the failure occurred while holding earlier history fixed. It is
+cheap and useful for testing whether a proposed edit affects that decision, but
+it cannot reveal a new divergence earlier in the run. Any promising change must
+then run from the beginning on the matched case set before it supports a
+release or architecture decision.
 
 Then minimize the case. Keep the input structure, boundary condition, expected
 behavior, evidence requirement, and decision consequence. Remove secrets,
@@ -4018,7 +4161,8 @@ right construct and whether the data may be retained or shared.
 
 In the demo, inspect `trace_to_case`. The lab proposes a case identifier and
 next evaluator, but a human still owns the decision to accept, transform, or
-discard the case.
+discard the case. Show the root-cause hypothesis, diagnostic replay result, and
+full-validation result separately.
 
 The cost of never converting production findings into tests is repeated
 incidents. The cost of copying traces directly into a dataset is leakage,
@@ -4029,17 +4173,21 @@ privacy exposure, and an evaluation set that nobody can safely share.
 Take one synthetic trace finding and write:
 
 1. the failure mechanism;
-2. the minimum safe case input;
-3. the expected outcome;
-4. the evidence requirement; and
-5. the dataset role;
-6. the evaluator layer that should detect it; and
-7. the negative control that would challenge a false pass.
+2. the root-cause hypothesis;
+3. the minimum safe case input;
+4. the expected outcome;
+5. the evidence requirement;
+6. the diagnostic replay scope and result;
+7. the full-validation plan;
+8. the dataset role;
+9. the evaluator layer that should detect it; and
+10. the negative control that would challenge a false pass.
 
 #### What this lesson does not prove ⚠️
 
 A regression case protects against a known failure mechanism. It does not prove
-coverage of all future failures or preserve the original production context.
+coverage of all future failures, prove that a prompt was the root cause, or
+preserve the original production context. A replay alone is not full validation.
 
 ### Lesson 38: Connecting a Bounded Live Claude Observation
 
@@ -4120,10 +4268,29 @@ transition may be missing, a retry loop may exceed budget, or a raw payload may
 violate the retention boundary. Keep these findings separate because they have
 different owners and different fixes.
 
+Before changing a prompt or adding a subagent, classify the likely root cause.
+The failure may belong to the model, environment, tool, code, orchestration,
+evaluator, or data. A **root-cause hypothesis** is a testable explanation for
+why the observed failure occurred; it is not established merely because the
+failure appeared after a prompt change.
+
+Use a diagnostic replay from the failure point to cheaply test a local fix.
+Then run the promising change from the beginning on the matched cases. The
+replay holds earlier history fixed, so it can show whether the edit changes the
+known decision but cannot show whether the edit causes a new failure ten turns
+earlier. Preserve both results in the report.
+
 Convert the important failure into a safe regression case. Record the mechanism,
 expected outcome, evidence requirement, and dataset role. Then make the
 decision: release, hold, revise, rollback, or escalate. Name the owner,
 monitoring signal, rollback trigger, and review date.
+
+If the proposed change is architectural, compare a flat agent with the
+multi-agent alternative on the complete user task. A **multi-agent
+architecture** uses more than one cooperating agent; it may improve parallel
+research or independent verification, but it also adds handoffs, context
+boundaries, latency, cost, and more failure points. A subagent that performs
+well alone does not prove that the overall agent is better.
 
 The production loop does not end when the dashboard turns green. Start with an
 offline baseline, make a bounded release, observe online behavior, triage and
@@ -4145,6 +4312,12 @@ latency, managing human-review queues, and defining when a reviewed case may
 enter a regression or held-out dataset. The required lab remains small and
 offline. This is the production design extension learners should be able to
 describe before adopting a hosted backend.
+
+A review-queue contract should also state what enters the queue, who reviews
+it, which rubric applies, how disagreements are adjudicated, when a reviewed
+trace becomes a dataset case, and how retention changes when evidence is
+preserved for investigation. Without those fields, routing a trace to review
+creates activity but not accountable evaluation evidence.
 
 Tools such as LangSmith, Phoenix, or Langfuse can host pieces of this workflow,
 including traces, threads, datasets, evaluators, feedback, and automations.
@@ -4182,10 +4355,16 @@ Complete a capstone report with:
 7. regression cases created;
 8. online-signal interpretation and feedback limitations;
 9. online evaluator revision, routing rule, action owner, and resulting status;
-10. scale controls for sampling, prioritization, review queues, and evaluator
+10. root-cause hypothesis and competing explanations;
+11. diagnostic replay scope and result;
+12. full-validation result or the reason it remains `not_evaluated`;
+13. flat-versus-multi-agent architecture comparison, if relevant;
+14. review-queue rubric, reviewer owner, disagreement path, and dataset-promotion
+    rule;
+15. scale controls for sampling, prioritization, review queues, and evaluator
     cost;
-11. release, hold, revise, rollback, or escalate action; and
-12. limitations and next evidence.
+16. release, hold, revise, rollback, or escalate action; and
+17. limitations and next evidence.
 
 > **Learner checkpoint — review the capstone**
 >
@@ -4202,7 +4381,10 @@ repeatable reasoning path from telemetry to evaluation to action. Deployment,
 access controls, real traffic, on-call response, and environment-specific
 validation remain outside this synthetic course artifact. The course's
 shadow and A/B discussion is conceptual; it does not authorize live traffic
-experimentation or prove that a feedback signal is a valid outcome label.
+experimentation or prove that a feedback signal is a valid outcome label. A
+failure-point replay does not replace a full validation run, and an isolated
+subagent result does not prove that a multi-agent architecture improves the
+end-to-end task.
 
 ### Module practice check 📝
 

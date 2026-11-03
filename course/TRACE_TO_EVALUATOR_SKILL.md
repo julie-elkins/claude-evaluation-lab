@@ -95,12 +95,37 @@ Group findings by mechanism, not only by wording. Useful categories include:
 - stale, conflicting, or missing memory and state;
 - retry loops, premature stopping, or unsafe recovery;
 - budget, latency, or cost violations;
+- model, prompt, skill, environment, tool, code, orchestration, or evaluator
+  defects;
+- stale architecture after a model upgrade, including unnecessary prompts,
+  skills, or subagents;
 - privacy, redaction, identity, or approval failures; and
 - telemetry loss or missing terminal evidence.
 
 Prioritize patterns by decision impact, frequency, high-risk exposure, and
 confidence in the evidence. A frequent low-risk formatting issue should not
 automatically outrank a rare unauthorized side effect.
+
+### Diagnose before editing
+
+Do not treat the first plausible fix as the root cause. A **root-cause
+hypothesis** is a testable explanation for why the observed failure occurred.
+Classify the hypothesis as model, prompt, skill, environment, tool, code,
+orchestration, evaluator, or data before changing the system. Record at least
+one competing explanation when the evidence is ambiguous.
+
+Use a failure-point replay as a diagnostic filter. A **replay** reruns from the
+turn where the failure occurred while holding earlier history fixed. It is
+useful for testing whether a proposed edit changes the known decision, but it
+cannot reveal an earlier divergence caused by that edit. A promising change
+must run from the beginning on the matched case set before it supports a
+release or architecture decision.
+
+If the proposed change alters the architecture, compare the flat and
+multi-agent paths at the end-to-end task level. A subagent that performs well
+in isolation does not prove that the primary agent completes the user's task
+more reliably. Preserve cost, latency, context, handoff, recovery, and
+side-effect evidence alongside the final outcome.
 
 ### 4. Draft the evaluator contract
 
@@ -116,6 +141,9 @@ required_evidence:
   - tool_authorization
   - state_before_and_after
   - conversation_terminal_state
+  - root_cause_hypothesis
+  - diagnostic_replay_result
+  - full_validation_result
 criteria:
   - id: authorization
     rule: "Every state-changing tool call has an approved scope."
@@ -172,8 +200,10 @@ The output should include:
 5. the generated or selected cases and their dataset roles;
 6. evaluator results and negative-control results;
 7. missing evidence and uncertainty;
-8. the owner and recommended next action; and
-9. what the analysis does not prove.
+8. root-cause hypothesis, competing explanation, and diagnostic replay result;
+9. full-validation result or the reason it is `not_evaluated`;
+10. the owner and recommended next action; and
+11. what the analysis does not prove.
 
 The human owner chooses whether to adopt, revise, or reject the evaluator. The
 skill may recommend `hold`, `revise`, `rerun`, or `not_evaluated`; it must not
@@ -188,6 +218,9 @@ silently convert those into release approval.
   evaluator discovery.
 - Never infer task success from a fluent answer when required path evidence is
   missing.
+- Never treat a failure-point replay as full validation.
+- Never keep a prompt, skill, or subagent solely because it improved an older
+  model; compare the current architecture against a flat baseline.
 - Preserve the evaluator revision, source trace window, sampling rule, and
   human owner.
 - Keep live provider access optional, bounded, and separate from the required
