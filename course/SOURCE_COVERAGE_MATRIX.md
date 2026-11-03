@@ -61,6 +61,7 @@ below rather than left implicit in the repository.
 | Semantic evaluation | Groundedness, relevance, unsupported claims, grader validity, and explicit abstention. | Lessons 13–22 | Content-assurance packs and evaluator checklist |
 | Evaluator layers | Deterministic checks cover schemas, tools, authorization, evidence, latency, and cost; semantic or agent grading must be calibrated or abstain. | Lessons 17 and 28 | Latest `Evaluator layers` checklist row |
 | Behavioral and trajectory evaluation | Multi-turn state, recovery, consistency, safety, prompt injection, thread contamination, and conversation termination. | Lessons 22–25 and 32 | Scenario packs, shadow execution, and agent workflow lab |
+| Agent architecture comparison | Flat versus multi-agent paths, subagent handoffs, skill/tool alternatives, model-upgrade re-baselining, cost, latency, context, recovery, and end-to-end task outcome. | Lessons 25, 28, and 39 | Guided synthetic comparison; no new required live or runnable lab |
 | Trace and observability | Trace completeness, revision binding, privacy boundary, and visible skipped/refused/failed states. | Lessons 4, 28–29, and 31–48 | Run manifests, evidence provenance, Labs 6–8 |
 | Controlled comparison | Correctness, safety, tool-call correctness, latency, cost, and user outcomes remain separate; thresholds and rerun policy precede interpretation. | Lessons 28–30 | Latest `Controlled variant comparison` checklist row |
 | Change management | Revision impact, stale evidence, reauthorization, release ownership, containment, and rollback. | Lesson 29 | Change-impact examples, reauthorization, ship gate, rollback rehearsal |
@@ -82,7 +83,7 @@ below rather than left implicit in the repository.
 | Privacy boundary | Redaction, retention, access ownership, and public-data limits. | Lesson 35 | Catch a raw-content trace and write a retention rule. |
 | Incident response | Alert thresholds, severity, ownership, containment, rollback, and review. | Lesson 36 | Turn Lab 6 findings into incident records. |
 | Continuous evaluation | Trace sampling, failure classification, safe minimization, regression cases, drift review, and release decisions. | Lessons 37–39 and 46–48 | Generate trace-to-case candidates, recalibrate, and complete the capstone. |
-| Trace-to-evaluator design | Trace evidence profiling, recurring failure mechanisms, evaluator-contract drafting, minimized case creation, negative controls, and human adoption decision. | Lesson 37; optional `TRACE_TO_EVALUATOR_SKILL.md` | Apply the workflow to synthetic Lab 6 traces; real traces remain private and approved. |
+| Trace-to-evaluator design | Trace evidence profiling, root-cause hypotheses, diagnostic replay, full validation, recurring failure mechanisms, evaluator-contract drafting, minimized case creation, negative controls, and human adoption decision. | Lesson 37; optional `TRACE_TO_EVALUATOR_SKILL.md` | Apply the workflow to synthetic Lab 6 traces; real traces remain private and approved. |
 | Live provider extension | Bounded model, request, time, token, spend, privacy, and approval limits. | Lesson 38 and optional adapter | Keep live access separate from the required path. |
 | Security threat model | Assets, actors, entry points, trust boundaries, consequences, and preventive, detective, and response controls. | Lesson 40 and Lab 7 | Draw a synthetic abuse path and inspect control coverage. |
 | Identity and authority | Principal, least privilege, tenant scope, credential isolation, approval, and audit evidence. | Lesson 41 and Lab 7 | Catch over-privileged, secret-exposing, and missing-approval cases. |
@@ -91,6 +92,7 @@ below rather than left implicit in the repository.
 | Monitor health and resilience | Received, accepted, rejected, dropped, delayed, and exported telemetry; alert quality; bounded fallback. | Lesson 44 and Lab 8 | Break the local telemetry path and preserve `unavailable` or `not_evaluated`. |
 | Local telemetry implementation | Instrumentation, collection, redaction, local storage, query, alert, incident, and regression case. | Lesson 45 and Lab 8 | Trace one synthetic run across all pipeline stages. |
 | Drift and recalibration | Data, model, evaluator, and concept drift; human feedback; sampling; recalibration. | Lesson 46 | Compare synthetic distributions and declare a review action. |
+| Official provider guidance | Claude evaluations and skills, Codex skills and `AGENTS.md`, LangSmith evaluators and review queues, LangGraph durable execution, and OpenTelemetry GenAI conventions. | Fundamentals; Lessons 25, 28, 33, 37, and 39; README | Use official links for current syntax and map provider features to the provider-neutral evidence contract. |
 | Continuous assurance | Security, telemetry health, evaluation, incidents, ownership, and release action remain connected. | Lesson 48 and Labs 7–8 | Produce one combined assurance report with bounded claims. |
 
 ## Completeness rule

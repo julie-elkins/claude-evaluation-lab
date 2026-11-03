@@ -44,6 +44,24 @@ defined capability such as a lookup, file operation, or state-changing action.
 The evaluation must inspect more than the final text when the path itself can
 create risk.
 
+### Agent architecture and skill evaluation
+
+A **flat agent** completes the workflow in one primary loop. A **multi-agent
+architecture** uses a primary agent plus one or more **subagents**, meaning
+secondary agents that perform specialized work. A **skill** is a reusable
+instruction and workflow bundle that an agent may load on demand. These are
+architecture choices, not automatic quality improvements.
+
+Evaluate the complete user task across the alternatives. Compare task outcome,
+trajectory, tool and permission correctness, context use, latency, cost,
+recovery, and side effects. A subagent or skill that looks successful in
+isolation may still make the overall workflow worse through handoff loss,
+stale instructions, duplicate work, or added failure points.
+
+After a model upgrade, re-baseline the architecture. Re-test prompts, skills,
+tools, and subagents instead of assuming that a workaround for an older model
+still earns its maintenance cost.
+
 ### Creating an evaluation
 
 Creating an evaluation follows a four-step flow. The order matters because a
@@ -90,6 +108,19 @@ The experiment produces evidence for a decision; it does not automatically prove
 general quality or production readiness. Record the agent, model, prompt, tool,
 case-set, evaluator, and environment revisions so another person can determine
 what the result actually applies to.
+
+### Diagnose before changing the prompt
+
+When a run fails, classify the likely root cause before editing. A **root-cause
+hypothesis** is a testable explanation for the failure; it may point to the
+model, prompt, skill, environment, tool, code, orchestration, evaluator, or
+data. A prompt change is only one possible intervention.
+
+Use a failure-point replay as a diagnostic filter. Replay holds the earlier
+history fixed and reruns from the observed failure, which makes a local
+comparison cheaper. It cannot show whether the change would have caused a new
+failure earlier in the run. Run the promising change from the beginning on the
+matched case set before using it as validation.
 
 ### The agent development lifecycle
 

@@ -18,9 +18,13 @@ create a regression case, and make a bounded operational decision.
 5. **Offline-to-online-to-offline assurance loop**.
 6. **Online evaluator to action** — score, filter, review, investigate, and
    promote.
-7. **Scale and triage** — sampling, grouping, prioritization, and cost control.
-8. **Shadow and A/B evaluation boundaries**.
-9. **Final decision** — release, hold, revise, rollback, or escalate.
+7. **Root-cause triage** — separate prompt, model, environment, tool, code,
+   orchestration, evaluator, and data failures.
+8. **Replay versus full validation** — use replay as a filter, not a release gate.
+9. **Flat versus multi-agent architecture** — compare end-to-end outcomes.
+10. **Scale and triage** — sampling, grouping, prioritization, and cost control.
+11. **Shadow and A/B evaluation boundaries**.
+12. **Final decision** — release, hold, revise, rollback, or escalate.
 
 ## Speaker script
 
@@ -38,10 +42,29 @@ transition may be missing, a retry loop may exceed budget, or a raw payload may
 violate the retention boundary. Keep these findings separate because they have
 different owners and different fixes.
 
+Before changing a prompt or adding a subagent, classify the likely root cause.
+The failure may belong to the model, environment, tool, code, orchestration,
+evaluator, or data. A **root-cause hypothesis** is a testable explanation for
+why the observed failure occurred; it is not established merely because the
+failure appeared after a prompt change.
+
+Use a diagnostic replay from the failure point to cheaply test a local fix.
+Then run the promising change from the beginning on the matched cases. The
+replay holds earlier history fixed, so it can show whether the edit changes the
+known decision but cannot show whether the edit causes a new failure ten turns
+earlier. Preserve both results in the report.
+
 Convert the important failure into a safe regression case. Record the mechanism,
 expected outcome, evidence requirement, and dataset role. Then make the
 decision: release, hold, revise, rollback, or escalate. Name the owner,
 monitoring signal, rollback trigger, and review date.
+
+If the proposed change is architectural, compare a flat agent with the
+multi-agent alternative on the complete user task. A **multi-agent
+architecture** uses more than one cooperating agent; it may improve parallel
+research or independent verification, but it also adds handoffs, context
+boundaries, latency, cost, and more failure points. A subagent that performs
+well alone does not prove that the overall agent is better.
 
 The production loop does not end when the dashboard turns green. Start with an
 offline baseline, make a bounded release, observe online behavior, triage and
@@ -63,6 +86,12 @@ latency, managing human-review queues, and defining when a reviewed case may
 enter a regression or held-out dataset. The required lab remains small and
 offline. This is the production design extension learners should be able to
 describe before adopting a hosted backend.
+
+A review-queue contract should also state what enters the queue, who reviews
+it, which rubric applies, how disagreements are adjudicated, when a reviewed
+trace becomes a dataset case, and how retention changes when evidence is
+preserved for investigation. Without those fields, routing a trace to review
+creates activity but not accountable evaluation evidence.
 
 Tools such as LangSmith, Phoenix, or Langfuse can host pieces of this workflow,
 including traces, threads, datasets, evaluators, feedback, and automations.
@@ -97,6 +126,11 @@ to action.
   traffic experiment.
 - Show the online-evaluator action loop with a synthetic trace, a declared
   filter, and one routed action.
+- Show one synthetic failure-point replay and label it as a diagnostic filter.
+- Show the full-validation requirement from the beginning of the matched case
+  set.
+- Compare a flat agent with a subagent design using end-to-end outcome,
+  trajectory, cost, latency, context, and recovery evidence.
 - Discuss sampling, failure grouping, high-risk prioritization, evaluator
   volume/cost limits, human-review queues, and dataset-promotion rules as
   optional production-scale extensions.
@@ -119,10 +153,16 @@ Complete a capstone report with:
 7. regression cases created;
 8. online-signal interpretation and feedback limitations;
 9. online evaluator revision, routing rule, action owner, and resulting status;
-10. scale controls for sampling, prioritization, review queues, and evaluator
+10. root-cause hypothesis and competing explanations;
+11. diagnostic replay scope and result;
+12. full-validation result or the reason it remains `not_evaluated`;
+13. flat-versus-multi-agent architecture comparison, if relevant;
+14. review-queue rubric, reviewer owner, disagreement path, and dataset-promotion
+    rule;
+15. scale controls for sampling, prioritization, review queues, and evaluator
     cost;
-11. release, hold, revise, rollback, or escalate action; and
-12. limitations and next evidence.
+16. release, hold, revise, rollback, or escalate action; and
+17. limitations and next evidence.
 
 > **Learner checkpoint — review the capstone**
 >
@@ -139,4 +179,7 @@ repeatable reasoning path from telemetry to evaluation to action. Deployment,
 access controls, real traffic, on-call response, and environment-specific
 validation remain outside this synthetic course artifact. The course's
 shadow and A/B discussion is conceptual; it does not authorize live traffic
-experimentation or prove that a feedback signal is a valid outcome label.
+experimentation or prove that a feedback signal is a valid outcome label. A
+failure-point replay does not replace a full validation run, and an isolated
+subagent result does not prove that a multi-agent architecture improves the
+end-to-end task.

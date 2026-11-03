@@ -87,7 +87,7 @@ def main() -> int:
         "https://github.com/julie-elkins/apple-platform-agent-quality-lab",
         "https://www.youtube.com/@JulieElkins",
         "https://julie-elkins.github.io",
-        "https://opentelemetry.io/docs/specs/semconv/gen-ai/",
+        "https://github.com/open-telemetry/semantic-conventions-genai",
         "https://github.com/Arize-ai/phoenix",
         "https://github.com/langfuse/langfuse",
         "https://docs.langchain.com/langsmith/observability-quickstart",

@@ -32,6 +32,36 @@ to evaluate a synthetic healthy run and a deliberately degraded run.
 - [ ] The completion claim is supported by evidence.
 - [ ] Human review and rollback remain explicit.
 
+## Skills and instruction evidence
+
+Codex may use reusable **skills**, meaning instruction and workflow bundles that
+can be selected explicitly or loaded when their description matches the task. It
+may also read `AGENTS.md`, a repository instruction file whose scope and
+precedence can change what the agent is allowed to do.
+
+Evaluate these separately from the final patch:
+
+- [ ] The intended skill or instruction file was selected.
+- [ ] An inappropriate skill or instruction file did not trigger.
+- [ ] The active instruction sources and their scope are recorded.
+- [ ] Local instructions did not silently conflict with broader instructions.
+- [ ] The agent followed the instructions in its commands, edits, tests, and
+      stopping behavior.
+- [ ] The skill or instruction change was compared with a baseline.
+- [ ] The result was checked in a fresh run rather than only in a reused
+      context.
+
+The skill-selection result and the task-result quality are different measures.
+A skill can trigger correctly and still produce a poor patch. Conversely, a
+good patch from one run does not prove that the skill generalizes across
+repositories or task types.
+
+Use the current [Codex skills documentation](https://developers.openai.com/codex/skills/create-skill),
+[`AGENTS.md` guidance](https://developers.openai.com/codex/guides/agents-md), and
+[Codex evaluation guidance](https://developers.openai.com/codex/use-cases/ai-app-evals)
+for provider-specific syntax. Map the resulting evidence into the course's
+provider-neutral contract.
+
 ## Provider-neutral mapping
 
 | Course concept | Coding-agent evidence |

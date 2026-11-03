@@ -24,6 +24,11 @@ You will build an evaluation workflow that can distinguish:
 - a complete-looking trace from a trace that is complete enough to investigate;
 - an operational signal from a quality or safety finding; and
 - a production-style failure from a regression case that can be rerun.
+- a prompt failure from an environment, tool, code, orchestration, evaluator,
+  or model failure;
+- a cheap diagnostic replay from full end-to-end validation; and
+- an isolated subagent result from evidence that the whole architecture
+  improved the user's task.
 
 ## Start here
 
@@ -133,8 +138,9 @@ Optional:
   human review without requiring live Codex access.
 - [Optional Trace-to-Evaluator Design Skill](course/TRACE_TO_EVALUATOR_SKILL.md) —
   inspect approved or synthetic traces, identify recurring failure mechanisms,
-  and draft a use-case-specific evaluator without treating the recommendation
-  as production approval.
+  classify root-cause hypotheses, use replay as a diagnostic filter, require
+  full validation, and draft a use-case-specific evaluator without treating
+  the recommendation as production approval.
 
 ## Quick start
 
@@ -203,6 +209,19 @@ Reference courses and standards used for the advanced track:
   — tracing, thread grouping, offline and online evaluation, evaluators, and
   production feedback loops. This is an optional comparison point, not a
   required hosted-backend lab.
+- [Claude evaluation guidance](https://docs.anthropic.com/en/docs/build-with-claude/define-success)
+  and [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/slash-commands)
+  — success criteria, graders, skill evaluation, and model-upgrade re-baselining.
+- [Codex skills](https://developers.openai.com/codex/skills/create-skill),
+  [`AGENTS.md`](https://developers.openai.com/codex/guides/agents-md), and
+  [Codex evals](https://developers.openai.com/codex/use-cases/ai-app-evals) —
+  instruction scope, coding-agent skills, baselines, and evaluation workflows.
+- [LangSmith evaluation](https://docs.langchain.com/langsmith/evaluation),
+  [automation rules](https://docs.langchain.com/langsmith/rules), and
+  [annotation queues](https://docs.langchain.com/langsmith/annotation-queues) —
+  offline/online evaluation, review routing, and dataset promotion.
+- [LangGraph](https://docs.langchain.com/langgraph) — durable execution and
+  human-in-the-loop state boundaries.
 - [OWASP GenAI Security Project](https://genai.owasp.org/llm-top-10/) —
   security threat categories for generative AI systems.
 - [NIST Generative AI Profile](https://www.nist.gov/itl/ai-risk-management-framework/ai-rmf-generative-ai-profile)
