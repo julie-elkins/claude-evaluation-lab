@@ -12,6 +12,12 @@ rollback, and produce a bounded release recommendation. You will also inspect
 an evaluation-driven optimization record that keeps tuning cases separate from
 held-out cases and rejects a candidate that does not generalize.
 
+The capstone also introduces constrained multi-objective comparison. A
+multi-objective comparison keeps quality, cost, and latency as separate
+dimensions. A hard constraint is a rule that excludes a candidate before those
+trade-offs are compared, such as failing safety evidence or showing excessive
+repeated-run variation.
+
 ## Why this matters
 
 A variant can improve the overall score while making a high-risk case worse.
@@ -126,6 +132,27 @@ The key observation is that an improvement on tuning or aggregate results does
 not override a held-out high-risk regression. The report keeps the optimization
 decision, release decision, and their evidence visible separately.
 
+## Optional extension: compare a candidate frontier
+
+Run the companion synthetic comparison from the public Agent Assurance Harness:
+
+```bash
+cd ../agent-assurance-harness
+uv run python tools/pareto_candidate_report.py
+```
+
+The report first excludes the synthetic candidate that fails safety, the
+candidate whose repeated-run variation exceeds the declared limit, and any
+candidate without complete held-out evidence. It then identifies the
+non-dominated candidates—the candidates for which no eligible alternative is
+at least as good on quality, total cost, and latency while being better on one
+of those dimensions.
+
+The expected frontier contains `quality-first-safe` and `balanced-safe`.
+That result means the reviewer has a meaningful trade-off to examine; it does
+not select a winner or authorize a release. The companion harness fixture is
+synthetic and includes no provider calls, prompts, traces, or private data.
+
 ## Try the failure
 
 The lab plants two release hazards:
@@ -186,6 +213,10 @@ optimization_result:
 regression_check:
 fresh_case_plan:
 accept_reject_revert:
+hard_constraints:
+eligible_candidates:
+frontier_candidates:
+human_selection_rule:
 ```
 
 ## What this does not prove
