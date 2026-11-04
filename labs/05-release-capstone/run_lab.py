@@ -14,6 +14,8 @@ LAB_ID = "05-release-capstone"
 CASE_SET_REVISION = "synthetic-release-cases-v1"
 EVALUATOR_REVISION = "layered-evaluator-v1"
 REPORT_VOCABULARY_REVISION = "report-vocabulary-v1"
+TUNING_CASE_SET_REVISION = "synthetic-tuning-cases-v1"
+HELD_OUT_CASE_SET_REVISION = "synthetic-held-out-cases-v1"
 
 
 @dataclass(frozen=True)
@@ -23,15 +25,16 @@ class ComparisonCase:
     baseline: str
     variant: str
     risk: str
+    data_role: str
 
 
 CASES = (
-    ComparisonCase("normal-001", "normal", "fail", "pass", "normal"),
-    ComparisonCase("normal-002", "normal", "fail", "pass", "normal"),
-    ComparisonCase("high-risk-evidence-001", "high_risk", "pass", "pass", "high"),
-    ComparisonCase("high-risk-injection-001", "high_risk", "pass", "fail", "high"),
-    ComparisonCase("trajectory-recovery-001", "trajectory", "pass", "pass", "medium"),
-    ComparisonCase("boundary-001", "boundary", "pass", "pass", "medium"),
+    ComparisonCase("normal-001", "normal", "fail", "pass", "normal", "tuning"),
+    ComparisonCase("normal-002", "normal", "fail", "pass", "normal", "tuning"),
+    ComparisonCase("high-risk-evidence-001", "high_risk", "pass", "pass", "high", "held_out"),
+    ComparisonCase("high-risk-injection-001", "high_risk", "pass", "fail", "high", "held_out"),
+    ComparisonCase("trajectory-recovery-001", "trajectory", "pass", "pass", "medium", "tuning"),
+    ComparisonCase("boundary-001", "boundary", "pass", "pass", "medium", "held_out"),
 )
 
 BASELINE_REVISION = {
@@ -89,6 +92,15 @@ def _slice_score(revision_key: str, slice_name: str) -> float:
         getattr(case, revision_key)
         for case in CASES
         if case.slice_name == slice_name
+    )
+    return _score(values)
+
+
+def _role_score(revision_key: str, data_role: str) -> float:
+    values = tuple(
+        getattr(case, revision_key)
+        for case in CASES
+        if case.data_role == data_role
     )
     return _score(values)
 
@@ -177,6 +189,8 @@ def _release_contract() -> dict[str, Any]:
         "required_evidence": [
             "baseline and variant revisions",
             "matched case set and evaluator revision",
+            "tuning and held-out case roles",
+            "grader-health preflight",
             "high-risk slice result",
             "negative-control findings",
             "rollback trigger and owner",
@@ -187,6 +201,74 @@ def _release_contract() -> dict[str, Any]:
         "human_approval": {
             "required": True,
             "approval_state": "pending",
+            "owner": "synthetic-release-owner",
+        },
+    }
+
+
+def _optimization_contract(
+    baseline_score: float,
+    variant_score: float,
+    baseline_held_out: float,
+    variant_held_out: float,
+    variant_score_range: float,
+) -> dict[str, Any]:
+    tuning_case_ids = [
+        case.case_id for case in CASES if case.data_role == "tuning"
+    ]
+    held_out_case_ids = [
+        case.case_id for case in CASES if case.data_role == "held_out"
+    ]
+    return {
+        "candidate_change": {
+            "revision": VARIANT_REVISION["policy"],
+            "changed_fields": _changed_fields(),
+            "one_change_at_a_time": _changed_fields() == ["policy"],
+        },
+        "case_roles": {
+            "tuning_case_set_revision": TUNING_CASE_SET_REVISION,
+            "tuning_cases": tuning_case_ids,
+            "held_out_case_set_revision": HELD_OUT_CASE_SET_REVISION,
+            "held_out_cases": held_out_case_ids,
+        },
+        "preflight": {
+            "grader_consistency": {
+                "status": "not_evaluated",
+                "reason": (
+                    "The fixture varies agent outcomes but does not rerun the "
+                    "grader on identical captured outputs."
+                ),
+            },
+            "evaluation_noise": {
+                "status": "passed",
+                "observed_variant_score_range": variant_score_range,
+                "meaning": "Observed run variation is visible before the decision.",
+            },
+            "remaining_headroom": {
+                "status": "passed",
+                "baseline_headroom": 1.0 - baseline_score,
+                "variant_headroom": 1.0 - variant_score,
+                "meaning": "The score is not saturated at the ceiling.",
+            },
+        },
+        "tuning_result": {
+            "baseline_score": _role_score("baseline", "tuning"),
+            "variant_score": _role_score("variant", "tuning"),
+            "improved": _role_score("variant", "tuning")
+            > _role_score("baseline", "tuning"),
+        },
+        "held_out_result": {
+            "baseline_score": baseline_held_out,
+            "variant_score": variant_held_out,
+            "regression": variant_held_out < baseline_held_out,
+        },
+        "optimization_result": (
+            "candidate_improved_tuning_but_regressed_held_out"
+        ),
+        "accept_reject_revert": "revert_and_investigate",
+        "fresh_case_plan": {
+            "status": "required_before_reconsideration",
+            "action": "sample fresh cases after policy revision and recalibrate if needed",
             "owner": "synthetic-release-owner",
         },
     }
@@ -243,6 +325,8 @@ def run_lab() -> dict[str, Any]:
     variant_score = _score(variant_results)
     baseline_high_risk = _slice_score("baseline", "high_risk")
     variant_high_risk = _slice_score("variant", "high_risk")
+    baseline_held_out = _role_score("baseline", "held_out")
+    variant_held_out = _role_score("variant", "held_out")
     variant_run_scores = tuple(
         _score(results) for _, results in VARIANT_REPEATED_RUNS
     )
@@ -301,6 +385,13 @@ def run_lab() -> dict[str, Any]:
             "score_range": max(variant_run_scores) - min(variant_run_scores),
             "interpretation": "Illustrative run variation, not a confidence interval or production estimate.",
         },
+        "optimization_contract": _optimization_contract(
+            baseline_score,
+            variant_score,
+            baseline_held_out,
+            variant_held_out,
+            max(variant_run_scores) - min(variant_run_scores),
+        ),
         "comparison": {
             "case_count": len(CASES),
             "baseline_score": baseline_score,
@@ -322,14 +413,15 @@ def run_lab() -> dict[str, Any]:
         "monitoring_plan": _monitoring_plan(),
         "capstone_report": {
             "decision": "hold",
-            "action": "do not release variant-r2",
+            "action": "revert_and_investigate",
             "why": [
                 "overall score improved, but the high-risk slice regressed",
+                "the candidate improved tuning cases but regressed held-out cases",
                 "repeated runs show non-zero result variation",
                 "benchmark evidence is bounded and cannot override local findings",
             ],
             "owner": "synthetic-release-owner",
-            "next_step": "revise the policy and rerun the matched case set",
+            "next_step": "revert the candidate, sample fresh cases, and rerun the matched case set",
             "human_approval": {
                 "required": True,
                 "approval_state": "pending",
@@ -355,6 +447,10 @@ def run_lab() -> dict[str, Any]:
         raise AssertionError("The rollback rehearsal must pass.")
     if report["capstone_report"]["decision"] != "hold":
         raise AssertionError("The high-risk regression must hold the release.")
+    if not report["optimization_contract"]["held_out_result"]["regression"]:
+        raise AssertionError("The held-out regression must be visible.")
+    if report["optimization_contract"]["accept_reject_revert"] != "revert_and_investigate":
+        raise AssertionError("The candidate action must preserve the held-out regression.")
     return report
 
 

@@ -8,7 +8,9 @@ rollback, monitoring, and a decision report.
 
 You will compare two synthetic revisions on the same cases, inspect a high-risk
 slice, measure repeated-run variation, explain benchmark limitations, rehearse
-rollback, and produce a bounded release recommendation.
+rollback, and produce a bounded release recommendation. You will also inspect
+an evaluation-driven optimization record that keeps tuning cases separate from
+held-out cases and rejects a candidate that does not generalize.
 
 ## Why this matters
 
@@ -24,7 +26,8 @@ Claude, the network, a benchmark provider, or a deployment system.
 
 The baseline and variant use the same six cases and evaluator revision. Only the
 policy revision changes. The variant improves the aggregate score but regresses
-the high-risk slice, so the correct capstone decision is `hold`.
+the high-risk held-out slice, so the correct capstone decision is `hold` and the
+candidate action is `revert_and_investigate`.
 
 ## Run it
 
@@ -57,6 +60,12 @@ The report should show:
 - the variant has a lower high-risk slice score;
 - repeated runs show non-zero score variation;
 - each repeated run identifies the failed case IDs that produced its score;
+- tuning cases and held-out cases have different declared roles;
+- the candidate changes one declared factor at a time;
+- grader consistency is kept separate from agent run variation;
+- remaining headroom is recorded before interpreting improvement;
+- a held-out regression causes `revert_and_investigate`, even when the tuning
+  result improves;
 - revision change requires a rerun rather than reusing old evidence;
 - task correctness and safety remain separate dimensions;
 - latency, cost, user outcomes, and evaluator validity are marked
@@ -64,7 +73,7 @@ The report should show:
 - rollback rehearsal passes without deployment writes;
 - monitoring includes an owner and action threshold; and
 - human approval remains pending and separate from the automated result; and
-- the capstone decision is `hold`, with the action `do not release variant-r2`.
+- the capstone decision is `hold`, with the action `revert_and_investigate`.
 
 The lab should exit with code `0`. The zero exit code means the release controls
 behaved as expected; it does not approve a real release.
@@ -77,6 +86,9 @@ baseline + variant
         v
 matched cases and fixed evaluator
         |
+        +--> tune on declared tuning cases
+        +--> check grader health and headroom
+        +--> verify on held-out cases
         +--> aggregate comparison
         +--> high-risk slices
         +--> repeated-run uncertainty
@@ -88,6 +100,8 @@ release decision
 release   hold   rollback
    |        |       |
 monitor   revise   restore last-known-good
+   |        |       |
+   +--> fresh cases and drift review
 ```
 
 ## Evidence to inspect
@@ -99,6 +113,7 @@ Review these fields in the JSON output:
 - `comparison.variant_score`
 - `comparison.variant_score_range`
 - `comparison.high_risk_regression`
+- `optimization_contract`
 - `negative_controls`
 - `release_contract`
 - `dimensions`
@@ -107,8 +122,9 @@ Review these fields in the JSON output:
 - `monitoring_plan`
 - `capstone_report`
 
-The key observation is that the aggregate improvement does not override the
-high-risk slice regression. The report keeps both facts visible.
+The key observation is that an improvement on tuning or aggregate results does
+not override a held-out high-risk regression. The report keeps the optimization
+decision, release decision, and their evidence visible separately.
 
 ## Try the failure
 
@@ -157,6 +173,21 @@ release_decision:
 next_step:
 ```
 
+The optimization-specific fields should also be present:
+
+```text
+tuning_cases:
+held_out_cases:
+grader_consistency:
+evaluation_noise:
+remaining_headroom:
+candidate_change:
+optimization_result:
+regression_check:
+fresh_case_plan:
+accept_reject_revert:
+```
+
 ## What this does not prove
 
 This is an offline synthetic teaching control. It does not establish live model
@@ -168,7 +199,8 @@ the declared cases.
 Change one of the normal cases so the variant improves the aggregate score
 without changing the high-risk slice. Then compare that result with the current
 hold decision and document what additional evidence would be needed before
-release.
+release. As a second extension, change the candidate policy and record whether
+the held-out result supports keeping, rejecting, or reverting it.
 
 For the harness-side patterns behind this lab, see the public
 [benchmark reporting tool](https://github.com/julie-elkins/agent-assurance-harness/blob/main/tools/benchmark_report.py),

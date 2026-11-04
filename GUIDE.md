@@ -1050,7 +1050,7 @@ which question to make explicit while you work through the first module.
 | 2. Evaluation cases and human review | 5–9 | Create a small, risk-based case set with a rubric, calibration plan, and disagreement review. |
 | 3. Automated evaluation | 10–18 | Combine deterministic checks, semantic judges, human calibration, and independent negative controls. |
 | 4. Factuality, safety, and agents | 19–25 | Evaluate claims, safety boundaries, tool behavior, state changes, and recovery across an agent trajectory. |
-| 5. Benchmarks, release, and capstone | 26–30 | Compare a baseline and variant, state uncertainty and limitations, and produce an accountable release recommendation. |
+| 5. Benchmarks, release, and capstone | 26–30 | Compare a baseline and variant, separate tuning from held-out evidence, check grader health and remaining headroom, state uncertainty and limitations, and produce an accountable release recommendation. |
 | 6. Production observability foundations | 31–32 | Distinguish observability from evaluation and define the trace evidence an agent workflow needs. |
 | 7. Instrumentation and operational signals | 33–34 | Map agent behavior to provider-neutral spans, metrics, budgets, and service-level objectives. |
 | 8. Privacy, monitoring, and incident response | 35–36 | Design redaction, retention, alerting, ownership, and rollback boundaries for agent evidence. |
@@ -3042,29 +3042,33 @@ The factuality, content-assurance, and trajectory patterns in this module build 
 
 ## Module 5 — Benchmarks, release, and capstone
 
-**Hands-on outcome:** Compare a baseline and variant, state uncertainty and limitations, and produce an accountable release recommendation.
+**Hands-on outcome:** Compare a baseline and variant, separate tuning from held-out evidence, check grader health and remaining headroom, state uncertainty and limitations, and produce an accountable release recommendation.
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
 flowchart LR
     A["Baseline and variant"] --> B["Matched cases and slices"]
-    B --> C["Findings and uncertainty"]
-    C --> D{"Release decision"}
-    D -->|revise| E["Change and re-evaluate"]
-    D -->|release| F["Monitor"]
-    D -->|block| G["Hold or rollback"]
-    F --> H{"New evidence?"}
-    H -->|yes| E
-    H -->|no| F
+    B --> C["Tune candidate"]
+    C --> D["Check grader health and headroom"]
+    D --> E["Verify held-out cases"]
+    E --> F["Findings and uncertainty"]
+    F --> G{"Release decision"}
+    G -->|revise| H["Change and re-evaluate"]
+    G -->|release| I["Monitor fresh cases"]
+    G -->|block| J["Hold or rollback"]
+    I --> K{"New evidence?"}
+    K -->|yes| H
+    K -->|no| I
     classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
     classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
     classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
     classDef red fill:#F3D6D2,stroke:#B44B45,color:#16324F,stroke-width:2px
     class A,B blue
-    class C,D orange
-    class E,F sage
-    class G red
-    class H orange
+    class C,D,E orange
+    class F,G sage
+    class H,I sage
+    class J red
+    class K orange
 ```
 
 ### Lesson 26: Benchmark Categories
@@ -3153,7 +3157,9 @@ A limitations statement improves honesty; it does not correct a poorly chosen be
 
 #### Learner objective
 
-By the end of this lesson, you can compare a baseline with a variant while preserving case alignment, uncertainty, and high-risk slices.
+By the end of this lesson, you can compare a baseline with a variant while
+preserving case alignment, uncertainty, high-risk slices, and the separation
+between tuning evidence and held-out evidence.
 
 #### Core lesson
 
@@ -3180,6 +3186,34 @@ desired outcome appears rather than treating one successful run as stable.
 
 Slices are subsets of cases grouped by a meaningful property, such as high-risk actions, missing context, long trajectories, or boundary conditions. An overall improvement can hide a regression in a high-risk slice. Report the slice result even when the aggregate is better.
 
+Evaluation-driven optimization means using a declared evaluation to choose
+between candidate changes to an agent. It is useful when the change might be a
+prompt, skill, model setting, tool description, policy, or harness component.
+The evaluation is not only a scorecard after the fact; it is the evidence used
+to decide whether the candidate should be kept, rejected, or reverted.
+
+Separate the cases used to tune the candidate from the cases used to decide
+whether it generalizes. Tuning cases help diagnose and improve the change.
+Held-out cases remain unseen by the tuning loop and provide a less-contaminated
+check on the decision. A held-out improvement is necessary evidence for keeping
+a candidate, but it is not sufficient if safety, cost, latency, tool
+correctness, or evaluator validity regresses.
+
+Before optimizing, run a grader-health preflight. Check whether the evaluator
+is consistent on fixed evidence, estimate how much ordinary run variation
+exists, and confirm that the evaluation still has headroom to detect
+improvement. **Headroom** means room between the current result and the ceiling
+of the measure; a perfect or saturated score cannot show whether a change
+helped. If the grader is noisy, inconsistent, or already saturated, improve
+the evaluation before optimizing the agent.
+
+Change one meaningful factor at a time. Record the candidate revision, tuning
+cases, held-out cases, grader revision, preflight result, and accept/reject/
+revert decision. If a candidate improves tuning cases but regresses held-out
+or high-risk cases, reject or revert it. After release, sample fresh cases
+because held-out cases can eventually become familiar to the optimization
+process.
+
 In the demo, compare a baseline and variant on the same synthetic cases. Report overall outcomes, high-risk slice outcomes, failures caught by negative controls, and any change in cost or latency. The decision should not be based on a single average.
 
 For a model or architecture upgrade, use a two-stage check. First, use a
@@ -3199,13 +3233,22 @@ Write a comparison plan for a baseline and one variant:
 `baseline_result`, `variant_result`, `uncertainty_summary`, `effect_size`,
 `blocking_findings`, `high_risk_slices`, `repeat_count`, `model_revision`,
 `prompt_revision`, `skill_set`, `architecture`, `subagent_policy`,
-`diagnostic_replay_result`, `full_validation_result`, `decision_rule`.
+`diagnostic_replay_result`, `full_validation_result`, `tuning_cases`,
+`held_out_cases`, `grader_consistency`, `evaluation_noise`,
+`remaining_headroom`, `candidate_change`, `optimization_result`,
+`regression_check`, `fresh_case_plan`, `accept_reject_revert`,
+`decision_rule`.
 
 Add one result pattern that would cause you to reject the variant despite an aggregate improvement.
 
 #### What this lesson does not prove ⚠️
 
-Matched comparisons improve attribution, but they do not prove generalization beyond the tested cases. A replay result does not prove full-run safety, and a model upgrade that improves the aggregate score does not prove that every skill, prompt, subagent, or tool remains useful. Keep a held-out or newly sampled set for follow-up.
+Matched comparisons improve attribution, but they do not prove generalization
+beyond the tested cases. A replay result does not prove full-run safety, and a
+model upgrade that improves the aggregate score does not prove that every
+skill, prompt, subagent, or tool remains useful. An optimizer can overfit the
+tuning cases or the grader instead of improving the workflow. Keep a held-out
+and later newly sampled set for follow-up.
 
 ### Lesson 29: Revision, Release, Rollback, and Monitoring
 
@@ -3238,7 +3281,19 @@ the limitation that remains. A passing evaluation can support a release
 decision, but it does not prove that the deployed runtime enforces every
 control.
 
+An optimization result must remain bound to the release record. Record which
+candidate change was accepted, which tuning and held-out cases were used, what
+grader-health checks were completed, and which blocking regression would cause
+the candidate to be rejected or reverted. This prevents a later release from
+quietly inheriting a score without the evidence that made the score meaningful.
+
 Monitoring is the ongoing observation of signals after release. Watch for new failure categories, changes in case mix, rising escalation, tool errors, latency or cost shifts, and evidence that the evaluator no longer reflects the workflow. Monitoring should include an owner and an action threshold.
+
+Fresh cases are especially important after optimization. A candidate can look
+better on the cases used during development while failing on newly arriving
+work. Sample fresh cases, compare them with the accepted baseline and held-out
+expectation, and route a regression to investigation, recalibration, rollback,
+or a new evaluation case.
 
 In the demo, inspect a run manifest and rollback rehearsal record. Identify which revision was tested, what decision was made, what evidence would trigger rollback, and where the owner is named. The course harness’s launch-to-field and monitorability examples provide the pattern.
 
@@ -3248,7 +3303,9 @@ The cost of weak release evidence is not just a bad score. It is the inability t
 
 Draft a release record with:
 
-`revision`, `case_set`, `evaluator_revision`, `blocking_findings`, `decision`, `rollback_trigger`, `rollback_owner`, `monitoring_signal`, `review_date`.
+`revision`, `case_set`, `evaluator_revision`, `candidate_change`,
+`held_out_result`, `blocking_findings`, `decision`, `rollback_trigger`,
+`rollback_owner`, `monitoring_signal`, `fresh_case_plan`, `review_date`.
 
 Add one condition that would move the decision from release to hold. Then name
 one runtime control—durable execution, sandboxing, context management, or human
@@ -3326,11 +3383,13 @@ A complete report does not make an evaluation complete forever. The decision is 
 >
 > 1. What stayed constant between the baseline and variant?
 > 2. Which high-risk slice could overturn an aggregate improvement?
-> 3. What owner, monitoring signal, and rollback trigger belong in the final report?
+> 3. Which cases are for tuning, which are held out, and what grader-health or headroom check must pass before optimizing?
+> 4. When would you keep, reject, or revert the candidate?
+> 5. What owner, monitoring signal, and rollback trigger belong in the final report?
 
 ## Lab 5: Turn evaluation evidence into a release decision 🔬
 
-This capstone lab is included here so you can compare a baseline and variant, inspect uncertainty and high-risk slices, rehearse rollback, and complete a release report without leaving the guide.
+This capstone lab is included here so you can compare a baseline and variant, separate tuning from held-out cases, inspect grader health and uncertainty, rehearse rollback, and complete a release report without leaving the guide.
 
 ### Lab 5: Turn evaluation evidence into a release decision 🔬
 
@@ -3342,7 +3401,9 @@ rollback, monitoring, and a decision report.
 
 You will compare two synthetic revisions on the same cases, inspect a high-risk
 slice, measure repeated-run variation, explain benchmark limitations, rehearse
-rollback, and produce a bounded release recommendation.
+rollback, and produce a bounded release recommendation. You will also inspect
+an evaluation-driven optimization record that keeps tuning cases separate from
+held-out cases and rejects a candidate that does not generalize.
 
 #### Why this matters
 
@@ -3358,7 +3419,8 @@ Claude, the network, a benchmark provider, or a deployment system.
 
 The baseline and variant use the same six cases and evaluator revision. Only the
 policy revision changes. The variant improves the aggregate score but regresses
-the high-risk slice, so the correct capstone decision is `hold`.
+the high-risk held-out slice, so the correct capstone decision is `hold` and the
+candidate action is `revert_and_investigate`.
 
 #### Run it
 
@@ -3391,6 +3453,12 @@ The report should show:
 - the variant has a lower high-risk slice score;
 - repeated runs show non-zero score variation;
 - each repeated run identifies the failed case IDs that produced its score;
+- tuning cases and held-out cases have different declared roles;
+- the candidate changes one declared factor at a time;
+- grader consistency is kept separate from agent run variation;
+- remaining headroom is recorded before interpreting improvement;
+- a held-out regression causes `revert_and_investigate`, even when the tuning
+  result improves;
 - revision change requires a rerun rather than reusing old evidence;
 - task correctness and safety remain separate dimensions;
 - latency, cost, user outcomes, and evaluator validity are marked
@@ -3398,7 +3466,7 @@ The report should show:
 - rollback rehearsal passes without deployment writes;
 - monitoring includes an owner and action threshold; and
 - human approval remains pending and separate from the automated result; and
-- the capstone decision is `hold`, with the action `do not release variant-r2`.
+- the capstone decision is `hold`, with the action `revert_and_investigate`.
 
 The lab should exit with code `0`. The zero exit code means the release controls
 behaved as expected; it does not approve a real release.
@@ -3411,6 +3479,9 @@ baseline + variant
         v
 matched cases and fixed evaluator
         |
+        +--> tune on declared tuning cases
+        +--> check grader health and headroom
+        +--> verify on held-out cases
         +--> aggregate comparison
         +--> high-risk slices
         +--> repeated-run uncertainty
@@ -3422,6 +3493,8 @@ release decision
 release   hold   rollback
    |        |       |
 monitor   revise   restore last-known-good
+   |        |       |
+   +--> fresh cases and drift review
 ```
 
 #### Evidence to inspect
@@ -3433,6 +3506,7 @@ Review these fields in the JSON output:
 - `comparison.variant_score`
 - `comparison.variant_score_range`
 - `comparison.high_risk_regression`
+- `optimization_contract`
 - `negative_controls`
 - `release_contract`
 - `dimensions`
@@ -3441,8 +3515,9 @@ Review these fields in the JSON output:
 - `monitoring_plan`
 - `capstone_report`
 
-The key observation is that the aggregate improvement does not override the
-high-risk slice regression. The report keeps both facts visible.
+The key observation is that an improvement on tuning or aggregate results does
+not override a held-out high-risk regression. The report keeps the optimization
+decision, release decision, and their evidence visible separately.
 
 #### Try the failure
 
@@ -3491,6 +3566,21 @@ release_decision:
 next_step:
 ```
 
+The optimization-specific fields should also be present:
+
+```text
+tuning_cases:
+held_out_cases:
+grader_consistency:
+evaluation_noise:
+remaining_headroom:
+candidate_change:
+optimization_result:
+regression_check:
+fresh_case_plan:
+accept_reject_revert:
+```
+
 #### What this does not prove
 
 This is an offline synthetic teaching control. It does not establish live model
@@ -3502,7 +3592,8 @@ the declared cases.
 Change one of the normal cases so the variant improves the aggregate score
 without changing the high-risk slice. Then compare that result with the current
 hold decision and document what additional evidence would be needed before
-release.
+release. As a second extension, change the candidate policy and record whether
+the held-out result supports keeping, rejecting, or reverting it.
 
 For the harness-side patterns behind this lab, see the public
 [benchmark reporting tool](https://github.com/julie-elkins/agent-assurance-harness/blob/main/tools/benchmark_report.py),

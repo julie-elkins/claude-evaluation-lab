@@ -150,34 +150,40 @@ flowchart LR
         "title": "Benchmarks, release, and capstone",
         "start": 26,
         "end": 30,
-        "outcome": "Compare a baseline and variant, state uncertainty and limitations, and produce an accountable release recommendation.",
+        "outcome": "Compare a baseline and variant, separate tuning from held-out evidence, check grader health and remaining headroom, state uncertainty and limitations, and produce an accountable release recommendation.",
         "diagram": r"""
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
 flowchart LR
     A["Baseline and variant"] --> B["Matched cases and slices"]
-    B --> C["Findings and uncertainty"]
-    C --> D{"Release decision"}
-    D -->|revise| E["Change and re-evaluate"]
-    D -->|release| F["Monitor"]
-    D -->|block| G["Hold or rollback"]
-    F --> H{"New evidence?"}
-    H -->|yes| E
-    H -->|no| F
+    B --> C["Tune candidate"]
+    C --> D["Check grader health and headroom"]
+    D --> E["Verify held-out cases"]
+    E --> F["Findings and uncertainty"]
+    F --> G{"Release decision"}
+    G -->|revise| H["Change and re-evaluate"]
+    G -->|release| I["Monitor fresh cases"]
+    G -->|block| J["Hold or rollback"]
+    I --> K{"New evidence?"}
+    K -->|yes| H
+    K -->|no| I
     classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
     classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
     classDef sage fill:#DCE8D8,stroke:#6F8F72,color:#16324F,stroke-width:2px
     classDef red fill:#F3D6D2,stroke:#B44B45,color:#16324F,stroke-width:2px
     class A,B blue
-    class C,D orange
-    class E,F sage
-    class G red
-    class H orange
+    class C,D,E orange
+    class F,G sage
+    class H,I sage
+    class J red
+    class K orange
 ```
 """,
         "practice": [
             "What stayed constant between the baseline and variant?",
             "Which high-risk slice could overturn an aggregate improvement?",
+            "Which cases are for tuning, which are held out, and what grader-health or headroom check must pass before optimizing?",
+            "When would you keep, reject, or revert the candidate?",
             "What owner, monitoring signal, and rollback trigger belong in the final report?",
         ],
     },
@@ -685,7 +691,7 @@ def build() -> str:
                 [
                     "## Lab 5: Turn evaluation evidence into a release decision 🔬",
                     "",
-                    "This capstone lab is included here so you can compare a baseline and variant, inspect uncertainty and high-risk slices, rehearse rollback, and complete a release report without leaving the guide.",
+                    "This capstone lab is included here so you can compare a baseline and variant, separate tuning from held-out cases, inspect grader health and uncertainty, rehearse rollback, and complete a release report without leaving the guide.",
                     "",
                     render_lab(ROOT / "labs" / "05-release-capstone" / "README.md"),
                     "",
