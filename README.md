@@ -29,6 +29,10 @@ You will build an evaluation workflow that can distinguish:
 - a cheap diagnostic replay from full end-to-end validation; and
 - an isolated subagent result from evidence that the whole architecture
   improved the user's task.
+- an accuracy result from a reliable process that preserves uncertainty,
+  verifies important intermediate steps, and stops or escalates safely; and
+- a red-team attempt from a complete security-evaluation loop that turns an
+  observed weakness into a regression case.
 
 ## Start here
 
@@ -124,7 +128,8 @@ does and does not prove.
    inspect traces, operational signals, privacy boundaries, and incident
    evidence.
 7. [Security controls](labs/07-security-controls/README.md) — test trust
-   boundaries, least privilege, telemetry access, and side-effect controls.
+   boundaries, least privilege, telemetry access, side-effect controls, and
+   the synthetic red-team-to-regression workflow.
 8. [Telemetry vertical slice](labs/08-telemetry-vertical-slice/README.md) —
    follow local evidence from instrumentation through alerting and regression.
 
@@ -226,6 +231,11 @@ Reference courses and standards used for the advanced track:
   security threat categories for generative AI systems.
 - [NIST Generative AI Profile](https://www.nist.gov/itl/ai-risk-management-framework/ai-rmf-generative-ai-profile)
   — risk management and post-deployment assurance.
+- [Promptfoo](https://github.com/promptfoo/promptfoo), [garak](https://github.com/NVIDIA/garak),
+  [PyRIT](https://github.com/Azure/PyRIT), and
+  [Giskard](https://github.com/Giskard-AI/giskard) — optional red-team and
+  adversarial-testing references. They are not required dependencies because
+  tool interfaces and attack corpora change quickly.
 
 Research reading that informs the evaluation design:
 

@@ -92,8 +92,9 @@ calibration evidence, and a deliberately degraded case.
 
 Hands-on outcome: evaluate an agent workflow at step, end-to-end, trajectory,
 and thread/session scope without allowing a plausible final answer to hide a
-failed path, unsafe action, or missing evidence; compare flat and multi-agent
-paths using end-to-end evidence.
+failed path, unsafe action, or missing evidence; preserve uncertainty and
+verification status across handoffs; compare flat and multi-agent paths using
+end-to-end evidence.
 
 ### Module 5 — Regression and release decisions
 
@@ -153,8 +154,9 @@ rollback decision.
 43. Telemetry security and auditability
 44. Monitor the monitor and resilience
 
-Hands-on outcome: threat-model an agent, test authority and data boundaries,
-protect telemetry evidence, and detect monitoring-path failure.
+Hands-on outcome: threat-model an agent, run a bounded red-team loop from attack
+hypothesis to regression case, test authority and data boundaries, protect
+telemetry evidence, and detect monitoring-path failure.
 
 ### Module 11 — Continuous assurance and production implementation
 
@@ -248,3 +250,4 @@ Current official implementation references:
 - [Hugging Face Agents Course](https://huggingface.co/learn/agents-course/bonus-unit2/what-is-agent-observability-and-evaluation) — observability and evaluation distinction.
 - [OWASP GenAI Security Project](https://genai.owasp.org/llm-top-10/) — current threat categories and security control prompts.
 - [NIST Generative AI Profile](https://www.nist.gov/itl/ai-risk-management-framework/ai-rmf-generative-ai-profile) — risk management and post-deployment assurance reference.
+- [Promptfoo](https://github.com/promptfoo/promptfoo), [garak](https://github.com/NVIDIA/garak), [PyRIT](https://github.com/Azure/PyRIT), and [Giskard](https://github.com/Giskard-AI/giskard) — optional red-team and adversarial-testing references; none is required for the offline learner path.
