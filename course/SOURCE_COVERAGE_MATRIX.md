@@ -42,6 +42,7 @@ left as assumed measurement vocabulary.
 | Evaluation dimensions | Task performance includes usefulness, relevance, and factuality; alignment includes style, tone, and safety. | Lessons 2, 17, 20, and 22 | Separate dimensions instead of collapsing them into one score. |
 | Factuality | Extract claims, check each claim against evidence, and aggregate partial correctness. | Lessons 19–21 | Use synthetic claims and approved evidence identifiers. |
 | Agent evaluation | Decompose observe/plan/act or tool-call loops; evaluate routing, tool choice, arguments, execution, and final interpretation. | Lessons 23–25 | Reuse harness scenarios and inspect the trajectory, not only the final text. |
+| Agent reliability across steps | Error propagation, uncertainty and evidence handoff, intermediate verification, stopping, asking, refusal, and escalation are distinct from final-answer accuracy. | Lessons 25 and 47 | Annotate a synthetic handoff with provenance, uncertainty, verification status, and a stop or escalation rule. |
 | Benchmarks | Knowledge, reasoning, coding, safety, and agent benchmarks answer different questions. | Lesson 26 | Compare benchmark categories with a custom-use-case evaluation. |
 | Benchmark limits | Benchmark contamination, data leakage, Goodhart's law, Pareto tradeoffs, and model-profile differences. | Lesson 27 | Write a limitation statement and a cost/safety/quality comparison. |
 | Final principle | A benchmark result does not decide whether a model is right for a particular use case. | Lessons 27–30 | Capstone requires a use-case decision and explicit limitations. |
@@ -85,7 +86,7 @@ below rather than left implicit in the repository.
 | Continuous evaluation | Trace sampling, failure classification, safe minimization, regression cases, drift review, and release decisions. | Lessons 37–39 and 46–48 | Generate trace-to-case candidates, recalibrate, and complete the capstone. |
 | Trace-to-evaluator design | Trace evidence profiling, root-cause hypotheses, diagnostic replay, full validation, recurring failure mechanisms, evaluator-contract drafting, minimized case creation, negative controls, and human adoption decision. | Lesson 37; optional `TRACE_TO_EVALUATOR_SKILL.md` | Apply the workflow to synthetic Lab 6 traces; real traces remain private and approved. |
 | Live provider extension | Bounded model, request, time, token, spend, privacy, and approval limits. | Lesson 38 and optional adapter | Keep live access separate from the required path. |
-| Security threat model | Assets, actors, entry points, trust boundaries, consequences, and preventive, detective, and response controls. | Lesson 40 and Lab 7 | Draw a synthetic abuse path and inspect control coverage. |
+| Security threat model and red teaming | Assets, actors, entry points, trust boundaries, consequences, attack hypotheses, rules of engagement, preventive/detective/response controls, and attack-to-regression conversion. | Lesson 40 and Lab 7 | Draw a synthetic abuse path, inspect `red_team_cases`, and convert an unblocked attack into a regression case. |
 | Identity and authority | Principal, least privilege, tenant scope, credential isolation, approval, and audit evidence. | Lesson 41 and Lab 7 | Catch over-privileged, secret-exposing, and missing-approval cases. |
 | Data, network, and supply chain | Tenant boundaries, egress policy, output validation, tool provenance, dependency revision, and side-effect protection. | Lessons 42 and 47; Lab 7 | Run synthetic boundary, provenance, idempotency, and stale-state failures. |
 | Telemetry security | Classification, access role, retention, deletion, evidence preservation, and auditability. | Lesson 43 and Lab 7 | Keep a complete task result separate from a secure telemetry result. |
@@ -94,6 +95,26 @@ below rather than left implicit in the repository.
 | Drift and recalibration | Data, model, evaluator, and concept drift; human feedback; sampling; recalibration. | Lesson 46 | Compare synthetic distributions and declare a review action. |
 | Official provider guidance | Claude evaluations and skills, Codex skills and `AGENTS.md`, LangSmith evaluators and review queues, LangGraph durable execution, and OpenTelemetry GenAI conventions. | Fundamentals; Lessons 25, 28, 33, 37, and 39; README | Use official links for current syntax and map provider features to the provider-neutral evidence contract. |
 | Continuous assurance | Security, telemetry health, evaluation, incidents, ownership, and release action remain connected. | Lesson 48 and Labs 7–8 | Produce one combined assurance report with bounded claims. |
+
+## Red-team coverage
+
+The course uses **red teaming**, meaning bounded adversarial testing of an
+agent's behavior under hostile, manipulative, or boundary-seeking conditions,
+as a security-evaluation method rather than a universal score. The required
+path covers these synthetic categories:
+
+| Attack category | Learner treatment | Evidence |
+| --- | --- | --- |
+| Indirect prompt injection | Treat untrusted retrieved content as data, not authority. | Lab 7 blocked and unblocked synthetic cases. |
+| Tool misuse and privilege escalation | Check authorization, scope, arguments, approval, and side effects. | Lessons 23–24, 41, and Lab 7. |
+| Data exfiltration and tenant escape | Check credential, telemetry, tenant, and network boundaries. | Lessons 35, 40–43, and Lab 7. |
+| Unsafe side effects | Require output validation, idempotency, compensation, and human approval. | Lessons 24, 41, 47, and Lab 7. |
+| Resource exhaustion | Enforce budgets, retry bounds, and stopping criteria. | Lessons 34, 40, 44, and Lab 7. |
+| Regression conversion | Turn a confirmed weakness into a versioned case with an owner and release consequence. | Lessons 29, 36–40, and Lab 7. |
+
+Jailbreaks and vendor-specific attack corpora remain optional references. The
+public required path does not run live attacks, use real credentials, or claim
+broad resistance from a small synthetic suite.
 
 ## Completeness rule
 

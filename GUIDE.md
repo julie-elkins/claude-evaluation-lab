@@ -2807,6 +2807,26 @@ when it provides a measured benefit such as parallel research, independent
 verification, or a genuinely different context boundary. The decision belongs
 to the end-to-end evidence, not to the existence of a polished subagent answer.
 
+Errors can propagate across a chain. If every step independently succeeds 95
+percent of the time and all ten steps are required, the probability of an
+all-success path is approximately 0.95 to the tenth power, or about 60 percent.
+That calculation is only an intuition because real steps are not independent,
+but it makes the measurement problem visible: the end-to-end task can be much
+less reliable than any one-step score suggests.
+
+An agent handoff should preserve more than a fluent summary. Record the
+evidence used, its provenance, the confidence or uncertainty attached to the
+claim, the alternatives that remain plausible, and whether the next agent or
+tool verified the result. A downstream step should not inherit an unverified
+conclusion as if it were a fact.
+
+Verification is a control point, not a decorative extra. For high-impact
+steps, define what must be checked before the next action, what happens when
+the check is inconclusive, and when the agent must stop, ask a human, refuse,
+or escalate. Reliability is distinct from accuracy: a correct answer reached
+through an unsafe or unverifiable path is still a failed run for a decision
+that requires a reliable process.
+
 The final decision should include both the semantic outcome and the process findings. A run that reaches the right answer through an unauthorized tool may still fail. A run that safely escalates because evidence is missing may be the correct outcome even though it does not complete the original task.
 
 In the demo, compare the guarded and unguarded semantic-outcomes paths. Inspect transport status, semantic outcome, missing evidence, retry count, approval requirement, and terminal state. The point is to show how the evidence contract keeps the final decision tied to the actual run.
@@ -2819,7 +2839,9 @@ Annotate a five-step synthetic trajectory with:
 
 `environment_revision`, `policy_revision`, `memory_revision`, `observation`,
 `decision`, `tool`, `arguments`, `result`, `recovery_action`,
-`stopping_criteria`, `terminal_state`.
+`stopping_criteria`, `terminal_state`, `evidence_ids`, `evidence_provenance`,
+`confidence_or_uncertainty`, `alternatives_considered`, `verification_status`,
+and `handoff_status`.
 
 Add `thread_id`, `turn_index`, `conversation_terminal_state`, and the memory
 or state carried from the previous turn. Choose whether you are evaluating a
@@ -2827,7 +2849,9 @@ step, end-to-end task, trajectory, or thread/session. Then choose pass, fail, or
 escalate. For an architecture comparison, record whether the workflow is flat
 or uses subagents, what evidence justifies the handoff, and whether the
 end-to-end result improved after accounting for cost, latency, context, and
-recovery. Explain whether the final answer would change your decision and why.
+recovery. Identify one error that could propagate, one verification point, and
+one condition that should make the agent stop, ask, refuse, or escalate.
+Explain whether the final answer would change your decision and why.
 
 #### What this lesson does not prove ⚠️
 
@@ -4458,20 +4482,54 @@ ownership changes. A retrieved document is not trusted merely because the
 agent can read it. A tool result is not an instruction merely because it came
 from a registered tool. The evaluation should record that boundary explicitly.
 
+Red teaming is adversarial evaluation: deliberately testing how an agent
+behaves under hostile, manipulative, or boundary-seeking conditions. A useful
+red-team exercise is not a collection of dramatic prompts. It is a bounded
+workflow:
+
+1. state the rules of engagement, allowed environment, and stop conditions;
+2. choose an attack hypothesis and entry point;
+3. run a harmless synthetic case against the declared control;
+4. preserve the observed path, impact, and missing or effective control; and
+5. turn a confirmed weakness into a regression case with an owner and release
+   consequence.
+
+Use attack categories to make coverage visible: indirect prompt injection,
+jailbreak or refusal bypass, tool misuse, data exfiltration, privilege
+escalation, unsafe side effect, resource exhaustion, and supply-chain or
+dependency drift. The category is not the finding by itself. The finding must
+say what happened, what evidence proves it, and what decision changes.
+
 For each high-cost path, name a preventive control, a detection signal, and a
 response action. If an untrusted field can cause an unauthorized write, the
 control is not only “the model should resist.” It may also include tool
 authorization, argument validation, approval, audit evidence, and rollback.
 
+The red-team loop should end in engineering work. A successful attack becomes
+a minimized regression case; a blocked attack becomes evidence that the
+declared control was exercised; an ambiguous result becomes a human-review
+case. Re-run the regression after model, prompt, skill, tool, policy, or
+architecture changes. Do not report the number of attempted attacks as a
+universal safety score.
+
 #### Learner practice 🧪
 
 Draw one workflow with four labels: asset, untrusted input, trust boundary, and
 state-changing action. Add one preventive, detective, and response control.
+Then complete a red-team record:
+
+1. The attack hypothesis is…
+2. The entry point is…
+3. The expected control is…
+4. The evidence of detection or failure is…
+5. The regression case and release consequence are…
 
 #### What this lesson does not prove ⚠️
 
-A threat model does not prove that an implementation enforces every control. It
-identifies what must be tested and who needs to own the evidence.
+A threat model and a red-team run do not prove that an implementation enforces
+every control. They identify what was tested, what evidence was observed, and
+who needs to own the next action. Passing a synthetic attack case does not
+prove resistance to new attack patterns.
 
 ### Lesson 41: Identity, Least Privilege, and Secrets
 
@@ -4655,7 +4713,8 @@ This lab is included here so you can threat-model an agent, inspect authority an
 
 This lab teaches security as a set of observable controls around an agent:
 trust boundaries, identity, least privilege, tenant scope, network egress,
-output validation, approval, telemetry access, and audit evidence.
+output validation, approval, telemetry access, audit evidence, red-team
+detection, and bounded stopping.
 
 The fixtures are synthetic and harmless. No credentials, live endpoints, raw
 provider payloads, or production data are used.
@@ -4671,7 +4730,10 @@ You will inspect:
 - output validation before a side effect;
 - tool and dependency provenance;
 - telemetry access, retention, deletion, and audit evidence; and
-- idempotency and stale-state controls.
+- idempotency and stale-state controls;
+- red-team cases that connect an attack hypothesis to an expected control and
+  regression case; and
+- resource-budget and stopping controls.
 
 #### Run it
 
@@ -4717,6 +4779,7 @@ Review:
 - `case_results`
 - `negative_controls`
 - `incident_findings`
+- `red_team_cases`
 - `coverage_summary`
 - `candidate_release_decision`
 - `evidence_template`
@@ -4724,8 +4787,23 @@ Review:
 #### What this does not prove
 
 The lab proves that the evaluator catches the declared synthetic control
-failures. It does not prove that an identity provider, secret store, network
-gateway, validator, or telemetry backend enforces the same controls.
+failures and records a small red-team coverage map. It does not prove that an
+identity provider, secret store, network gateway, validator, telemetry backend,
+or deployed agent resists new attack patterns.
+
+#### Red-team workflow
+
+For each synthetic red-team case, inspect:
+
+1. the attack type and entry point;
+2. the expected preventive or detective control;
+3. the observed status and evidence;
+4. the regression case identifier; and
+5. the release consequence.
+
+A blocked synthetic attack is evidence that the declared control was exercised.
+An unblocked attack is a regression finding. Neither result is a universal
+safety score.
 
 #### Optional extension
 

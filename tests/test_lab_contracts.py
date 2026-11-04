@@ -131,6 +131,24 @@ class LabContractTests(unittest.TestCase):
             report["case_results"]["security-cross-tenant-read-001"]["status"],
             "failed",
         )
+        self.assertEqual(
+            report["case_results"]["security-indirect-injection-blocked-001"]["status"],
+            "passed",
+        )
+        self.assertEqual(
+            report["case_results"]["security-indirect-injection-unblocked-001"]["status"],
+            "failed",
+        )
+        self.assertEqual(
+            report["case_results"]["security-resource-exhaustion-001"]["status"],
+            "failed",
+        )
+        self.assertEqual(report["coverage_summary"]["red_team_attack_categories"], 2)
+        self.assertEqual(len(report["red_team_cases"]), 3)
+        self.assertEqual(
+            report["red_team_cases"][1]["regression_case_id"],
+            "regression-indirect-injection-002",
+        )
 
     def test_telemetry_vertical_slice_makes_pipeline_loss_visible(self) -> None:
         lab = load_lab_module(

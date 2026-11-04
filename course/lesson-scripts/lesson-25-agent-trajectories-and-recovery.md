@@ -16,9 +16,10 @@ By the end of this lesson, you can evaluate an agent trajectory, meaning the seq
 4. **Evaluation scope** — step, end-to-end, trajectory, and thread/session.
 5. **Recovery versus retry** — a retry is not recovery unless the failure is addressed.
 6. **Flat versus multi-agent architecture** — compare the whole task, not isolated subagents.
-7. **Stopping criteria** — define when the run completes, refuses, fails, or escalates.
-8. **Demo: guarded and unguarded paths**.
-9. **Practice: annotate a trajectory and choose the final decision**.
+7. **Error propagation and uncertainty handoff** — do not pass a confident summary without evidence.
+8. **Verification and stopping criteria** — check important intermediate results and know when to ask.
+9. **Demo: guarded and unguarded paths**.
+10. **Practice: annotate a trajectory and choose the final decision**.
 
 ## Speaker script
 
@@ -62,6 +63,26 @@ when it provides a measured benefit such as parallel research, independent
 verification, or a genuinely different context boundary. The decision belongs
 to the end-to-end evidence, not to the existence of a polished subagent answer.
 
+Errors can propagate across a chain. If every step independently succeeds 95
+percent of the time and all ten steps are required, the probability of an
+all-success path is approximately 0.95 to the tenth power, or about 60 percent.
+That calculation is only an intuition because real steps are not independent,
+but it makes the measurement problem visible: the end-to-end task can be much
+less reliable than any one-step score suggests.
+
+An agent handoff should preserve more than a fluent summary. Record the
+evidence used, its provenance, the confidence or uncertainty attached to the
+claim, the alternatives that remain plausible, and whether the next agent or
+tool verified the result. A downstream step should not inherit an unverified
+conclusion as if it were a fact.
+
+Verification is a control point, not a decorative extra. For high-impact
+steps, define what must be checked before the next action, what happens when
+the check is inconclusive, and when the agent must stop, ask a human, refuse,
+or escalate. Reliability is distinct from accuracy: a correct answer reached
+through an unsafe or unverifiable path is still a failed run for a decision
+that requires a reliable process.
+
 The final decision should include both the semantic outcome and the process findings. A run that reaches the right answer through an unauthorized tool may still fail. A run that safely escalates because evidence is missing may be the correct outcome even though it does not complete the original task.
 
 In the demo, compare the guarded and unguarded semantic-outcomes paths. Inspect transport status, semantic outcome, missing evidence, retry count, approval requirement, and terminal state. The point is to show how the evidence contract keeps the final decision tied to the actual run.
@@ -81,7 +102,9 @@ Annotate a five-step synthetic trajectory with:
 
 `environment_revision`, `policy_revision`, `memory_revision`, `observation`,
 `decision`, `tool`, `arguments`, `result`, `recovery_action`,
-`stopping_criteria`, `terminal_state`.
+`stopping_criteria`, `terminal_state`, `evidence_ids`, `evidence_provenance`,
+`confidence_or_uncertainty`, `alternatives_considered`, `verification_status`,
+and `handoff_status`.
 
 Add `thread_id`, `turn_index`, `conversation_terminal_state`, and the memory
 or state carried from the previous turn. Choose whether you are evaluating a
@@ -89,7 +112,9 @@ step, end-to-end task, trajectory, or thread/session. Then choose pass, fail, or
 escalate. For an architecture comparison, record whether the workflow is flat
 or uses subagents, what evidence justifies the handoff, and whether the
 end-to-end result improved after accounting for cost, latency, context, and
-recovery. Explain whether the final answer would change your decision and why.
+recovery. Identify one error that could propagate, one verification point, and
+one condition that should make the agent stop, ask, refuse, or escalate.
+Explain whether the final answer would change your decision and why.
 
 ## What this lesson does not prove
 

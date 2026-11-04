@@ -2,7 +2,8 @@
 
 This lab teaches security as a set of observable controls around an agent:
 trust boundaries, identity, least privilege, tenant scope, network egress,
-output validation, approval, telemetry access, and audit evidence.
+output validation, approval, telemetry access, audit evidence, red-team
+detection, and bounded stopping.
 
 The fixtures are synthetic and harmless. No credentials, live endpoints, raw
 provider payloads, or production data are used.
@@ -18,7 +19,10 @@ You will inspect:
 - output validation before a side effect;
 - tool and dependency provenance;
 - telemetry access, retention, deletion, and audit evidence; and
-- idempotency and stale-state controls.
+- idempotency and stale-state controls;
+- red-team cases that connect an attack hypothesis to an expected control and
+  regression case; and
+- resource-budget and stopping controls.
 
 ## Run it
 
@@ -64,6 +68,7 @@ Review:
 - `case_results`
 - `negative_controls`
 - `incident_findings`
+- `red_team_cases`
 - `coverage_summary`
 - `candidate_release_decision`
 - `evidence_template`
@@ -71,8 +76,23 @@ Review:
 ## What this does not prove
 
 The lab proves that the evaluator catches the declared synthetic control
-failures. It does not prove that an identity provider, secret store, network
-gateway, validator, or telemetry backend enforces the same controls.
+failures and records a small red-team coverage map. It does not prove that an
+identity provider, secret store, network gateway, validator, telemetry backend,
+or deployed agent resists new attack patterns.
+
+## Red-team workflow
+
+For each synthetic red-team case, inspect:
+
+1. the attack type and entry point;
+2. the expected preventive or detective control;
+3. the observed status and evidence;
+4. the regression case identifier; and
+5. the release consequence.
+
+A blocked synthetic attack is evidence that the declared control was exercised.
+An unblocked attack is a regression finding. Neither result is a universal
+safety score.
 
 ## Optional extension
 
