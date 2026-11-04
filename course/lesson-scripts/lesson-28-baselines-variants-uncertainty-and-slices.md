@@ -18,8 +18,11 @@ between tuning evidence and held-out evidence.
 4. **Slices** — inspect high-risk or boundary groups separately.
 5. **Evaluation-driven optimization** — make one bounded change, check grader
    health and remaining headroom, then test whether the result generalizes.
-6. **Model upgrades and architecture changes** — re-test prompts, skills, tools, and subagents.
-7. **Demo and practice: write a controlled comparison**.
+6. **Constrained multi-objective comparison** — gate safety and evidence first,
+   then inspect quality, cost, and latency trade-offs without inventing one
+   universal score.
+7. **Model upgrades and architecture changes** — re-test prompts, skills, tools, and subagents.
+8. **Demo and practice: write a controlled comparison**.
 
 ## Speaker script
 
@@ -74,6 +77,17 @@ or high-risk cases, reject or revert it. After release, sample fresh cases
 because held-out cases can eventually become familiar to the optimization
 process.
 
+When several candidates remain eligible, use a constrained multi-objective
+comparison. A **hard constraint** is a rule that excludes a candidate before
+optimization—for example, a failed safety check, incomplete evidence, a
+held-out regression, or repeated-run variation above the declared limit. Only
+then calculate the **Pareto frontier**, meaning the candidates where no
+eligible alternative is at least as good on every declared objective and
+strictly better on one. Keep quality, total cost including retries, and
+latency visible as separate dimensions. A frontier is a review surface, not an
+automatic winner: the final choice depends on the decision's failure cost and
+the human release owner.
+
 In the demo, compare a baseline and variant on the same synthetic cases. Report overall outcomes, high-risk slice outcomes, failures caught by negative controls, and any change in cost or latency. The decision should not be based on a single average.
 
 For a model or architecture upgrade, use a two-stage check. First, use a
@@ -88,6 +102,8 @@ The cost of an uncontrolled comparison is an attribution error. We may ship a ch
 ## Demo notes
 
 - Use the harness controlled-variant comparison example.
+- Run the companion constrained candidate comparison and explain why the
+  unsafe candidate is excluded before cost is considered.
 - Show the pinned case set and evaluator configuration.
 - Report both aggregate and slice results.
 - Recording boundary: do not present illustrative uncertainty as statistical proof for a real deployment.
@@ -104,7 +120,8 @@ Write a comparison plan for a baseline and one variant:
 `held_out_cases`, `grader_consistency`, `evaluation_noise`,
 `remaining_headroom`, `candidate_change`, `optimization_result`,
 `regression_check`, `fresh_case_plan`, `accept_reject_revert`,
-`decision_rule`.
+`decision_rule`, `hard_constraints`, `eligible_candidates`,
+`frontier_candidates`, `human_selection_rule`.
 
 Add one result pattern that would cause you to reject the variant despite an aggregate improvement.
 
