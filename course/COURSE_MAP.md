@@ -100,14 +100,15 @@ end-to-end evidence.
 
 26. Benchmark categories: knowledge, reasoning, coding, safety, and agents
 27. Benchmark contamination, Goodhart's law, and Pareto tradeoffs
-28. Baselines, variants, uncertainty, high-risk slices, and evaluator layers
+28. Baselines, variants, uncertainty, high-risk slices, evaluator layers, and evaluation-driven optimization
 29. Revision binding, drift, release decisions, rollback, and monitoring
 30. Capstone: produce an evaluation report and release recommendation
 
-Hands-on outcome: run a bounded comparison, re-test model and architecture
-changes, use replay as a diagnostic filter, require full validation, check
-deployment-readiness boundaries, and write a decision that names blocking
-failures, uncertainty, and limitations.
+Hands-on outcome: run a bounded comparison, separate tuning from held-out
+cases, check grader health and remaining headroom, re-test model and
+architecture changes, use replay as a diagnostic filter, require full
+validation, check deployment-readiness boundaries, and write a decision that
+names blocking failures, uncertainty, and limitations.
 
 ### Module 6 — Production observability foundations
 

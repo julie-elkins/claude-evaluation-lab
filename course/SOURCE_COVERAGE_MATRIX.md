@@ -49,10 +49,10 @@ left as assumed measurement vocabulary.
 
 ## Current harness coverage
 
-The current public `origin/main` tree is `2f95f4c`. Its tree matches the local
-course pin `3d69db3`, so the course already includes the latest content change
-from the evaluator-checklist work. The latest additions are explicitly mapped
-below rather than left implicit in the repository.
+The current public `origin/main` tree is `e75edcc`. Its tree matches the local
+course pin `e75edcc`, so the course includes the latest public checklist
+additions from the evaluator-checklist work. The latest additions are explicitly
+mapped below rather than left implicit in the repository.
 
 | Harness area | Required learner concepts | Course location | Reused harness material |
 | --- | --- | --- | --- |
@@ -65,6 +65,7 @@ below rather than left implicit in the repository.
 | Agent architecture comparison | Flat versus multi-agent paths, subagent handoffs, skill/tool alternatives, model-upgrade re-baselining, cost, latency, context, recovery, and end-to-end task outcome. | Lessons 25, 28, and 39 | Guided synthetic comparison; no new required live or runnable lab |
 | Trace and observability | Trace completeness, revision binding, privacy boundary, and visible skipped/refused/failed states. | Lessons 4, 28–29, and 31–48 | Run manifests, evidence provenance, Labs 6–8 |
 | Controlled comparison | Correctness, safety, tool-call correctness, latency, cost, and user outcomes remain separate; thresholds and rerun policy precede interpretation. | Lessons 28–30 | Latest `Controlled variant comparison` checklist row |
+| Evaluation-driven optimization | Use an evaluation to choose a candidate change; separate tuning from held-out cases, check grader consistency, observed noise, and remaining headroom, change one factor at a time, and accept, reject, or revert based on generalization. | Lessons 28–29 and Lab 5 | Synthetic optimization contract with a held-out high-risk regression and fresh-case follow-up |
 | Change management | Revision impact, stale evidence, reauthorization, release ownership, containment, and rollback. | Lesson 29 | Change-impact examples, reauthorization, ship gate, rollback rehearsal |
 | Monitoring and feedback | Production feedback, user outcomes, freshness, drift, telemetry health, and limitations. | Lessons 29 and 34–48 | Monitorability workbench, Labs 6–8, trace-to-case loop, and checklist |
 | Online evaluator action loop | Score or classify arriving traces, filter by a declared rule, and route to human review, dataset candidates, investigation, or alert. | Lessons 39 and 46; Fundamentals | Use a synthetic routing record that preserves evaluator revision, rule, reason, owner, and status. |

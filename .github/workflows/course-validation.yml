@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: julie-elkins/agent-assurance-harness
-          ref: 3d69db3cc45a86c832c53244f6c9fba55f4b16db
+          ref: e75edcc1284d92dcd6d46aaa0d6ba0ca2e94ab2a
           path: agent-assurance-harness
 
       - name: Install uv

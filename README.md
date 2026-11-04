@@ -29,6 +29,8 @@ You will build an evaluation workflow that can distinguish:
 - a cheap diagnostic replay from full end-to-end validation; and
 - an isolated subagent result from evidence that the whole architecture
   improved the user's task.
+- a candidate change that improves tuning cases from a change that generalizes
+  to held-out cases; and
 - an accuracy result from a reliable process that preserves uncertainty,
   verifies important intermediate steps, and stops or escalates safely; and
 - a red-team attempt from a complete security-evaluation loop that turns an
@@ -123,7 +125,8 @@ does and does not prove.
 4. [Agent behavior](labs/04-agent-behavior/README.md) — evaluate factuality,
    safety, tool use, authorization, state, and recovery.
 5. [Release capstone](labs/05-release-capstone/README.md) — compare revisions,
-   inspect high-risk slices, and make a bounded release recommendation.
+   inspect high-risk slices, evaluate a candidate optimization against held-out
+   cases, and make a bounded release recommendation.
 6. [Production observability](labs/06-production-observability/README.md) —
    inspect traces, operational signals, privacy boundaries, and incident
    evidence.
@@ -159,10 +162,9 @@ uv run python labs/01-semantic-outcomes/run_lab.py
 ```
 
 The course wrapper uses the harness content tree from revision
-`3d69db3cc45a86c832c53244f6c9fba55f4b16db`, which matches the current public
-`origin/main` tree at `2f95f4c` as of the course audit. If you are working from
-a local checkout, the wrapper verifies the pinned revision before running the
-lab.
+`e75edcc1284d92dcd6d46aaa0d6ba0ca2e94ab2a`, which is the current public
+`origin/main` tree as of the course audit. If you are working from a local
+checkout, the wrapper verifies the pinned revision before running the lab.
 
 ## What the first lab proves
 
