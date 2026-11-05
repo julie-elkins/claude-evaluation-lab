@@ -185,6 +185,16 @@ synthetic traces, identifying recurring failure mechanisms, drafting evaluator
 contracts, creating minimized cases, and validating negative controls. It does
 not add a required lab, execute production tools, or replace human approval.
 
+### Optional extension — Memory consolidation evaluation
+
+Use [Memory Consolidation Evaluation](MEMORY_CONSOLIDATION_EVALUATION.md) after
+Lessons 24, 25, 32, 35, 37, and 46. It treats background memory writing as a
+stateful workflow change and compares a baseline with a treatment on fresh and
+held-out cases. It covers memory write/read correctness, task outcome, stale or
+contradictory state, privacy, deletion, provenance, rollback, and cost. It does
+not add a required provider-hosted lab or claim that memory improves every
+workflow.
+
 ## Production pattern
 
 Every lesson will have:
@@ -228,6 +238,7 @@ points for design and currentness checks, not copied course content.
 Current official implementation references:
 
 - [Claude evaluation guidance](https://docs.anthropic.com/en/docs/build-with-claude/define-success) and [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/slash-commands) — success criteria, graders, skill evaluation, and model-upgrade re-baselining.
+- [Anthropic Claude Cookbook: Dreaming with a dynamic workflow](https://platform.claude.com/cookbook/managed-agents-cma-dreaming-with-a-dynamic-workflow) — optional implementation reference for background memory consolidation; its example cost and runtime are not general guarantees.
 - [Codex skills](https://developers.openai.com/codex/skills/create-skill), [`AGENTS.md`](https://developers.openai.com/codex/guides/agents-md), and [Codex evals](https://developers.openai.com/codex/use-cases/ai-app-evals) — instruction scope, coding-agent skills, baselines, fixtures, and evaluation workflows.
 - [LangSmith evaluation](https://docs.langchain.com/langsmith/evaluation), [automation rules](https://docs.langchain.com/langsmith/rules), and [annotation queues](https://docs.langchain.com/langsmith/annotation-queues) — offline/online evaluation, review routing, and dataset promotion.
 - [LangGraph](https://docs.langchain.com/langgraph) — durable execution and human-in-the-loop state boundaries.
