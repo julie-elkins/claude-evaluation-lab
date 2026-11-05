@@ -409,6 +409,146 @@ right construct, or that the evaluator is safe to run at production scale.
 Human calibration, held-out validation, privacy review, and deployment-specific
 controls remain necessary.
 
+### Optional extension 🔬: Evaluate background memory consolidation
+
+**Memory consolidation** is a background workflow that reads prior agent
+sessions and writes a smaller, reusable representation for a later session.
+Some systems describe this as “dreaming.” It is a state-changing workflow, not
+an automatic quality improvement.
+
+Use this extension after Lessons 24, 25, 32, 35, 37, and 46. It is optional
+because the required course path remains offline, deterministic, and
+provider-neutral.
+
+#### Why this needs its own evaluation
+
+An agent can appear to improve because it remembers something useful. It can
+also become less reliable because it remembered something stale, private,
+contradictory, or irrelevant. The memory writer and the later agent therefore
+form one stateful evaluation boundary.
+
+The decision is not:
+
+> Did the background job produce a plausible summary?
+
+The decision is:
+
+> Does the memory change improve the declared future workflow without creating
+> unsafe state, privacy exposure, stale guidance, or unbounded cost?
+
+#### Compare a baseline with a treatment
+
+Run the same task set under two conditions:
+
+| Condition | Memory behavior | Purpose |
+|---|---|---|
+| Baseline | No newly consolidated memory, or the previous approved memory snapshot | Establishes what the agent can do without the candidate change |
+| Treatment | The candidate consolidation workflow reads approved prior sessions and writes a versioned memory snapshot | Measures the effect of the change |
+
+Keep the agent, task set, policy, tools, model revision, and environment
+constant unless the decision explicitly concerns one of those changes. Use
+fresh and held-out cases, meaning cases not used to design the consolidation
+prompt or tune the memory schema.
+
+Do not treat the memory writer's completion status as evidence that future
+tasks improved. The later task is the unit that supplies that evidence.
+
+#### Evaluation surfaces
+
+Evaluate the memory workflow at four connected surfaces:
+
+1. **Write correctness** — did it store only information that was eligible,
+   supported, and useful?
+2. **Read correctness** — did the later agent retrieve the right memory for the
+   task and ignore irrelevant memory?
+3. **Task outcome** — did the later workflow complete the declared task more
+   reliably?
+4. **State safety** — did the change preserve authorization, privacy,
+   tenant boundaries, retention, deletion, provenance, and rollback?
+
+Useful observations include:
+
+- task completion and semantic outcome;
+- memory retrieval precision and recall;
+- stale-memory rate;
+- contradiction rate;
+- unsupported-memory rate;
+- unwanted personalization or cross-user leakage;
+- memory write and read latency;
+- token and storage cost;
+- memory version and provenance;
+- expiry, deletion, and rollback behavior; and
+- human-review or escalation rate for ambiguous memory.
+
+These are separate dimensions. A lower token cost does not compensate for
+cross-tenant memory leakage, and a higher task-success rate does not prove that
+the memory is safe to retain.
+
+#### Safety and privacy contract
+
+Before running the treatment, declare:
+
+- which transcripts or events may be read;
+- which data classes must be redacted or excluded;
+- who may write, read, correct, or delete memory;
+- how memory is isolated by user, tenant, workflow, and environment;
+- how each memory item points to bounded provenance;
+- how stale or conflicting memory is detected;
+- when memory expires;
+- how a deletion request removes or invalidates derived memory;
+- how an approved snapshot is rolled back; and
+- what happens when the evidence is missing or ambiguous.
+
+The public course uses synthetic identifiers and memory states only. Do not put
+raw transcripts, personal data, credentials, or provider responses into the
+repository.
+
+#### Negative controls
+
+Add deliberately degraded cases that the evaluation must catch:
+
+- a memory item with an expired source;
+- a memory item copied across tenants;
+- a memory item that contradicts the current policy;
+- a memory item that contains unsupported personal information;
+- a relevant memory item that is not retrieved;
+- an irrelevant memory item that is retrieved and changes the plan;
+- a deletion request that leaves derived state active; and
+- a treatment that improves the aggregate score while regressing a high-risk
+  held-out slice.
+
+If these controls are not caught, the evaluation is not ready to support a
+release decision.
+
+#### Optional exercise 🧪
+
+Choose one synthetic workflow and write four lines:
+
+1. The baseline condition is…
+2. The treatment changes…
+3. The most expensive plausible memory failure is…
+4. The evidence that would justify adoption is…
+
+Then define one held-out case and one deletion or rollback check. Report
+whether the result is `completed`, `failed`, `blocked`, or
+`not_evaluated`—and explain why.
+
+#### What this extension does not prove ⚠️
+
+One controlled comparison does not prove that memory improves every task,
+every user experience, or every future model revision. A cookbook example,
+runtime, or reported cost is not a production guarantee. Re-run the comparison
+when the memory schema, writer workflow, model, policy, data boundary, or
+retrieval mechanism changes.
+
+#### Official reference
+
+The [Anthropic Claude Cookbook example on dreaming with a dynamic
+workflow](https://platform.claude.com/cookbook/managed-agents-cma-dreaming-with-a-dynamic-workflow)
+is an implementation reference for a background memory workflow. Use it to
+study the pattern, not as evidence that the pattern is safe or beneficial for
+every use case.
+
 ## Fundamentals 📘
 
 This section is the foundation for the course. Read it before the lessons if
@@ -619,6 +759,52 @@ flowchart LR
     class D,E orange
     class F sage
 ```
+
+##### Three evaluation surfaces for an agent
+
+An agent evaluation should make the failure surface visible. A **retrieval
+surface** checks whether the workflow found and selected the evidence it
+needed. A **model surface** checks how the response used that evidence and
+followed its instructions. An **agent surface** checks the ordered workflow:
+tool choice, arguments, state changes, recovery, cost, latency, and final task
+outcome.
+
+These surfaces overlap, but they are not interchangeable. A grounded answer
+cannot repair missing retrieval evidence. A correct final answer cannot erase
+an unauthorized tool action. A low-latency run is not a successful task if the
+expected state change never occurred.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Retrieval surface<br/>found, relevant, sufficient, ranked"] --> B["Model surface<br/>grounded, relevant, safe, instruction-following"]
+    B --> C["Agent surface<br/>tools, state, recovery, outcome"]
+    A --> D["Missing evidence<br/>or wrong context"]
+    B --> E["Unsupported answer<br/>or policy violation"]
+    C --> F["Unsafe path<br/>or incomplete task"]
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef red fill:#F3D6D2,stroke:#B44B45,color:#16324F,stroke-width:2px
+    class A blue
+    class B orange
+    class C blue
+    class D,E,F red
+```
+
+For retrieval ranking, **NDCG**, or normalized discounted cumulative gain,
+is one example of a metric that rewards useful results appearing near the top.
+Use it only when ranking quality is part of the declared decision. It should
+not replace checks for evidence completeness, grounding, authorization, or
+task completion.
+
+For every important finding, ask:
+
+1. Did retrieval fail to find the evidence?
+2. Did the model fail to use or follow the available evidence?
+3. Did the agent fail in routing, execution, state, recovery, or stopping?
+
+This decomposition makes the next action clearer and prevents one aggregate
+score from hiding the component that caused the failure.
 
 ##### Evaluation basics
 
@@ -3214,6 +3400,17 @@ or high-risk cases, reject or revert it. After release, sample fresh cases
 because held-out cases can eventually become familiar to the optimization
 process.
 
+When several candidates remain eligible, use a constrained multi-objective
+comparison. A **hard constraint** is a rule that excludes a candidate before
+optimization—for example, a failed safety check, incomplete evidence, a
+held-out regression, or repeated-run variation above the declared limit. Only
+then calculate the **Pareto frontier**, meaning the candidates where no
+eligible alternative is at least as good on every declared objective and
+strictly better on one. Keep quality, total cost including retries, and
+latency visible as separate dimensions. A frontier is a review surface, not an
+automatic winner: the final choice depends on the decision's failure cost and
+the human release owner.
+
 In the demo, compare a baseline and variant on the same synthetic cases. Report overall outcomes, high-risk slice outcomes, failures caught by negative controls, and any change in cost or latency. The decision should not be based on a single average.
 
 For a model or architecture upgrade, use a two-stage check. First, use a
@@ -3237,7 +3434,8 @@ Write a comparison plan for a baseline and one variant:
 `held_out_cases`, `grader_consistency`, `evaluation_noise`,
 `remaining_headroom`, `candidate_change`, `optimization_result`,
 `regression_check`, `fresh_case_plan`, `accept_reject_revert`,
-`decision_rule`.
+`decision_rule`, `hard_constraints`, `eligible_candidates`,
+`frontier_candidates`, `human_selection_rule`.
 
 Add one result pattern that would cause you to reject the variant despite an aggregate improvement.
 
@@ -3405,6 +3603,12 @@ rollback, and produce a bounded release recommendation. You will also inspect
 an evaluation-driven optimization record that keeps tuning cases separate from
 held-out cases and rejects a candidate that does not generalize.
 
+The capstone also introduces constrained multi-objective comparison. A
+multi-objective comparison keeps quality, cost, and latency as separate
+dimensions. A hard constraint is a rule that excludes a candidate before those
+trade-offs are compared, such as failing safety evidence or showing excessive
+repeated-run variation.
+
 #### Why this matters
 
 A variant can improve the overall score while making a high-risk case worse.
@@ -3519,6 +3723,27 @@ The key observation is that an improvement on tuning or aggregate results does
 not override a held-out high-risk regression. The report keeps the optimization
 decision, release decision, and their evidence visible separately.
 
+#### Optional extension: compare a candidate frontier
+
+Run the companion synthetic comparison from the public Agent Assurance Harness:
+
+```bash
+cd ../agent-assurance-harness
+uv run python tools/pareto_candidate_report.py
+```
+
+The report first excludes the synthetic candidate that fails safety, the
+candidate whose repeated-run variation exceeds the declared limit, and any
+candidate without complete held-out evidence. It then identifies the
+non-dominated candidates—the candidates for which no eligible alternative is
+at least as good on quality, total cost, and latency while being better on one
+of those dimensions.
+
+The expected frontier contains `quality-first-safe` and `balanced-safe`.
+That result means the reviewer has a meaningful trade-off to examine; it does
+not select a winner or authorize a release. The companion harness fixture is
+synthetic and includes no provider calls, prompts, traces, or private data.
+
 #### Try the failure
 
 The lab plants two release hazards:
@@ -3579,6 +3804,10 @@ optimization_result:
 regression_check:
 fresh_case_plan:
 accept_reject_revert:
+hard_constraints:
+eligible_candidates:
+frontier_candidates:
+human_selection_rule:
 ```
 
 #### What this does not prove
@@ -5223,6 +5452,7 @@ The release workflow builds on the public [Agent Assurance Harness](https://gith
 - `labs/08-telemetry-vertical-slice/` — local instrumentation, collection, query, and monitor-health lab.
 - `labs/optional-codex-agent-adapter/` — synthetic coding-agent trajectory, diff, test, scope, and safety evaluation lab.
 - `course/TRACE_TO_EVALUATOR_SKILL.md` — optional workflow for inspecting traces and drafting use-case-specific evaluators.
+- `course/MEMORY_CONSOLIDATION_EVALUATION.md` — optional baseline/treatment workflow for evaluating background memory updates.
 - `course/VISUAL-SYSTEM.md` — colors and diagram conventions.
 - `scripts/build_guide.py` — reproducible guide builder.
 

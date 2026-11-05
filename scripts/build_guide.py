@@ -12,6 +12,7 @@ LESSON_DIR = ROOT / "course" / "lesson-scripts"
 OUTPUT = ROOT / "GUIDE.md"
 OPTIONAL_CODEX_TRACK = ROOT / "course" / "OPTIONAL_CODEX_TRACK.md"
 TRACE_TO_EVALUATOR_SKILL = ROOT / "course" / "TRACE_TO_EVALUATOR_SKILL.md"
+MEMORY_CONSOLIDATION_EVALUATION = ROOT / "course" / "MEMORY_CONSOLIDATION_EVALUATION.md"
 
 MODULES = [
     {
@@ -601,6 +602,8 @@ def build() -> str:
         "",
         render_lab(TRACE_TO_EVALUATOR_SKILL),
         "",
+        render_lab(MEMORY_CONSOLIDATION_EVALUATION),
+        "",
         "## Fundamentals 📘",
         "",
         render_fundamentals(),
@@ -754,6 +757,7 @@ def build() -> str:
             "- `labs/08-telemetry-vertical-slice/` — local instrumentation, collection, query, and monitor-health lab.",
             "- `labs/optional-codex-agent-adapter/` — synthetic coding-agent trajectory, diff, test, scope, and safety evaluation lab.",
             "- `course/TRACE_TO_EVALUATOR_SKILL.md` — optional workflow for inspecting traces and drafting use-case-specific evaluators.",
+            "- `course/MEMORY_CONSOLIDATION_EVALUATION.md` — optional baseline/treatment workflow for evaluating background memory updates.",
             "- `course/VISUAL-SYSTEM.md` — colors and diagram conventions.",
             "- `scripts/build_guide.py` — reproducible guide builder.",
             "",

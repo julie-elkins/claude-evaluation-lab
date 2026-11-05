@@ -209,6 +209,52 @@ flowchart LR
     class F sage
 ```
 
+### Three evaluation surfaces for an agent
+
+An agent evaluation should make the failure surface visible. A **retrieval
+surface** checks whether the workflow found and selected the evidence it
+needed. A **model surface** checks how the response used that evidence and
+followed its instructions. An **agent surface** checks the ordered workflow:
+tool choice, arguments, state changes, recovery, cost, latency, and final task
+outcome.
+
+These surfaces overlap, but they are not interchangeable. A grounded answer
+cannot repair missing retrieval evidence. A correct final answer cannot erase
+an unauthorized tool action. A low-latency run is not a successful task if the
+expected state change never occurred.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
+flowchart LR
+    A["Retrieval surface<br/>found, relevant, sufficient, ranked"] --> B["Model surface<br/>grounded, relevant, safe, instruction-following"]
+    B --> C["Agent surface<br/>tools, state, recovery, outcome"]
+    A --> D["Missing evidence<br/>or wrong context"]
+    B --> E["Unsupported answer<br/>or policy violation"]
+    C --> F["Unsafe path<br/>or incomplete task"]
+    classDef blue fill:#DCECF3,stroke:#2F6B8A,color:#16324F,stroke-width:2px
+    classDef orange fill:#F5D8C4,stroke:#D97941,color:#16324F,stroke-width:2px
+    classDef red fill:#F3D6D2,stroke:#B44B45,color:#16324F,stroke-width:2px
+    class A blue
+    class B orange
+    class C blue
+    class D,E,F red
+```
+
+For retrieval ranking, **NDCG**, or normalized discounted cumulative gain,
+is one example of a metric that rewards useful results appearing near the top.
+Use it only when ranking quality is part of the declared decision. It should
+not replace checks for evidence completeness, grounding, authorization, or
+task completion.
+
+For every important finding, ask:
+
+1. Did retrieval fail to find the evidence?
+2. Did the model fail to use or follow the available evidence?
+3. Did the agent fail in routing, execution, state, recovery, or stopping?
+
+This decomposition makes the next action clearer and prevents one aggregate
+score from hiding the component that caused the failure.
+
 ### Evaluation basics
 
 A case is one test situation with its input, context, expected behavior, observed

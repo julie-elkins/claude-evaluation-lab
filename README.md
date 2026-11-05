@@ -203,6 +203,9 @@ Available now:
 - links to the companion design guide, Apple lab, harness, website, videos,
   OpenTelemetry, Phoenix, Langfuse, LangSmith, and the optional Codex
   coding-agent track.
+- an optional memory-consolidation evaluation extension that compares a
+  background memory workflow with a baseline using held-out cases, safety
+  controls, provenance, deletion, rollback, and cost evidence.
 
 Reference courses and standards used for the advanced track:
 
@@ -219,6 +222,8 @@ Reference courses and standards used for the advanced track:
 - [Claude evaluation guidance](https://docs.anthropic.com/en/docs/build-with-claude/define-success)
   and [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/slash-commands)
   — success criteria, graders, skill evaluation, and model-upgrade re-baselining.
+- [Anthropic Claude Cookbook: Dreaming with a dynamic workflow](https://platform.claude.com/cookbook/managed-agents-cma-dreaming-with-a-dynamic-workflow)
+  — optional implementation reference for background memory consolidation.
 - [Codex skills](https://developers.openai.com/codex/skills/create-skill),
   [`AGENTS.md`](https://developers.openai.com/codex/guides/agents-md), and
   [Codex evals](https://developers.openai.com/codex/use-cases/ai-app-evals) —
