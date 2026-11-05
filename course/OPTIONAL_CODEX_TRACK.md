@@ -56,11 +56,35 @@ A skill can trigger correctly and still produce a poor patch. Conversely, a
 good patch from one run does not prove that the skill generalizes across
 repositories or task types.
 
+## Current Codex evaluation path
+
+The current Codex evaluation guidance describes a workflow in which Codex can
+help generate an evaluation suite for a coding-agent task and an evaluation
+runner can execute that suite against representative cases. Treat the suite
+generator, runner, evaluator, and human approval as separate evidence
+boundaries:
+
+- define the coding-agent decision and failure cost;
+- build cases that include repository state, task instructions, scope, and
+  expected evidence;
+- inspect the patch, command trajectory, tests, and terminal state;
+- evaluate final output, individual steps, and the full trajectory separately;
+  and
+- keep merge, release, and rollback decisions human-owned.
+
+OpenAI's current Codex page points to Promptfoo as an optional implementation
+for running generated evaluation suites. Promptfoo is not required for this
+course, and its presence does not establish evaluator validity. The learner
+should first understand the provider-neutral contract, then map a provider
+workflow into it.
+
 Use the current [Codex skills documentation](https://developers.openai.com/codex/skills/create-skill),
 [`AGENTS.md` guidance](https://developers.openai.com/codex/guides/agents-md), and
 [Codex evaluation guidance](https://developers.openai.com/codex/use-cases/ai-app-evals)
-for provider-specific syntax. Map the resulting evidence into the course's
-provider-neutral contract.
+and [Promptfoo](https://github.com/promptfoo/promptfoo) for provider-specific
+workflow details. Map the resulting evidence into the course's provider-neutral
+contract. The older OpenAI Evals repository is historical context, not a
+required dependency or a release gate for this learner path.
 
 ## Provider-neutral mapping
 

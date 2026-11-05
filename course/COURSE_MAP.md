@@ -239,10 +239,10 @@ Current official implementation references:
 
 - [Claude evaluation guidance](https://docs.anthropic.com/en/docs/build-with-claude/define-success) and [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/slash-commands) — success criteria, graders, skill evaluation, and model-upgrade re-baselining.
 - [Anthropic Claude Cookbook: Dreaming with a dynamic workflow](https://platform.claude.com/cookbook/managed-agents-cma-dreaming-with-a-dynamic-workflow) — optional implementation reference for background memory consolidation; its example cost and runtime are not general guarantees.
-- [Codex skills](https://developers.openai.com/codex/skills/create-skill), [`AGENTS.md`](https://developers.openai.com/codex/guides/agents-md), and [Codex evals](https://developers.openai.com/codex/use-cases/ai-app-evals) — instruction scope, coding-agent skills, baselines, fixtures, and evaluation workflows.
+- [Codex skills](https://developers.openai.com/codex/skills/create-skill), [`AGENTS.md`](https://developers.openai.com/codex/guides/agents-md), [Codex evals](https://developers.openai.com/codex/use-cases/ai-app-evals), and [Promptfoo](https://github.com/promptfoo/promptfoo) — instruction scope, coding-agent skills, evaluation-suite workflows, and runner options.
 - [LangSmith evaluation](https://docs.langchain.com/langsmith/evaluation), [automation rules](https://docs.langchain.com/langsmith/rules), and [annotation queues](https://docs.langchain.com/langsmith/annotation-queues) — offline/online evaluation, review routing, and dataset promotion.
 - [LangGraph](https://docs.langchain.com/langgraph) — durable execution and human-in-the-loop state boundaries.
-- [OpenTelemetry GenAI semantic conventions](https://github.com/open-telemetry/semantic-conventions-genai) — current provider-neutral vocabulary for model, agent, tool, evaluation, retrieval, and MCP telemetry.
+- [OpenTelemetry GenAI semantic conventions](https://github.com/open-telemetry/semantic-conventions-genai) — developing provider-neutral vocabulary for model, agent, tool, evaluation, retrieval, and MCP telemetry; record the revision or retrieval date when mapping fields.
 
 ## Continue learning
 
@@ -250,11 +250,11 @@ Current official implementation references:
 - [Julie’s public site](https://julie-elkins.github.io) — projects, learning paths, and design principles.
 - [Agent Systems Design Guide](https://github.com/julie-elkins/agent-systems-design-guide) — shared design reasoning and report vocabulary.
 - [Apple Platform Agent Quality Lab](https://github.com/julie-elkins/apple-platform-agent-quality-lab) — native macOS implementation of the evaluation boundary.
-- [OpenTelemetry GenAI semantic conventions](https://github.com/open-telemetry/semantic-conventions-genai) — current provider-neutral vocabulary for model, agent, tool, evaluation, retrieval, and MCP telemetry.
+- [OpenTelemetry GenAI semantic conventions](https://github.com/open-telemetry/semantic-conventions-genai) — developing provider-neutral vocabulary for model, agent, tool, evaluation, retrieval, and MCP telemetry; record the revision or retrieval date when mapping fields.
 - [Phoenix](https://github.com/Arize-ai/phoenix), [Langfuse](https://github.com/langfuse/langfuse), and [LangSmith](https://docs.langchain.com/langsmith/observability-quickstart) — optional observability backends for comparing local trace, thread, dataset, evaluator, feedback, and automation workflows.
 - [Codex](https://developers.openai.com/codex/) and the [Codex SDK](https://developers.openai.com/codex/sdk/) — optional coding-agent and programmatic integration references.
 - [Claude evaluation guidance](https://docs.anthropic.com/en/docs/build-with-claude/define-success) and [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/slash-commands) — current success criteria, graders, skill evaluation, and re-baselining guidance.
-- [Codex skills](https://developers.openai.com/codex/skills/create-skill), [`AGENTS.md`](https://developers.openai.com/codex/guides/agents-md), and [Codex evals](https://developers.openai.com/codex/use-cases/ai-app-evals) — current instruction, skill, and evaluation guidance.
+- [Codex skills](https://developers.openai.com/codex/skills/create-skill), [`AGENTS.md`](https://developers.openai.com/codex/guides/agents-md), [Codex evals](https://developers.openai.com/codex/use-cases/ai-app-evals), and [Promptfoo](https://github.com/promptfoo/promptfoo) — current instruction, skill, evaluation-suite, and runner guidance.
 - [LangSmith evaluation](https://docs.langchain.com/langsmith/evaluation), [automation rules](https://docs.langchain.com/langsmith/rules), and [annotation queues](https://docs.langchain.com/langsmith/annotation-queues) — optional review and dataset-promotion implementation references.
 - [LangGraph](https://docs.langchain.com/langgraph) — durable execution and human-in-the-loop implementation reference.
 - [Stanford Engineering AI Agents](https://cs329z.stanford.edu/) — agent evaluation and reliability framing.

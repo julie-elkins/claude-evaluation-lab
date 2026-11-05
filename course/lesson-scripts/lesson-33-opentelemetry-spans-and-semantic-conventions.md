@@ -41,6 +41,12 @@ Ask which fields can be queried across providers and which remain provider
 extensions. A portable schema should make common decisions comparable without
 pretending the providers behave identically.
 
+The current GenAI semantic conventions are a developing standard, not a
+promise that every provider or backend has identical support. Record the
+convention revision or retrieval date and keep provider-specific fields at the
+adapter boundary. The learner's job is to preserve decision meaning, not to
+force every event into a borrowed name.
+
 The cost of skipping a shared vocabulary is lock-in and incomparable evidence.
 The cost of pretending the vocabulary is complete is false portability: a
 field can have the same name while representing a different event.

@@ -162,7 +162,7 @@ uv run python labs/01-semantic-outcomes/run_lab.py
 ```
 
 The course wrapper uses the harness content tree from revision
-`e75edcc1284d92dcd6d46aaa0d6ba0ca2e94ab2a`, which is the current public
+`b64f5ca`, which is the current public
 `origin/main` tree as of the course audit. If you are working from a local
 checkout, the wrapper verifies the pinned revision before running the lab.
 
@@ -225,9 +225,12 @@ Reference courses and standards used for the advanced track:
 - [Anthropic Claude Cookbook: Dreaming with a dynamic workflow](https://platform.claude.com/cookbook/managed-agents-cma-dreaming-with-a-dynamic-workflow)
   — optional implementation reference for background memory consolidation.
 - [Codex skills](https://developers.openai.com/codex/skills/create-skill),
-  [`AGENTS.md`](https://developers.openai.com/codex/guides/agents-md), and
-  [Codex evals](https://developers.openai.com/codex/use-cases/ai-app-evals) —
-  instruction scope, coding-agent skills, baselines, and evaluation workflows.
+  [`AGENTS.md`](https://developers.openai.com/codex/guides/agents-md), [Codex
+  evals](https://developers.openai.com/codex/use-cases/ai-app-evals), and
+  [Promptfoo](https://github.com/promptfoo/promptfoo) — instruction scope,
+  coding-agent skills, evaluation-suite workflows, and runner options. The
+  older OpenAI Evals repository is historical context, not a required course
+  dependency.
 - [LangSmith evaluation](https://docs.langchain.com/langsmith/evaluation),
   [automation rules](https://docs.langchain.com/langsmith/rules), and
   [annotation queues](https://docs.langchain.com/langsmith/annotation-queues) —

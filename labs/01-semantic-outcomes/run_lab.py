@@ -9,8 +9,8 @@ import subprocess
 from pathlib import Path
 
 
-HARNESS_CONTENT_REVISION = "e75edcc1284d92dcd6d46aaa0d6ba0ca2e94ab2a"
-HARNESS_PUBLIC_MAIN_REVISION = "e75edcc"
+HARNESS_CONTENT_REVISION = "b64f5caf6b9d83219c5bd5229c03a9963b8fd646"
+HARNESS_PUBLIC_MAIN_REVISION = "b64f5ca"
 HARNESS_LAB = Path("examples/agent-workflow-teaching-lab/run_lab.py")
 
 
