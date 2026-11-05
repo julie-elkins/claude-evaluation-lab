@@ -98,6 +98,13 @@ including traces, threads, datasets, evaluators, feedback, and automations.
 The platform is an implementation choice; it does not establish that the
 evaluator is valid or that the evidence supports a release decision.
 
+When a hosted tool offers several evaluator scopes, label them explicitly:
+final response, single step, trajectory, or thread/session. A final-response
+evaluator may miss an unsafe intermediate tool call, while a trajectory
+evaluator may identify the mechanism but still need a separate task-outcome
+check. Preserve the scope, evaluator revision, dataset revision, and human
+review status in the report.
+
 There are two useful online comparison patterns. In **shadow testing**, a
 candidate receives copied traffic but its result is not shown to the user and
 its tools cannot create side effects. Shadow evidence can reveal unexpected

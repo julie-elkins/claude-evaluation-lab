@@ -402,6 +402,29 @@ biased signals and may not have a trusted label for whether the task truly
 succeeded. A live signal is evidence to investigate, not automatic ground
 truth.
 
+### Evaluation scope: final response, step, and trajectory
+
+**Evaluation scope** means the unit of behavior an evaluator is judging. Keep
+the scope visible because a strong result at one scope does not prove a strong
+result at another:
+
+- A **final-response evaluator** judges the answer or structured result shown
+  at the end of a run.
+- A **single-step evaluator** judges one model call, tool call, retrieval
+  result, authorization check, or state transition.
+- A **trajectory evaluator** judges the ordered path across multiple steps,
+  including whether the agent recovered, stopped, escalated, or created a
+  side effect.
+- A **thread or session evaluator** judges behavior across turns, such as
+  memory use, consistency, context contamination, or conversation termination.
+
+Record the scope beside the evaluator revision, dataset, and decision rule. A
+correct final answer can hide an unauthorized tool call. A correct tool call
+can still lead to an incorrect final state. A high thread-level score can hide
+one high-risk failure that must block release. Hosted tools may use different
+names for these scopes; map their labels to the evidence contract rather than
+assuming that a score has the same meaning everywhere.
+
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
 flowchart LR
@@ -486,6 +509,13 @@ Before collecting data, define a minimum trace contract:
 - latency, token, cost, retry, and error signals;
 - terminal state and evidence completeness; and
 - redaction status, retention, and access owner.
+
+OpenTelemetry GenAI semantic conventions provide a provider-neutral vocabulary
+for this mapping, but the conventions are evolving rather than a guarantee
+that every provider or backend emits the same fields. Record the convention
+revision or retrieval date, preserve provider-specific extensions at the
+adapter boundary, and validate the emitted trace instead of trusting the
+instrumentation library name.
 
 An operational metric is a measurement of how the system ran. A service-level
 objective, or SLO, is an explicit target for a signal over a defined window.

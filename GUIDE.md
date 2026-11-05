@@ -49,12 +49,12 @@ The required labs are offline and synthetic. They require no Claude API key and 
 - [Julie’s public site](https://julie-elkins.github.io) — projects, learning paths, and design principles.
 - [Agent Systems Design Guide](https://github.com/julie-elkins/agent-systems-design-guide) — shared design reasoning and report vocabulary.
 - [Apple Platform Agent Quality Lab](https://github.com/julie-elkins/apple-platform-agent-quality-lab) — native macOS implementation of the evaluation boundary.
-- [OpenTelemetry GenAI semantic conventions](https://github.com/open-telemetry/semantic-conventions-genai) — current provider-neutral vocabulary for model, agent, tool, evaluation, retrieval, and MCP telemetry.
+- [OpenTelemetry GenAI semantic conventions](https://github.com/open-telemetry/semantic-conventions-genai) — developing provider-neutral vocabulary for model, agent, tool, evaluation, retrieval, and MCP telemetry; record the revision or retrieval date when mapping fields.
 - [Phoenix](https://github.com/Arize-ai/phoenix) — optional local observability backend for trace inspection.
 - [Langfuse](https://github.com/langfuse/langfuse) — optional comparison point for trace, evaluation, dataset, and experiment workflows.
 - [LangSmith](https://docs.langchain.com/langsmith/observability-quickstart) — optional comparison point for traces, threads, datasets, evaluators, feedback, and automations.
 - [Claude evaluation guidance](https://docs.anthropic.com/en/docs/build-with-claude/define-success) and [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/slash-commands) — current success criteria, graders, skill evaluation, and model-upgrade re-baselining.
-- [Codex skills](https://developers.openai.com/codex/skills/create-skill), [`AGENTS.md`](https://developers.openai.com/codex/guides/agents-md), and [Codex evals](https://developers.openai.com/codex/use-cases/ai-app-evals) — current instruction, skill, and evaluation guidance.
+- [Codex skills](https://developers.openai.com/codex/skills/create-skill), [`AGENTS.md`](https://developers.openai.com/codex/guides/agents-md), [Codex evals](https://developers.openai.com/codex/use-cases/ai-app-evals), and [Promptfoo](https://github.com/promptfoo/promptfoo) — current instruction, skill, evaluation-suite, and runner guidance.
 - [LangSmith evaluation](https://docs.langchain.com/langsmith/evaluation), [automation rules](https://docs.langchain.com/langsmith/rules), and [annotation queues](https://docs.langchain.com/langsmith/annotation-queues) — optional review and dataset-promotion implementation references.
 - [LangGraph](https://docs.langchain.com/langgraph) — durable execution and human-in-the-loop implementation reference.
 
@@ -142,11 +142,35 @@ A skill can trigger correctly and still produce a poor patch. Conversely, a
 good patch from one run does not prove that the skill generalizes across
 repositories or task types.
 
+#### Current Codex evaluation path
+
+The current Codex evaluation guidance describes a workflow in which Codex can
+help generate an evaluation suite for a coding-agent task and an evaluation
+runner can execute that suite against representative cases. Treat the suite
+generator, runner, evaluator, and human approval as separate evidence
+boundaries:
+
+- define the coding-agent decision and failure cost;
+- build cases that include repository state, task instructions, scope, and
+  expected evidence;
+- inspect the patch, command trajectory, tests, and terminal state;
+- evaluate final output, individual steps, and the full trajectory separately;
+  and
+- keep merge, release, and rollback decisions human-owned.
+
+OpenAI's current Codex page points to Promptfoo as an optional implementation
+for running generated evaluation suites. Promptfoo is not required for this
+course, and its presence does not establish evaluator validity. The learner
+should first understand the provider-neutral contract, then map a provider
+workflow into it.
+
 Use the current [Codex skills documentation](https://developers.openai.com/codex/skills/create-skill),
 [`AGENTS.md` guidance](https://developers.openai.com/codex/guides/agents-md), and
 [Codex evaluation guidance](https://developers.openai.com/codex/use-cases/ai-app-evals)
-for provider-specific syntax. Map the resulting evidence into the course's
-provider-neutral contract.
+and [Promptfoo](https://github.com/promptfoo/promptfoo) for provider-specific
+workflow details. Map the resulting evidence into the course's provider-neutral
+contract. The older OpenAI Evals repository is historical context, not a
+required dependency or a release gate for this learner path.
 
 #### Provider-neutral mapping
 
@@ -953,6 +977,29 @@ biased signals and may not have a trusted label for whether the task truly
 succeeded. A live signal is evidence to investigate, not automatic ground
 truth.
 
+##### Evaluation scope: final response, step, and trajectory
+
+**Evaluation scope** means the unit of behavior an evaluator is judging. Keep
+the scope visible because a strong result at one scope does not prove a strong
+result at another:
+
+- A **final-response evaluator** judges the answer or structured result shown
+  at the end of a run.
+- A **single-step evaluator** judges one model call, tool call, retrieval
+  result, authorization check, or state transition.
+- A **trajectory evaluator** judges the ordered path across multiple steps,
+  including whether the agent recovered, stopped, escalated, or created a
+  side effect.
+- A **thread or session evaluator** judges behavior across turns, such as
+  memory use, consistency, context contamination, or conversation termination.
+
+Record the scope beside the evaluator revision, dataset, and decision rule. A
+correct final answer can hide an unauthorized tool call. A correct tool call
+can still lead to an incorrect final state. A high thread-level score can hide
+one high-risk failure that must block release. Hosted tools may use different
+names for these scopes; map their labels to the evidence contract rather than
+assuming that a score has the same meaning everywhere.
+
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"background":"#F7F1E8","primaryTextColor":"#16324F","lineColor":"#2F6B8A","fontFamily":"ui-sans-serif, system-ui, sans-serif"}}}%%
 flowchart LR
@@ -1037,6 +1084,13 @@ Before collecting data, define a minimum trace contract:
 - latency, token, cost, retry, and error signals;
 - terminal state and evidence completeness; and
 - redaction status, retention, and access owner.
+
+OpenTelemetry GenAI semantic conventions provide a provider-neutral vocabulary
+for this mapping, but the conventions are evolving rather than a guarantee
+that every provider or backend emits the same fields. Record the convention
+revision or retrieval date, preserve provider-specific extensions at the
+adapter boundary, and validate the emitted trace instead of trusting the
+instrumentation library name.
 
 An operational metric is a measurement of how the system ran. A service-level
 objective, or SLO, is an explicit target for a signal over a defined window.
@@ -4207,6 +4261,12 @@ Ask which fields can be queried across providers and which remain provider
 extensions. A portable schema should make common decisions comparable without
 pretending the providers behave identically.
 
+The current GenAI semantic conventions are a developing standard, not a
+promise that every provider or backend has identical support. Record the
+convention revision or retrieval date and keep provider-specific fields at the
+adapter boundary. The learner's job is to preserve decision meaning, not to
+force every event into a borrowed name.
+
 The cost of skipping a shared vocabulary is lock-in and incomparable evidence.
 The cost of pretending the vocabulary is complete is false portability: a
 field can have the same name while representing a different event.
@@ -4678,6 +4738,13 @@ Tools such as LangSmith, Phoenix, or Langfuse can host pieces of this workflow,
 including traces, threads, datasets, evaluators, feedback, and automations.
 The platform is an implementation choice; it does not establish that the
 evaluator is valid or that the evidence supports a release decision.
+
+When a hosted tool offers several evaluator scopes, label them explicitly:
+final response, single step, trajectory, or thread/session. A final-response
+evaluator may miss an unsafe intermediate tool call, while a trajectory
+evaluator may identify the mechanism but still need a separate task-outcome
+check. Preserve the scope, evaluator revision, dataset revision, and human
+review status in the report.
 
 There are two useful online comparison patterns. In **shadow testing**, a
 candidate receives copied traffic but its result is not shown to the user and

@@ -22,7 +22,7 @@ left as assumed measurement vocabulary.
 | Measurement foundations | Construct, validity, reliability, sensitivity, specificity, false positives, false negatives, and calibration. | Fundamentals; Lessons 7–9, 14, 16–18 | Compare workflow correctness, evaluator correctness, and evidence sufficiency. |
 | Retrieval, memory, and environment | Retrieval recall, context relevance, context sufficiency, grounding, memory read/write, stale state, and environment reset. | Fundamentals; Lessons 19, 24, and 25 | Build a retrieval-and-claim table and compare before/after memory and state. |
 | Memory consolidation | Background memory writing must be compared with a baseline and tested for retrieval, task benefit, stale or contradictory state, privacy, deletion, provenance, rollback, and cost. | Fundamentals; Lessons 24, 25, 32, 35, 37, and 46; optional extension | Compare synthetic baseline and treatment conditions with a held-out case and a deletion or rollback control. |
-| Evaluation scope | Step/unit, end-to-end, trajectory, and thread/session evaluation; turn-level success can differ from conversation-level success. | Fundamentals; Lessons 25 and 32 | Annotate a multi-turn synthetic trajectory with thread identity, memory, and conversation termination. |
+| Evaluation scope | Final-response, single-step, end-to-end, trajectory, and thread/session evaluation; turn-level success can differ from conversation-level success. | Fundamentals; Lessons 25, 32, and 39 | Label the evaluator scope and annotate a multi-turn synthetic trajectory with thread identity, memory, and conversation termination. |
 | Sampling and uncertainty | Target population, case count, repeated runs, confidence intervals, effect size, practical significance, and high-risk slices. | Fundamentals; Lessons 6, 9, 27–30, and 46 | Write a matched comparison and interpret aggregate and slice results. |
 | Failure analysis | Classify whether a finding came from data, model, prompt, retrieval, tool, policy, evaluator, or telemetry. | Lessons 29–30, 36–39, and 48 | Turn a failed case into a bounded cause hypothesis, owner, and next action. |
 
@@ -52,8 +52,8 @@ left as assumed measurement vocabulary.
 
 ## Current harness coverage
 
-The current public `origin/main` tree is `e75edcc`. Its tree matches the local
-course pin `e75edcc`, so the course includes the latest public checklist
+The current public `origin/main` tree is `b64f5ca`. Its tree matches the local
+course pin `b64f5ca`, so the course includes the latest public checklist
 additions from the evaluator-checklist work. The latest additions are explicitly
 mapped below rather than left implicit in the repository.
 
@@ -74,7 +74,7 @@ mapped below rather than left implicit in the repository.
 | Online evaluator action loop | Score or classify arriving traces, filter by a declared rule, and route to human review, dataset candidates, investigation, or alert. | Lessons 39 and 46; Fundamentals | Use a synthetic routing record that preserves evaluator revision, rule, reason, owner, and status. |
 | Production-scale triage | Sampling, grouping failure mechanisms, high-risk prioritization, evaluator volume/cost controls, human-review queues, and dataset-promotion rules. | Lessons 39 and 46 | Design an optional scale extension without making live traffic or a hosted backend required. |
 | Deployment readiness boundaries | Durable execution, sandboxing, context management, human approval, rollback, and trace completeness are runtime controls beyond an offline pass. | Fundamentals; Lessons 29, 41, 42, and 47 | Add one runtime control and its evidence to a release record. |
-| Platform-neutral implementation mapping | LangSmith, Phoenix, Langfuse, and OpenTelemetry can implement parts of the workflow; platform presence does not establish evaluator validity. | Lessons 32–34 and 39; README | Map concepts to optional backends while keeping the required learner path local and synthetic. |
+| Platform-neutral implementation mapping | LangSmith, Phoenix, Langfuse, Promptfoo, and OpenTelemetry can implement parts of the workflow; platform presence does not establish evaluator validity. | Lessons 32–34 and 39; README | Map final-response, single-step, trajectory, trace, dataset, and review concepts to optional backends while keeping the required learner path local and synthetic. |
 | Stateful memory implementation mapping | Provider-specific background memory workflows should map to provider-neutral write, read, provenance, safety, deletion, and rollback evidence. | Optional memory-consolidation extension; Lessons 24, 35, 37, and 46 | Use the official cookbook as an implementation reference, then evaluate the declared workflow rather than copying its claims. |
 | Teaching workflow | Demo, hands-on lab, quick reference, feedback signal, and human approval boundary. | Every module and capstone | `SHOWCASE.md` launch-to-field path |
 
@@ -98,7 +98,7 @@ mapped below rather than left implicit in the repository.
 | Monitor health and resilience | Received, accepted, rejected, dropped, delayed, and exported telemetry; alert quality; bounded fallback. | Lesson 44 and Lab 8 | Break the local telemetry path and preserve `unavailable` or `not_evaluated`. |
 | Local telemetry implementation | Instrumentation, collection, redaction, local storage, query, alert, incident, and regression case. | Lesson 45 and Lab 8 | Trace one synthetic run across all pipeline stages. |
 | Drift and recalibration | Data, model, evaluator, and concept drift; human feedback; sampling; recalibration. | Lesson 46 | Compare synthetic distributions and declare a review action. |
-| Official provider guidance | Claude evaluations and skills, Codex skills and `AGENTS.md`, LangSmith evaluators and review queues, LangGraph durable execution, and OpenTelemetry GenAI conventions. | Fundamentals; Lessons 25, 28, 33, 37, and 39; README | Use official links for current syntax and map provider features to the provider-neutral evidence contract. |
+| Official provider guidance | Claude evaluations and skills, Codex skills and `AGENTS.md`, current Codex evaluation-suite guidance with optional Promptfoo execution, LangSmith evaluator scopes and review queues, LangGraph durable execution, and the developing OpenTelemetry GenAI conventions. | Fundamentals; Lessons 25, 28, 33, 37, and 39; README | Record provider documentation revision or retrieval date, map provider features to the provider-neutral evidence contract, and keep older platform references out of the required path. |
 | Continuous assurance | Security, telemetry health, evaluation, incidents, ownership, and release action remain connected. | Lesson 48 and Labs 7–8 | Produce one combined assurance report with bounded claims. |
 
 ## Red-team coverage
