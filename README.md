@@ -222,6 +222,9 @@ Reference courses and standards used for the advanced track:
 - [Claude evaluation guidance](https://docs.anthropic.com/en/docs/build-with-claude/define-success)
   and [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/slash-commands)
   — success criteria, graders, skill evaluation, and model-upgrade re-baselining.
+- [OpenAI agent evaluations](https://developers.openai.com/api/docs/guides/agent-evals)
+  and [trace grading](https://developers.openai.com/api/docs/guides/trace-grading)
+  — traces, graders, datasets, evaluation runs, and trace-level inspection.
 - [Anthropic Claude Cookbook: Dreaming with a dynamic workflow](https://platform.claude.com/cookbook/managed-agents-cma-dreaming-with-a-dynamic-workflow)
   — optional implementation reference for background memory consolidation.
 - [Codex skills](https://developers.openai.com/codex/skills/create-skill),
@@ -259,6 +262,19 @@ Research reading that informs the evaluation design:
   — repeated measurement and uncertainty.
 - [Agent Evaluation Reliability](https://arxiv.org/abs/2610.00651)
   — why more cases do not automatically repair a weak instrument.
+- [Measuring AI Ability to Complete Long Software Tasks](https://arxiv.org/abs/2503.14499)
+  — human-anchored task duration and reliability thresholds for long-horizon work.
+- [A Live Benchmark and Automated Evaluation for Generative Research Synthesis](https://arxiv.org/abs/2508.20033)
+  — knowledge synthesis, retrieval quality, and citation verifiability.
+- [Do Agent Benchmarks Measure Capability?](https://arxiv.org/abs/2607.22368)
+  — protocol validity and shortcut-resistant scoring.
+- [Towards a Science of AI Agent Reliability](https://arxiv.org/abs/2602.16666)
+  — distinct dimensions of agent reliability.
+
+These readings are evidence about evaluation design, not proof that the
+course's synthetic labs measure the same constructs. The course keeps
+long-horizon reliability, professional-task quality, research synthesis, and
+user outcomes as separate measurement surfaces.
 
 Separate recording deliverable:
 

@@ -3329,6 +3329,19 @@ Knowledge benchmarks test subject or factual recall under a specified format. Re
 
 Examples discussed in the source lecture include MMLU-style knowledge tasks, AIME and PIQA-style reasoning tasks, SWE-bench-style coding tasks, HarmBench-style safety tasks, and Tau-bench-style agent tasks. Before recording, recheck the current benchmark names, versions, licensing, and task definitions. These resources evolve, and an old label can make the course sound more current than its evidence.
 
+Long-horizon evaluations add a second question: how long a task can the agent
+complete at a declared reliability level? A 50% success horizon and an 80%
+success horizon answer different operational questions. The human baseline is
+also part of the measurement: task duration should be anchored to how long a
+qualified professional takes, not only to the model's own elapsed time.
+
+The lecture's long-horizon examples also show why an endpoint score is not
+enough. Inspect where a trajectory failed: planning, tool choice, reasoning,
+premature abandonment, repetitive looping, recovery, or final-state
+verification. A protocol-valid evaluation is one whose task and scoring rule
+actually require the capability it claims to measure. A benchmark can look
+rigorous while allowing an empty, partial, stale, or unsafe result to pass.
+
 Map every benchmark result to a decision. A knowledge score may inform retrieval or subject-matter capability. It does not prove that the agent handles authorization or tool state. A coding score may inform repository task performance. It does not prove safe deployment into a particular codebase.
 
 In the demo, choose one course decision and identify the benchmark category that could inform it. Then name the local evaluation evidence still required. The benchmark is an input to the decision, not the decision itself.
@@ -3343,9 +3356,13 @@ For each decision, select one useful benchmark category and one local check:
 2. safe refusal,
 3. code change quality,
 4. multi-step tool completion,
-5. evidence-grounded answer.
+5. evidence-grounded answer,
+6. a long-horizon task with a human-professional time estimate.
 
-Explain why the benchmark alone is insufficient.
+Explain why the benchmark alone is insufficient. For the long-horizon example,
+also name the reliability threshold, the human baseline, and the trajectory
+evidence needed to distinguish model failure from tool, context, or environment
+failure.
 
 #### What this lesson does not prove ⚠️
 
@@ -3426,6 +3443,14 @@ desired outcome appears rather than treating one successful run as stable.
 
 Slices are subsets of cases grouped by a meaningful property, such as high-risk actions, missing context, long trajectories, or boundary conditions. An overall improvement can hide a regression in a high-risk slice. Report the slice result even when the aggregate is better.
 
+For long-horizon work, report more than one reliability threshold. A 50%
+reliability horizon means the agent completes tasks of that duration about half
+the time; an 80% horizon is a stricter operational boundary. Anchor task
+duration to a documented human-professional baseline and record where failures
+occurred. Without those controls, a longer successful run can be mistaken for a
+reliable capability even when the agent abandons, loops, or loses evidence
+before completion.
+
 Evaluation-driven optimization means using a declared evaluation to choose
 between candidate changes to an agent. It is useful when the change might be a
 prompt, skill, model setting, tool description, policy, or harness component.
@@ -3492,6 +3517,11 @@ Write a comparison plan for a baseline and one variant:
 `frontier_candidates`, `human_selection_rule`.
 
 Add one result pattern that would cause you to reject the variant despite an aggregate improvement.
+
+Add a long-horizon slice with `human_time_baseline`,
+`reliability_thresholds`, `task_duration`, `failure_location`,
+`recovery_result`, and `environment_failure_control`. State whether the
+comparison measures a workflow capability, a protocol property, or both.
 
 #### What this lesson does not prove ⚠️
 

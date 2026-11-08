@@ -14,7 +14,8 @@ By the end of this lesson, you can distinguish benchmark categories and explain 
 2. **Knowledge** — examples such as MMLU-style subject questions.
 3. **Reasoning and coding** — examples such as AIME, PIQA, and SWE-bench-style tasks.
 4. **Safety and agents** — examples such as HarmBench- and Tau-bench-style evaluations.
-5. **Practice: map benchmark evidence to a product decision**.
+5. **Long-horizon work** — task duration, human baselines, and reliability thresholds.
+6. **Practice: map benchmark evidence to a product decision**.
 
 ## Speaker script
 
@@ -23,6 +24,19 @@ A benchmark is a named or repeatable test set used to compare systems against a 
 Knowledge benchmarks test subject or factual recall under a specified format. Reasoning benchmarks test problem solving or inference. Coding benchmarks test whether a system can modify or produce code under a defined task and verification process. Safety benchmarks test responses to harmful or policy-sensitive requests. Agent benchmarks test multi-step behavior, tool use, and task completion.
 
 Examples discussed in the source lecture include MMLU-style knowledge tasks, AIME and PIQA-style reasoning tasks, SWE-bench-style coding tasks, HarmBench-style safety tasks, and Tau-bench-style agent tasks. Before recording, recheck the current benchmark names, versions, licensing, and task definitions. These resources evolve, and an old label can make the course sound more current than its evidence.
+
+Long-horizon evaluations add a second question: how long a task can the agent
+complete at a declared reliability level? A 50% success horizon and an 80%
+success horizon answer different operational questions. The human baseline is
+also part of the measurement: task duration should be anchored to how long a
+qualified professional takes, not only to the model's own elapsed time.
+
+The lecture's long-horizon examples also show why an endpoint score is not
+enough. Inspect where a trajectory failed: planning, tool choice, reasoning,
+premature abandonment, repetitive looping, recovery, or final-state
+verification. A protocol-valid evaluation is one whose task and scoring rule
+actually require the capability it claims to measure. A benchmark can look
+rigorous while allowing an empty, partial, stale, or unsafe result to pass.
 
 Map every benchmark result to a decision. A knowledge score may inform retrieval or subject-matter capability. It does not prove that the agent handles authorization or tool state. A coding score may inform repository task performance. It does not prove safe deployment into a particular codebase.
 
@@ -34,6 +48,8 @@ The cost of category confusion is overclaiming. Teams select a familiar benchmar
 
 - Use benchmark names as examples, not as current rankings.
 - Show a two-column map: benchmark question and product question.
+- Add a second map for long-horizon work: human task time, 50% reliability,
+  80% reliability, failure location, and recovery evidence.
 - Keep the course’s own synthetic harness as the local evidence layer.
 - Recording boundary: recheck benchmark facts and version details immediately before final recording.
 
@@ -45,9 +61,13 @@ For each decision, select one useful benchmark category and one local check:
 2. safe refusal,
 3. code change quality,
 4. multi-step tool completion,
-5. evidence-grounded answer.
+5. evidence-grounded answer,
+6. a long-horizon task with a human-professional time estimate.
 
-Explain why the benchmark alone is insufficient.
+Explain why the benchmark alone is insufficient. For the long-horizon example,
+also name the reliability threshold, the human baseline, and the trajectory
+evidence needed to distinguish model failure from tool, context, or environment
+failure.
 
 ## What this lesson does not prove
 
