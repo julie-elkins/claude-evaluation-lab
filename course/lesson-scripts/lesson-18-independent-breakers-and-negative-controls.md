@@ -13,8 +13,9 @@ By the end of this lesson, you can use a negative control, meaning a deliberatel
 1. **The breaker role** — look for false passes, not only successful examples.
 2. **Negative controls** — planted failures with expected findings.
 3. **Independence** — the evaluator and breaker should not share one blind spot.
-4. **Demo: mutate a passing case** — verify the gate catches it.
-5. **Practice: write a breaker contract**.
+4. **Verifier-of-verifier checks** — test whether the evaluator's own finding is supported.
+5. **Demo: mutate a passing case** — verify the gate catches it.
+6. **Practice: write a breaker contract**.
 
 ## Speaker script
 
@@ -23,6 +24,19 @@ An independent breaker is a control designed to challenge the evaluation. A nega
 A positive example shows that one good case passes. A negative control tests whether the gate has a working failure path. Use both. If the negative control passes, the result is a finding about the evaluation system, even if all normal cases look healthy.
 
 Independence matters. If the same judge, prompt, reference, and evidence preparation are used by both the evaluator and the breaker, they may share the same blind spot. Add controls that vary the failure mechanism: remove required evidence, alter the authorization state, inject a false tool name, or change the terminal outcome while leaving the response fluent.
+
+Meta-verification means checking whether a verifier's finding is itself
+correct. A verifier can identify a real failure, miss a real failure, or
+fabricate an issue that is not present. Add an independent check that asks
+whether the cited evidence supports the verifier's finding and whether the
+severity or score follows from that evidence. This is especially important
+when the verifier becomes a training or curriculum signal.
+
+If an agent proposes its own tasks, treat that as a separate evaluation
+surface. Check that the task is valid, neither trivial nor impossible, not a
+duplicate of tuning material, and not designed to exploit the reward. A
+synthetic curriculum is useful only when the task-generation process cannot
+quietly make the measurement easier.
 
 The harness uses mutation controls to check whether the evaluation catches deliberate changes. This is more informative than adding more unmodified happy paths because it tests the sensitivity of the gate to the failure it claims to detect.
 
@@ -48,6 +62,9 @@ Write a breaker contract with:
 5. the evidence that the breaker ran.
 
 Add one breaker for missing evidence and one for unauthorized action.
+Add one verifier-of-verifier control: make the evaluator report a finding
+whose cited evidence does not support it, and require the independent layer to
+mark that finding unsupported.
 
 ## What this lesson does not prove
 
