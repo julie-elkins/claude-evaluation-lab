@@ -21,8 +21,9 @@ between tuning evidence and held-out evidence.
 6. **Constrained multi-objective comparison** — gate safety and evidence first,
    then inspect quality, cost, and latency trade-offs without inventing one
    universal score.
-7. **Model upgrades and architecture changes** — re-test prompts, skills, tools, and subagents.
-8. **Demo and practice: write a controlled comparison**.
+7. **Long-horizon comparisons** — report task duration at multiple reliability thresholds.
+8. **Model upgrades and architecture changes** — re-test prompts, skills, tools, and subagents.
+9. **Demo and practice: write a controlled comparison**.
 
 ## Speaker script
 
@@ -48,6 +49,14 @@ For nondeterministic agents, repeat the same case and report how often the
 desired outcome appears rather than treating one successful run as stable.
 
 Slices are subsets of cases grouped by a meaningful property, such as high-risk actions, missing context, long trajectories, or boundary conditions. An overall improvement can hide a regression in a high-risk slice. Report the slice result even when the aggregate is better.
+
+For long-horizon work, report more than one reliability threshold. A 50%
+reliability horizon means the agent completes tasks of that duration about half
+the time; an 80% horizon is a stricter operational boundary. Anchor task
+duration to a documented human-professional baseline and record where failures
+occurred. Without those controls, a longer successful run can be mistaken for a
+reliable capability even when the agent abandons, loops, or loses evidence
+before completion.
 
 Evaluation-driven optimization means using a declared evaluation to choose
 between candidate changes to an agent. It is useful when the change might be a
@@ -106,6 +115,8 @@ The cost of an uncontrolled comparison is an attribution error. We may ship a ch
   unsafe candidate is excluded before cost is considered.
 - Show the pinned case set and evaluator configuration.
 - Report both aggregate and slice results.
+- For a long-horizon variant, show the human-time anchor, reliability
+  thresholds, trajectory failure location, and recovery outcome.
 - Recording boundary: do not present illustrative uncertainty as statistical proof for a real deployment.
 
 ## Learner practice
@@ -124,6 +135,11 @@ Write a comparison plan for a baseline and one variant:
 `frontier_candidates`, `human_selection_rule`.
 
 Add one result pattern that would cause you to reject the variant despite an aggregate improvement.
+
+Add a long-horizon slice with `human_time_baseline`,
+`reliability_thresholds`, `task_duration`, `failure_location`,
+`recovery_result`, and `environment_failure_control`. State whether the
+comparison measures a workflow capability, a protocol property, or both.
 
 ## What this lesson does not prove
 
