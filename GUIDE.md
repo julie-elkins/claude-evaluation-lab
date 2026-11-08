@@ -2523,6 +2523,19 @@ A positive example shows that one good case passes. A negative control tests whe
 
 Independence matters. If the same judge, prompt, reference, and evidence preparation are used by both the evaluator and the breaker, they may share the same blind spot. Add controls that vary the failure mechanism: remove required evidence, alter the authorization state, inject a false tool name, or change the terminal outcome while leaving the response fluent.
 
+Meta-verification means checking whether a verifier's finding is itself
+correct. A verifier can identify a real failure, miss a real failure, or
+fabricate an issue that is not present. Add an independent check that asks
+whether the cited evidence supports the verifier's finding and whether the
+severity or score follows from that evidence. This is especially important
+when the verifier becomes a training or curriculum signal.
+
+If an agent proposes its own tasks, treat that as a separate evaluation
+surface. Check that the task is valid, neither trivial nor impossible, not a
+duplicate of tuning material, and not designed to exploit the reward. A
+synthetic curriculum is useful only when the task-generation process cannot
+quietly make the measurement easier.
+
 The harness uses mutation controls to check whether the evaluation catches deliberate changes. This is more informative than adding more unmodified happy paths because it tests the sensitivity of the gate to the failure it claims to detect.
 
 In the demo, begin with a passing synthetic case. Mutate one property, such as removing the required evidence or changing the semantic outcome to an unauthorized action. Run the evaluator and confirm that the finding appears in the structured result. Then restore the case and confirm the original path still passes.
@@ -2540,6 +2553,9 @@ Write a breaker contract with:
 5. the evidence that the breaker ran.
 
 Add one breaker for missing evidence and one for unauthorized action.
+Add one verifier-of-verifier control: make the evaluator report a finding
+whose cited evidence does not support it, and require the independent layer to
+mark that finding unsupported.
 
 #### What this lesson does not prove ⚠️
 

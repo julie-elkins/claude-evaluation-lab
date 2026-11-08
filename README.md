@@ -54,6 +54,11 @@ defines the shared evaluation vocabulary. The
 [Apple Platform Agent Quality Lab](https://github.com/julie-elkins/apple-platform-agent-quality-lab)
 shows the same evidence boundary in a native macOS implementation.
 
+For the companion research record, see the
+[response-quality measurement study](https://github.com/julie-elkins/llm-eval-validity/tree/main/research/response-quality).
+The course teaches the design and execution patterns; the research repository
+records the frozen provider results and their narrower claim boundary.
+
 For optional video walkthroughs and related projects, visit
 [Julie’s YouTube channel](https://www.youtube.com/@JulieElkins) and
 [Julie’s public site](https://julie-elkins.github.io).
