@@ -56,8 +56,8 @@ left as assumed measurement vocabulary.
 
 ## Current harness coverage
 
-The current public `origin/main` tree is `b64f5ca`. Its tree matches the local
-course pin `b64f5ca`, so the course includes the latest public checklist
+The current public `origin/main` tree is `5afed78`. Its tree matches the local
+course pin `5afed78`, so the course includes the latest public checklist
 additions from the evaluator-checklist work. The latest additions are explicitly
 mapped below rather than left implicit in the repository.
 

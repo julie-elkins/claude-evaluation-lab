@@ -12,15 +12,24 @@ By the end of this lesson, you can combine deterministic checks, semantic judges
 
 1. **A layered evaluator** — different checks answer different questions.
 2. **Judge best practices** — crisp criteria, evidence, reproducibility, and calibration.
-3. **The independent layers** — contract, semantic, human, and trajectory.
-4. **Demo: trace one case through the layers**.
-5. **Practice: assign each criterion to its strongest layer**.
+3. **The question contract** — independent constructs, weights, blocking rules, and overlap review.
+4. **The independent layers** — contract, semantic, human, and trajectory.
+5. **Demo: trace one case through the layers**.
+6. **Practice: assign each criterion to its strongest layer**.
 
 ## Speaker script
 
 A layered evaluator uses multiple kinds of evidence because no single evaluator sees every failure. Deterministic checks answer contract questions. A semantic judge can assess meaning against a rubric. Human review handles ambiguity and high-impact cases. Agent-level checks inspect the trajectory, meaning the sequence of observations, decisions, tool calls, and recovery steps that led to the final answer.
 
 Good judge practice starts before the prompt is written. Define crisp criteria, provide the relevant evidence, use binary decisions where a boundary is genuinely binary, and keep the criteria separate from style preferences. Ask for a structured result with a short criterion-linked justification. Calibrate against trusted examples and check reproducibility across repeated runs.
+
+Keep the questions independent enough that one failure is not charged twice.
+Question overlap is not always wrong, but it must be visible and justified. For
+example, “the response cites the tool output” and “the reported value matches
+the tool output” may share evidence while testing different constructs; two
+questions that both ask whether the response is grounded may be one construct
+with two labels. Record the overlap audit, the question-set revision, and the
+per-question agreement before using the aggregate score as a gate.
 
 Then add independent controls. A judge should not be the only component deciding whether its own output is valid. A deterministic evidence check can challenge a claimed pass. A human can review high-risk or ambiguous cases. A trajectory check can reveal that the final answer looks correct only because the agent used an unauthorized tool or skipped a required confirmation.
 
@@ -39,7 +48,8 @@ The cost of a single-layer evaluator is blind spots. The cost of a badly compose
 
 ## Learner practice
 
-Assign the strongest evaluation layer to each criterion:
+Assign the strongest evaluation layer to each criterion, then turn the
+semantic criteria into explicit questions:
 
 1. required JSON field,
 2. evidence supports the answer,
@@ -51,4 +61,6 @@ Explain what independent layer would challenge each assignment.
 
 ## What this lesson does not prove
 
-Layering reduces blind spots but does not eliminate them. The layers can share the same flawed data, assumptions, or model family, so independence must be considered explicitly.
+Layering reduces blind spots but does not eliminate them. The layers can share
+the same flawed data, assumptions, or model family, and overlapping questions
+can double-count one defect, so independence must be considered explicitly.

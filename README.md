@@ -167,7 +167,7 @@ uv run python labs/01-semantic-outcomes/run_lab.py
 ```
 
 The course wrapper uses the harness content tree from revision
-`b64f5ca`, which is the current public
+`5afed78`, which is the current public
 `origin/main` tree as of the course audit. If you are working from a local
 checkout, the wrapper verifies the pinned revision before running the lab.
 
