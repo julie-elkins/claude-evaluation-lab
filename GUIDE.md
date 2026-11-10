@@ -2325,21 +2325,42 @@ Ask for a structured decision and a brief justification tied to the rubric. A br
 
 Prefer criteria that can be answered directly. Binary checks are often easier to calibrate than vague five-point quality scores. When a graded score is needed, define each level with observable boundaries and preserve the per-criterion results so the aggregate does not hide a blocking failure.
 
+Treat the rubric as a question contract, meaning a versioned set of explicit
+questions that defines how an observed response becomes evidence for a decision.
+Each question should name its construct, question type, evidence references,
+weight, and blocking behavior. Use a binary question when the boundary is
+genuinely yes or no, a choice question when one behavior must be selected, and
+an ordered question when partial correctness is meaningful. Preserve the
+question-level result and weighted score; a total without that breakdown cannot
+show whether one question failed or whether two questions charged the same
+failure twice.
+
+Calibration means checking evaluator answers against independently human-reviewed
+cases. Calibrate each important question, not only the aggregate score, and keep
+calibration cases separate from held-out cases used for measurement. A question
+set that changes is an evaluator revision and should trigger a new comparison;
+the model being evaluated must not silently rewrite the rubric that judges it.
+
 In the demo, give the judge one supported answer and one answer with a missing evidence item. Then compare the judge result with a deterministic evidence check. If the judge passes an unsupported answer, the result is a finding about the evaluator, not proof that the answer is acceptable.
 
 The cost of treating a judge as an oracle is that the evaluation can become self-confirming. A fluent model judges a fluent model, the dashboard reports a number, and no independent control is present to expose the miss.
 
 #### Learner practice 🧪
 
-Write a binary judge contract for:
+Write a question-level judge contract for:
 
 “Pass only if the response identifies the missing evidence and does not claim the task is complete.”
 
-Specify the input fields, output fields, pass condition, and the independent check that would challenge the judge.
+Define at least one binary question, one ordered question for partial
+correctness, the evidence reference for each, the weight and blocking rule, the
+independent check that would challenge the judge, and the calibration cases you
+would reserve for human review.
 
 #### What this lesson does not prove ⚠️
 
-A well-structured judge prompt does not guarantee accurate judgments. It improves inspectability and repeatability, but calibration and independent controls remain necessary.
+A well-structured judge prompt or question contract does not guarantee accurate
+judgments. It improves inspectability and repeatability, but per-question
+calibration, overlap review, and independent controls remain necessary.
 
 ### Lesson 14: Structured Evaluator Outputs
 
@@ -2481,6 +2502,14 @@ A layered evaluator uses multiple kinds of evidence because no single evaluator 
 
 Good judge practice starts before the prompt is written. Define crisp criteria, provide the relevant evidence, use binary decisions where a boundary is genuinely binary, and keep the criteria separate from style preferences. Ask for a structured result with a short criterion-linked justification. Calibrate against trusted examples and check reproducibility across repeated runs.
 
+Keep the questions independent enough that one failure is not charged twice.
+Question overlap is not always wrong, but it must be visible and justified. For
+example, “the response cites the tool output” and “the reported value matches
+the tool output” may share evidence while testing different constructs; two
+questions that both ask whether the response is grounded may be one construct
+with two labels. Record the overlap audit, the question-set revision, and the
+per-question agreement before using the aggregate score as a gate.
+
 Then add independent controls. A judge should not be the only component deciding whether its own output is valid. A deterministic evidence check can challenge a claimed pass. A human can review high-risk or ambiguous cases. A trajectory check can reveal that the final answer looks correct only because the agent used an unauthorized tool or skipped a required confirmation.
 
 Keep failures attributable. If the schema is invalid, report a schema finding. If the schema is valid but the answer is unsupported, report a semantic finding. If the answer is supported but the agent violated an authorization rule, report a policy or trajectory finding. One aggregate score may be useful for a summary, but it should not replace the underlying findings.
@@ -2491,7 +2520,8 @@ The cost of a single-layer evaluator is blind spots. The cost of a badly compose
 
 #### Learner practice 🧪
 
-Assign the strongest evaluation layer to each criterion:
+Assign the strongest evaluation layer to each criterion, then turn the
+semantic criteria into explicit questions:
 
 1. required JSON field,
 2. evidence supports the answer,
@@ -2503,7 +2533,9 @@ Explain what independent layer would challenge each assignment.
 
 #### What this lesson does not prove ⚠️
 
-Layering reduces blind spots but does not eliminate them. The layers can share the same flawed data, assumptions, or model family, so independence must be considered explicitly.
+Layering reduces blind spots but does not eliminate them. The layers can share
+the same flawed data, assumptions, or model family, and overlapping questions
+can double-count one defect, so independence must be considered explicitly.
 
 ### Lesson 18: Independent Breakers and Negative Controls
 
@@ -2588,6 +2620,12 @@ You will run three offline evaluator layers:
 - a synthetic judge that returns parseable JSON but can still be wrong; and
 - an independent semantic check that verifies completion evidence.
 
+You will also define a question contract, meaning a versioned set of explicit
+questions that turns an observed response into a score. The lab shows binary
+questions, an ordered question for partial correctness, weights, blocking
+questions, a score breakdown, an overlap warning, and an explicit calibration
+boundary.
+
 You will also run a pairwise bias probe, where the same candidates are shown in
 opposite orders to detect whether the judge changes its preference.
 
@@ -2610,6 +2648,8 @@ The case set includes:
 - a supported completion;
 - malformed evaluator output;
 - a fluent completion claim without evidence; and
+- a partially complete answer with an explicit ordered score;
+- a tool-derived value that does not match the tool output; and
 - a safe escalation without a completion claim.
 
 #### Run it
@@ -2635,7 +2675,14 @@ The summary should show:
   required fields are missing;
 - `unsupported-001` passed by the synthetic judge but caught by the independent
   semantic check;
+- `partial-001` keeps a `0.9` weighted score while exposing a partial
+  completeness result;
+- `tool-mismatch-001` is blocked by the tool-faithfulness question;
 - `position_bias_detected: true` after the pairwise order is reversed; and
+- `overlap_audit.status: "warning"` because the teaching probe contains a
+  duplicate construct; and
+- `calibration.status: "not_measured"` because no independent human labels are
+  present; and
 - `release_decision: "block"` because the evaluator stack has known failures.
 
 The lab should exit with code `0`. The zero exit code means the teaching
@@ -2652,6 +2699,10 @@ observed response
         |
         +--> independent evidence check
         |
+        +--> question contract --> weighted score and blocking questions
+        |
+        +--> overlap audit and calibration boundary
+        |
         +--> pairwise order probe
                     |
                     v
@@ -2667,6 +2718,10 @@ Review these fields in the JSON output:
 - `contract_failures`
 - `judge_contract_failures`
 - `judge_false_passes`
+- `question_contract`
+- `question_level`
+- `overlap_audit`
+- `calibration`
 - `negative_control`
 - `bias_probe`
 - `release_decision`
@@ -2674,7 +2729,9 @@ Review these fields in the JSON output:
 
 The key observation is that the judge result and the independent semantic
 result are stored separately. A parseable `pass` is not allowed to overwrite an
-independent `fail`.
+independent `fail`. The question-level result is also separate: a partial
+answer can retain a weighted score, while a blocking tool-faithfulness failure
+still prevents release.
 
 #### Try the failure
 
@@ -2692,6 +2749,12 @@ The pairwise probe uses a seeded position-biased judge. It always prefers the
 first presented candidate, so reversing the order changes the preferred
 candidate. The correct action is to reject that judge as a release gate until
 the bias is understood and controlled.
+
+The overlap probe intentionally duplicates the completion-support construct.
+The correct action is to review whether one failure would be charged twice
+before using the question set as a release gate. The lab does not claim human
+calibration: it reports the cases that require independent human labels and
+keeps per-question agreement unset.
 
 #### Troubleshooting
 
@@ -2711,6 +2774,12 @@ Copy this structure into your own notes:
 decision:
 evaluator_revision:
 case_set_revision:
+question_set_revision:
+question_results:
+overall_score:
+blocking_failures:
+overlap_audit:
+calibration_status:
 contract_failures:
 judge_false_passes:
 independent_breaker_result:
@@ -2725,8 +2794,9 @@ limitations:
 #### What this does not prove
 
 This is an offline synthetic teaching control. It does not establish live
-LLM-as-a-judge accuracy, broad bias resistance, human agreement, production
-monitoring, or release readiness.
+LLM-as-a-judge accuracy, question-level calibration against human labels,
+broad bias resistance, production monitoring, or release readiness. The
+weights and threshold are teaching values, not a universal scoring formula.
 
 #### Optional extension
 

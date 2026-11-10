@@ -55,6 +55,23 @@ class LabContractTests(unittest.TestCase):
         self.assertFalse(result["valid"])
         self.assertEqual(result["reason_code"], "schema_invalid")
 
+    def test_question_contract_keeps_partial_and_tool_failures_visible(self) -> None:
+        lab = load_lab_module(
+            "labs/03-automated-evaluators/run_lab.py",
+            "lab_03_automated_evaluators_questions",
+        )
+
+        report = lab.run_lab()
+
+        partial = report["case_results"]["partial-001"]["question_level"]
+        self.assertEqual(partial["decision"], "pass")
+        self.assertEqual(partial["overall_score"], 0.9)
+        self.assertEqual(partial["questions"][2]["status"], "partial")
+        tool_mismatch = report["case_results"]["tool-mismatch-001"]["question_level"]
+        self.assertEqual(tool_mismatch["blocking_failures"], ["tool-faithfulness"])
+        self.assertEqual(report["overlap_audit"]["status"], "warning")
+        self.assertEqual(report["calibration"]["status"], "not_measured")
+
     def test_agent_lab_catches_authorization_and_path_failures(self) -> None:
         lab = load_lab_module(
             "labs/04-agent-behavior/run_lab.py",
