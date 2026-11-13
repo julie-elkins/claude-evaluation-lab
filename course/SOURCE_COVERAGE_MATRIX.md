@@ -8,6 +8,30 @@ The lecture is a historical conceptual source. It is not copied into the
 scripts. The harness is the current operational source for evidence contracts,
 negative controls, release decisions, and limits.
 
+## Current provider and research source notes
+
+The course uses provider documentation as a changing implementation reference,
+not as the definition of a valid evaluation. Learners should record the
+provider, documentation revision or access date, and the provider-neutral
+evidence that was retained.
+
+| Source | Current teaching use | Boundary |
+| --- | --- | --- |
+| [OpenAI agent evaluations](https://developers.openai.com/api/docs/guides/agent-evals) and [trace grading](https://developers.openai.com/api/docs/guides/trace-grading) | Compare traces, graders, datasets, evaluation runs, and trace-level inspection with the course evidence contract. | Provider workflow details can change; they do not establish evaluator validity. |
+| [OpenAI Evals API lifecycle notice](https://developers.openai.com/api/docs/guides/evals/) | Teach lifecycle checking and the difference between current guidance and a retiring platform. The notice states read-only access began October 31, 2026, with shutdown scheduled for November 30, 2026. | The Evals API is not a required course dependency or release gate. |
+| [Anthropic evaluation guidance](https://docs.anthropic.com/en/docs/build-with-claude/define-success) | Compare measurable success criteria, held-out cases, edge cases, multidimensional grading, and continuous improvement. | A provider example does not prove live model quality or transfer to another workflow. |
+| [Meta AI Research](https://ai.meta.com/research) | Use Muse as an optional comparison for agentic tasks, reliability, safety, preparedness, and human or automated evaluation. | The public material reviewed is research and safety guidance, not a general Muse agent-evaluation API or a reason to add a live adapter. |
+
+Recent research that informs the new coding-agent guidance includes
+[Harness Self-Evolution for Long-Horizon Terminal Agents](https://arxiv.org/abs/2610.27435),
+[Trial by Trace](https://arxiv.org/abs/2610.32285),
+[Beneath the Surface](https://arxiv.org/abs/2611.07624), and
+[The Horizon Gap](https://arxiv.org/abs/2608.06663). These sources reinforce
+repeated-run measurement, harness-level failure attribution, preservation of
+prior capabilities, cost visibility, and explicit long-horizon boundaries.
+They inform the design; they do not turn the course's synthetic labs into a
+benchmark or production claim.
+
 ## Learner foundation coverage
 
 These concepts are prerequisites for interpreting an agent evaluation. They are
@@ -102,7 +126,7 @@ mapped below rather than left implicit in the repository.
 | Monitor health and resilience | Received, accepted, rejected, dropped, delayed, and exported telemetry; alert quality; bounded fallback. | Lesson 44 and Lab 8 | Break the local telemetry path and preserve `unavailable` or `not_evaluated`. |
 | Local telemetry implementation | Instrumentation, collection, redaction, local storage, query, alert, incident, and regression case. | Lesson 45 and Lab 8 | Trace one synthetic run across all pipeline stages. |
 | Drift and recalibration | Data, model, evaluator, and concept drift; human feedback; sampling; recalibration. | Lesson 46 | Compare synthetic distributions and declare a review action. |
-| Official provider guidance | Claude evaluations and skills, Codex skills and `AGENTS.md`, current Codex evaluation-suite guidance with optional Promptfoo execution, LangSmith evaluator scopes and review queues, LangGraph durable execution, and the developing OpenTelemetry GenAI conventions. | Fundamentals; Lessons 25, 28, 33, 37, and 39; README | Record provider documentation revision or retrieval date, map provider features to the provider-neutral evidence contract, and keep older platform references out of the required path. |
+| Official provider guidance | Claude evaluations and skills, Codex skills and `AGENTS.md`, current Codex evaluation-suite guidance with optional Promptfoo execution, OpenAI traces and graders, Anthropic held-out and multidimensional evaluation guidance, optional Meta Muse research and safety comparison, LangSmith evaluator scopes and review queues, LangGraph durable execution, and the developing OpenTelemetry GenAI conventions. | Fundamentals; Lessons 25, 28, 33, 37, and 39; README | Record provider documentation revision or retrieval date, map provider features to the provider-neutral evidence contract, check deprecation notices, and keep retiring platforms and provider-specific adapters out of the required path. |
 | Continuous assurance | Security, telemetry health, evaluation, incidents, ownership, and release action remain connected. | Lesson 48 and Labs 7–8 | Produce one combined assurance report with bounded claims. |
 
 ## Red-team coverage

@@ -230,6 +230,13 @@ Reference courses and standards used for the advanced track:
 - [OpenAI agent evaluations](https://developers.openai.com/api/docs/guides/agent-evals)
   and [trace grading](https://developers.openai.com/api/docs/guides/trace-grading)
   — traces, graders, datasets, evaluation runs, and trace-level inspection.
+- [OpenAI Evals API lifecycle notice](https://developers.openai.com/api/docs/guides/evals/)
+  — a reminder to check provider lifecycle status; the platform became
+  read-only on October 31, 2026 and is scheduled to shut down on November 30,
+  2026, so it is not a required course dependency.
+- [Meta AI Research](https://ai.meta.com/research) — optional Muse research and
+  safety material for comparing agentic-task, reliability, preparedness, and
+  evaluation framing. This is not a live Muse adapter or a course benchmark.
 - [Anthropic Claude Cookbook: Dreaming with a dynamic workflow](https://platform.claude.com/cookbook/managed-agents-cma-dreaming-with-a-dynamic-workflow)
   — optional implementation reference for background memory consolidation.
 - [Codex skills](https://developers.openai.com/codex/skills/create-skill),
@@ -275,6 +282,14 @@ Research reading that informs the evaluation design:
   — protocol validity and shortcut-resistant scoring.
 - [Towards a Science of AI Agent Reliability](https://arxiv.org/abs/2602.16666)
   — distinct dimensions of agent reliability.
+- [Harness Self-Evolution for Long-Horizon Terminal Agents](https://arxiv.org/abs/2610.27435)
+  — harness changes, long-horizon behavior, and repeated-run measurement.
+- [Trial by Trace: Benchmarking AI Agent Harnesses for Reliability and Failure Attribution](https://arxiv.org/abs/2610.32285)
+  — harness-level reliability and task-level failure attribution.
+- [Beneath the Surface: What We Overlook When We Talk About Agent Evolution](https://arxiv.org/abs/2611.07624)
+  — hidden regressions, cost, and preservation-aware interpretation of aggregate gains.
+- [The Horizon Gap](https://arxiv.org/abs/2608.06663)
+  — distinctions among long-horizon planning, memory, execution, training, and evaluation.
 
 These readings are evidence about evaluation design, not proof that the
 course's synthetic labs measure the same constructs. The course keeps
