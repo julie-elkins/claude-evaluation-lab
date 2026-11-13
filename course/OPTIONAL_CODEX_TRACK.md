@@ -19,6 +19,20 @@ observability, security controls, and release decisions.
 Run the [optional Codex coding-agent evaluation lab](labs/optional-codex-agent-adapter/README.md)
 to evaluate a synthetic healthy run and a deliberately degraded run.
 
+## The harness is part of the system under test
+
+The **system under test** is the complete workflow whose behavior supports the
+decision, not only the model that generates the response. For a coding-agent
+evaluation, bind the result to the model, harness or scaffolding (the prompts,
+tools, permissions, and orchestration around the model), repository revision,
+environment, evaluator revision, task outcome, trace completeness, retry
+behavior, cost, and repository changes.
+
+Changing the harness can change the measured result even when the model is
+unchanged. Report those components separately so a model improvement is not
+mistaken for a scaffolding improvement, or a missing trace is mistaken for a
+successful run.
+
 ## Coding-agent evaluation dimensions
 
 - [ ] The agent interpreted the declared task.
@@ -31,6 +45,57 @@ to evaluate a synthetic healthy run and a deliberately degraded run.
 - [ ] The agent stopped at the declared terminal state.
 - [ ] The completion claim is supported by evidence.
 - [ ] Human review and rollback remain explicit.
+
+## First-attempt success versus repeated-run reliability
+
+**First-attempt success** means the agent completed the task on one declared
+run. **Repeated-run reliability** means the same versioned task succeeds across
+the number of independent runs required by the decision. The first measure
+shows what happened once; the second shows how consistently the workflow can
+deliver without a person selecting the best attempt.
+
+For repeated runs:
+
+- record the model, prompt, tools, repository revision, evaluator revision, and
+  run conditions;
+- report the result for each task, not only the aggregate score;
+- separate variation caused by the model from variation caused by the
+  scaffolding (the prompts, tools, and orchestration around the model),
+  repository state, environment, timeouts, and evaluator; and
+- inspect every failed attempt for unintended edits, partial changes, deleted
+  files, or other repository damage before retrying or calling the task
+  recovered.
+
+An attempt that eventually succeeds after leaving an unsafe or unexplained
+change behind is not a clean recovery. A single successful run therefore does
+not establish coding-agent reliability or merge readiness.
+
+### Repeated-run metrics
+
+Use the metric that matches the decision rather than reporting one headline
+success rate:
+
+- **Pass@1** is success on one declared attempt.
+- **Pass@k** is success on at least one of `k` independent attempts. It answers
+  whether a retry budget can find a successful result.
+- **Pass^k** is success on every one of `k` independent attempts. It answers
+  whether the workflow is reliable without selecting the best attempt.
+- **Flip rate** is the proportion of tasks whose pass or fail outcome changes
+  across repeated runs. It makes instability visible even when the aggregate
+  score stays similar.
+
+Report the task-level outcomes and the repository state for each attempt.
+Pass@k is not a substitute for Pass^k when the decision requires predictable
+behavior, and a retry is not recovered until the failed attempt has been
+checked for unintended repository changes.
+
+### Preservation-aware interpretation
+
+An aggregate score increase is not an improvement if previously covered tasks
+regress and the regression is hidden, unexplained, or outside the accepted
+decision rule. Compare the candidate with the baseline at the task and
+high-risk-slice levels, preserve newly exposed failures as regression cases,
+and require an explicit human decision for any accepted tradeoff.
 
 ## Skills and instruction evidence
 
@@ -85,6 +150,13 @@ and [Promptfoo](https://github.com/promptfoo/promptfoo) for provider-specific
 workflow details. Map the resulting evidence into the course's provider-neutral
 contract. The older OpenAI Evals repository is historical context, not a
 required dependency or a release gate for this learner path.
+
+OpenAI's separate Evals API platform is being retired: the official notice says
+existing evals became read-only on October 31, 2026, with shutdown scheduled
+for November 30, 2026. The course therefore teaches the evidence contract and
+current agent-evaluation guidance rather than making the Evals API a required
+dependency. Re-check this lifecycle note before teaching a provider-specific
+workflow.
 
 ## Provider-neutral mapping
 
