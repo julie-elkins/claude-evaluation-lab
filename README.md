@@ -54,6 +54,12 @@ defines the shared evaluation vocabulary. The
 [Apple Platform Agent Quality Lab](https://github.com/julie-elkins/apple-platform-agent-quality-lab)
 shows the same evidence boundary in a native macOS implementation.
 
+The [AI Teaching Strategies](https://github.com/julie-elkins/ai-teaching-strategies)
+repository holds the reusable teaching layer: audience calibration,
+demonstration-first instruction, failure-driven labs, instructor calibration,
+and learner adoption evidence. This course remains the canonical source for
+its lessons and synthetic labs.
+
 For the companion research record, see the
 [response-quality measurement study](https://github.com/julie-elkins/llm-eval-validity/tree/main/research/response-quality).
 The course teaches the design and execution patterns; the research repository
@@ -154,6 +160,9 @@ Optional:
   classify root-cause hypotheses, use replay as a diagnostic filter, require
   full validation, and draft a use-case-specific evaluator without treating
   the recommendation as production approval.
+- [Teaching strategy integration](course/TEACHING_STRATEGIES.md) — use the
+  public teaching cards to plan audience calibration, demonstrations, labs,
+  assessment, and bounded learner evidence.
 
 ## Quick start
 

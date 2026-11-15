@@ -97,6 +97,24 @@ decision rule. Compare the candidate with the baseline at the task and
 high-risk-slice levels, preserve newly exposed failures as regression cases,
 and require an explicit human decision for any accepted tradeoff.
 
+## Teaching the coding-agent boundary
+
+Use the [AI Teaching Strategies](https://github.com/julie-elkins/ai-teaching-strategies)
+cards when presenting this optional track:
+
+- calibrate whether the learner needs repository safety, evaluation design, or
+  provider-specific syntax first;
+- demonstrate a complete synthetic run and a degraded run before discussing
+  repeated-run metrics;
+- require the learner to inspect failed attempts for unintended repository
+  changes before calling a retry recovered; and
+- assess the learner's evidence and limitation statement separately from the
+  patch's apparent quality.
+
+This is a teaching aid, not a new coding-agent capability or a claim about
+learner adoption. The public course still excludes private repositories,
+credentials, raw traces, and unpublished content.
+
 ## Skills and instruction evidence
 
 Codex may use reusable **skills**, meaning instruction and workflow bundles that
