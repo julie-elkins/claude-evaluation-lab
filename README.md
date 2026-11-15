@@ -43,6 +43,14 @@ learner-facing lessons, all eight runnable labs, diagrams, and module practice
 checks in one reading path. You should not need to move between lesson folders
 to follow the course.
 
+## Feedback
+
+If you use the course or a lab, use the public
+[learner feedback issue form](https://github.com/julie-elkins/claude-evaluation-lab/issues/new?template=learner-feedback.yml).
+Feedback is used to improve clarity, accessibility, and lab instructions. Do
+not include personal, confidential, private learner, exam, provider, credential,
+or secret information in a public issue.
+
 The [Claude Architect Lab](https://github.com/julie-elkins/claude-architect-lab)
 is the companion prerequisite course for agent loops, tools, configuration,
 prompting, context, and reliability. The [Agent Assurance
