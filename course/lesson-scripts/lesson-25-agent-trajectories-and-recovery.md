@@ -16,10 +16,11 @@ By the end of this lesson, you can evaluate an agent trajectory, meaning the seq
 4. **Evaluation scope** — step, end-to-end, trajectory, and thread/session.
 5. **Recovery versus retry** — a retry is not recovery unless the failure is addressed.
 6. **Flat versus multi-agent architecture** — compare the whole task, not isolated subagents.
-7. **Error propagation and uncertainty handoff** — do not pass a confident summary without evidence.
-8. **Verification and stopping criteria** — check important intermediate results and know when to ask.
-9. **Demo: guarded and unguarded paths**.
-10. **Practice: annotate a trajectory and choose the final decision**.
+7. **Parallelism eligibility and write ownership** — fan out independent reads; keep shared writes owned.
+8. **Error propagation and uncertainty handoff** — do not pass a confident summary without evidence.
+9. **Verification and stopping criteria** — check important intermediate results and know when to ask.
+10. **Demo: guarded and unguarded paths**.
+11. **Practice: annotate a trajectory and choose the final decision**.
 
 ## Speaker script
 
@@ -62,6 +63,15 @@ subagent, prompt branch, or context workaround unnecessary. Keep a subagent
 when it provides a measured benefit such as parallel research, independent
 verification, or a genuinely different context boundary. The decision belongs
 to the end-to-end evidence, not to the existence of a polished subagent answer.
+
+Parallel work needs an eligibility rule. A **read-only fan-out** means independent
+workers inspect or analyze the same input without changing it. Shared writes need
+a **single writer**, meaning one designated owner proposes or applies the change,
+and a review gate before the change reaches shared state. If two agents edit the
+same artifact, the workflow must record how their proposals are joined, how
+conflicts are resolved, and what happens when one result is missing. Measure the
+review and reconciliation cost along with the time saved; otherwise the workflow
+may only move the bottleneck from execution to diff review.
 
 Errors can propagate across a chain. If every step independently succeeds 95
 percent of the time and all ten steps are required, the probability of an
@@ -112,8 +122,11 @@ step, end-to-end task, trajectory, or thread/session. Then choose pass, fail, or
 escalate. For an architecture comparison, record whether the workflow is flat
 or uses subagents, what evidence justifies the handoff, and whether the
 end-to-end result improved after accounting for cost, latency, context, and
-recovery. Identify one error that could propagate, one verification point, and
-one condition that should make the agent stop, ask, refuse, or escalate.
+recovery. Classify each delegated task as independent read-only work or
+write-coupled work. For every write-coupled task, record the write owner, allowed
+write scope, join or conflict rule, and review gate. Identify one error that
+could propagate, one verification point, and one condition that should make the
+agent stop, ask, refuse, or escalate.
 Explain whether the final answer would change your decision and why.
 
 ## What this lesson does not prove

@@ -48,6 +48,21 @@ review. Keep the original feedback signal separate from the evaluator label so
 we can tell whether the problem is user experience, workflow behavior, or
 measurement.
 
+When deciding whether to ask for explicit feedback, use this as a working
+heuristic:
+
+```text
+attention-adjusted evidence value =
+  P(usable feedback)
+  × expected change in the decision
+  ÷ attention cost
+```
+
+This is not a universal quality score. It is a design check for whether a
+question is likely to produce interpretable evidence that can change the
+decision enough to justify the person's time and effort. The denominator must
+include accessibility and context-switching costs, not only elapsed time.
+
 The full assurance loop is: establish an offline baseline, make a bounded
 release, observe online signals, triage and review candidate failures, minimize
 and sanitize the evidence, then add an appropriate regression or held-out case
@@ -74,6 +89,8 @@ Then complete the following for one feedback signal:
 3. What sampling and privacy rule applies?
 4. What alternative explanation could produce the same signal?
 5. What human-review or evaluator check is required before it becomes a case?
+6. Would an explicit question produce enough decision-relevant evidence to
+   justify its attention cost?
 
 ## What this lesson does not prove
 

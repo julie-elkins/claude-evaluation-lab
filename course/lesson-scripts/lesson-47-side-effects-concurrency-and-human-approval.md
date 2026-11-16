@@ -14,8 +14,9 @@ updates, idempotency, compensation, and human approval gates.
 1. **A correct plan can still create a bad side effect**.
 2. **Idempotency** — safe repetition of the same request.
 3. **Concurrency** — competing reads and writes.
-4. **Compensation** — what reverses a partial action.
-5. **Approval and escalation**.
+4. **Read-only fan-out versus shared writes** — parallel investigation still needs one write owner.
+5. **Compensation** — what reverses a partial action.
+6. **Approval and escalation**.
 
 ## Speaker script
 
@@ -33,6 +34,14 @@ limits damage after a partial failure. If the action is high impact or
 irreversible, require human approval before execution and preserve the approval
 identity in the trace.
 
+Parallel investigation is easier to control when workers remain read-only. A
+**write owner** is the one person or workflow component permitted to join
+proposals and apply the shared change. Put a review gate between the proposals
+and the write, and record the conflict or unavailable-worker result rather than
+silently selecting whichever response arrived first. The purpose is not to
+prevent all parallel work; it is to keep investigation speed from becoming
+unreviewed shared-state mutation.
+
 ## Demo notes
 
 - Run the Lab 7 duplicate, stale-state, and missing-approval cases.
@@ -41,7 +50,9 @@ identity in the trace.
 ## Learner practice
 
 Write an action contract with `idempotency_key`, `state_version`,
-`approval_required`, `approval_id`, `compensation_action`, and `audit_event`.
+`write_owner`, `write_scope`, `review_gate`, `approval_required`, `approval_id`,
+`compensation_action`, and `audit_event`. Mark which investigation steps may
+run independently and which step joins proposals before the shared write.
 
 ## What this lesson does not prove
 

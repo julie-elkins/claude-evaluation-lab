@@ -19,6 +19,10 @@ completion into a learning-impact claim.
    facilitator delivers the lesson.
 6. **Learner adoption evidence:** use task-level artifacts or bounded practice
    results when deciding what to revise.
+7. **Attention-adjusted feedback:** ask for explicit feedback when it is likely
+   to change a teaching or evaluation decision enough to justify the learner's
+   attention; treat edits, retries, and abandonment as signals that need review,
+   not automatic labels.
 
 ## Course boundary
 
