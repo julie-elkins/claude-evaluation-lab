@@ -3223,6 +3223,15 @@ when it provides a measured benefit such as parallel research, independent
 verification, or a genuinely different context boundary. The decision belongs
 to the end-to-end evidence, not to the existence of a polished subagent answer.
 
+Parallel work needs an eligibility rule. A **read-only fan-out** means independent
+workers inspect or analyze the same input without changing it. Shared writes need
+a **single writer**, meaning one designated owner proposes or applies the change,
+and a review gate before the change reaches shared state. If two agents edit the
+same artifact, the workflow must record how their proposals are joined, how
+conflicts are resolved, and what happens when one result is missing. Measure the
+review and reconciliation cost along with the time saved; otherwise the workflow
+may only move the bottleneck from execution to diff review.
+
 Errors can propagate across a chain. If every step independently succeeds 95
 percent of the time and all ten steps are required, the probability of an
 all-success path is approximately 0.95 to the tenth power, or about 60 percent.
@@ -3265,8 +3274,11 @@ step, end-to-end task, trajectory, or thread/session. Then choose pass, fail, or
 escalate. For an architecture comparison, record whether the workflow is flat
 or uses subagents, what evidence justifies the handoff, and whether the
 end-to-end result improved after accounting for cost, latency, context, and
-recovery. Identify one error that could propagate, one verification point, and
-one condition that should make the agent stop, ask, refuse, or escalate.
+recovery. Classify each delegated task as independent read-only work or
+write-coupled work. For every write-coupled task, record the write owner, allowed
+write scope, join or conflict rule, and review gate. Identify one error that
+could propagate, one verification point, and one condition that should make the
+agent stop, ask, refuse, or escalate.
 Explain whether the final answer would change your decision and why.
 
 #### What this lesson does not prove ⚠️
@@ -5510,6 +5522,21 @@ review. Keep the original feedback signal separate from the evaluator label so
 we can tell whether the problem is user experience, workflow behavior, or
 measurement.
 
+When deciding whether to ask for explicit feedback, use this as a working
+heuristic:
+
+```text
+attention-adjusted evidence value =
+  P(usable feedback)
+  × expected change in the decision
+  ÷ attention cost
+```
+
+This is not a universal quality score. It is a design check for whether a
+question is likely to produce interpretable evidence that can change the
+decision enough to justify the person's time and effort. The denominator must
+include accessibility and context-switching costs, not only elapsed time.
+
 The full assurance loop is: establish an offline baseline, make a bounded
 release, observe online signals, triage and review candidate failures, minimize
 and sanitize the evidence, then add an appropriate regression or held-out case
@@ -5528,6 +5555,8 @@ Then complete the following for one feedback signal:
 3. What sampling and privacy rule applies?
 4. What alternative explanation could produce the same signal?
 5. What human-review or evaluator check is required before it becomes a case?
+6. Would an explicit question produce enough decision-relevant evidence to
+   justify its attention cost?
 
 #### What this lesson does not prove ⚠️
 
@@ -5563,10 +5592,20 @@ limits damage after a partial failure. If the action is high impact or
 irreversible, require human approval before execution and preserve the approval
 identity in the trace.
 
+Parallel investigation is easier to control when workers remain read-only. A
+**write owner** is the one person or workflow component permitted to join
+proposals and apply the shared change. Put a review gate between the proposals
+and the write, and record the conflict or unavailable-worker result rather than
+silently selecting whichever response arrived first. The purpose is not to
+prevent all parallel work; it is to keep investigation speed from becoming
+unreviewed shared-state mutation.
+
 #### Learner practice 🧪
 
 Write an action contract with `idempotency_key`, `state_version`,
-`approval_required`, `approval_id`, `compensation_action`, and `audit_event`.
+`write_owner`, `write_scope`, `review_gate`, `approval_required`, `approval_id`,
+`compensation_action`, and `audit_event`. Mark which investigation steps may
+run independently and which step joins proposals before the shared write.
 
 #### What this lesson does not prove ⚠️
 
