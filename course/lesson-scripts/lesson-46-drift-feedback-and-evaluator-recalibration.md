@@ -92,6 +92,20 @@ Then complete the following for one feedback signal:
 6. Would an explicit question produce enough decision-relevant evidence to
    justify its attention cost?
 
+> 🧭 **Take this forward**
+>
+> **Remember:** feedback is a signal for review, not an automatic evaluator
+> label.
+>
+> **Try next:** choose one feedback signal, define its sampling rule, and state
+> the human or evaluator check required before it becomes a regression case.
+>
+> **Inspect:** the signal's alternative explanations, privacy boundary,
+> calibration status, and resulting decision.
+>
+> **Do not infer:** a stable score or a single retry proves that the deployed
+> system or evaluator has not drifted.
+
 ## What this lesson does not prove
 
 A synthetic distribution comparison does not establish that a deployed monitor

@@ -94,6 +94,20 @@ A blocked synthetic attack is evidence that the declared control was exercised.
 An unblocked attack is a regression finding. Neither result is a universal
 safety score.
 
+> 🧭 **Take this forward**
+>
+> **Remember:** evaluate the harness around an agent—tools, permissions,
+> policies, state, and evidence—not only the underlying model.
+>
+> **Try next:** name the authorization owner and the independent record holder
+> for one consequential action.
+>
+> **Inspect:** the control result, authorization evidence, evidence source, and
+> whether the executor could rewrite the record being used for the decision.
+>
+> **Do not infer:** a public incident report or a blocked synthetic attack is
+> telemetry-backed proof of universal safety.
+
 ## Optional extension
 
 Map each synthetic control to a real service boundary in a system you are

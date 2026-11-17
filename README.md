@@ -133,7 +133,8 @@ purpose of each section visible while you move through the course:
 
 Run the labs in order. Each lab is self-contained, produces a fast local
 result, includes a deliberately degraded case, and states what its evidence
-does and does not prove.
+does and does not prove. Each learner-facing lab also ends with a `🧭 Take this
+forward` handoff so the result connects to the next decision.
 
 1. [Semantic outcomes](labs/01-semantic-outcomes/README.md) — distinguish
    transport success from task success.

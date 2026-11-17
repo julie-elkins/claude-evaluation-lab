@@ -95,3 +95,19 @@ It does not prove live Codex performance, code quality across repositories,
 security of a production runner, correctness of a real patch, or readiness to
 merge without human review.
 
+> 🧭 **Take this forward**
+>
+> **Remember:** first-attempt success and repeated-run reliability are different
+> claims, and a retry is not recovered if it leaves unintended repository
+> changes.
+>
+> **Try next:** run the same bounded task more than once, compare task-level
+> outcomes, and inspect every failed attempt's diff before calling recovery
+> successful.
+>
+> **Inspect:** the trajectory, changed-file list, test evidence, terminal state,
+> and human review decision.
+>
+> **Do not infer:** one clean coding-agent run proves general code quality,
+> security, or merge readiness.
+

@@ -20,6 +20,22 @@ The pale fill and dark outline are paired so the diagram remains readable on a
 cream background. Red is reserved for a failure or release-blocking finding;
 using it for ordinary emphasis would make a real blocker less visible.
 
+## Learner takeaway callout
+
+Use `🧭 Take this forward` for the closing handoff in a lesson, lab, or video.
+The callout should contain:
+
+- **Remember:** the decision or control to retain;
+- **Try next:** one bounded learner action;
+- **Inspect:** the evidence that should be checked; and
+- **Do not infer:** the most important claim the example does not prove.
+
+For slides, HTML-rendered lessons, and video assets, use the pale blue `#DCECF3`
+fill with a navy `#16324F` outline. In repository Markdown, use an
+emoji-and-heading blockquote as the fallback because GitHub does not guarantee
+custom background styling. Keep the heading and emoji so the callout remains
+identifiable without color.
+
 ## Diagram conventions
 
 Use Mermaid for repository diagrams so learners can read the source and GitHub
