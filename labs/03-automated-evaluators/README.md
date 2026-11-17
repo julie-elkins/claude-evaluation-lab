@@ -183,6 +183,20 @@ release_reasons:
 limitations:
 ```
 
+> 🧭 **Take this forward**
+>
+> **Remember:** a parseable judge result is not enough; independent checks and
+> calibration determine whether the evaluator can support the decision.
+>
+> **Try next:** add one known false-pass case and one human-reviewed calibration
+> case before using an automated judge as a release gate.
+>
+> **Inspect:** the independent breaker, calibration status, bias probe, and
+> release reasons.
+>
+> **Do not infer:** a passing synthetic lab means a live judge is accurate or
+> production-ready.
+
 ## What this does not prove
 
 This is an offline synthetic teaching control. It does not establish live

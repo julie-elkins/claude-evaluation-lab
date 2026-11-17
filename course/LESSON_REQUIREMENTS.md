@@ -63,6 +63,8 @@ Every lesson needs at least:
 - one evidence or workflow visual;
 - one learner action;
 - one failure or limitation callout; and
+- one `🧭 Take this forward` handoff that names the next action and the evidence
+  the learner should inspect; and
 - speaker notes that name the demo starting state, expected result, and
   recording boundary.
 
@@ -75,6 +77,7 @@ Every script needs to answer:
 3. What failure would otherwise look like a pass?
 4. What should the learner run, inspect, or write?
 5. What does the result not prove?
+6. What should the learner take forward into the next task?
 
 ## Optional provider-boundary gate
 

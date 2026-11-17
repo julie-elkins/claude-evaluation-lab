@@ -146,6 +146,20 @@ candidate_release_decision:
 limitations:
 ```
 
+> 🧭 **Take this forward**
+>
+> **Remember:** telemetry explains what happened; evaluation evidence supports a
+> decision about what should happen next.
+>
+> **Try next:** turn one synthetic trace finding into a minimized regression
+> case with a named owner and release consequence.
+>
+> **Inspect:** trace completeness, privacy status, incident findings, and the
+> regression case created from the failure.
+>
+> **Do not infer:** a complete local trace proves that a production exporter or
+> incident process captures everything.
+
 ## What this does not prove
 
 This is an offline synthetic observability control. It does not prove that a

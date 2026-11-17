@@ -23,6 +23,9 @@ completion into a learning-impact claim.
    to change a teaching or evaluation decision enough to justify the learner's
    attention; treat edits, retries, and abandonment as signals that need review,
    not automatic labels.
+8. **Take-forward handoff:** close each lesson or lab with `🧭 Take this
+   forward`: state what to remember, what to try next, what evidence to inspect,
+   and what the example does not prove.
 
 ## Course boundary
 

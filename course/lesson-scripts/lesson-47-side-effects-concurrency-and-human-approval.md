@@ -54,6 +54,20 @@ Write an action contract with `idempotency_key`, `state_version`,
 `compensation_action`, and `audit_event`. Mark which investigation steps may
 run independently and which step joins proposals before the shared write.
 
+> 🧭 **Take this forward**
+>
+> **Remember:** parallel investigation is safe only when shared writes remain
+> owned, authorized, and reviewable.
+>
+> **Try next:** identify the read-only fan-out, the single write owner, and the
+> approval gate for one workflow.
+>
+> **Inspect:** state version, idempotency key, authorization evidence, conflict
+> result, and compensation path.
+>
+> **Do not infer:** a successful response proves that a side effect happened
+> once, safely, or with the intended scope.
+
 ## What this lesson does not prove
 
 Synthetic side-effect checks do not prove transactional behavior or exactly-once
