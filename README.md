@@ -57,6 +57,12 @@ prompting, context, and reliability. The [Agent Assurance
 Harness](https://github.com/julie-elkins/agent-assurance-harness) is the public
 evaluation engine used by this course.
 
+For the benchmark extension to the recovery concepts in the agent-behavior and
+release labs, see the
+[ESAC-Bench Recovery Track](https://github.com/julie-elkins/esac-bench/blob/main/docs/benchmark-spec.md#recovery-track).
+It is an offline, synthetic control for interruption, retry, restoration,
+handoff, and recovery evidence—not a production recovery rehearsal.
+
 The [Agent Systems Design Guide](https://github.com/julie-elkins/agent-systems-design-guide)
 defines the shared evaluation vocabulary. The
 [Apple Platform Agent Quality Lab](https://github.com/julie-elkins/apple-platform-agent-quality-lab)
