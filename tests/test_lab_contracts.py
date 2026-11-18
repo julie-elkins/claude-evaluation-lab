@@ -188,6 +188,41 @@ class LabContractTests(unittest.TestCase):
             "not_evaluated",
         )
 
+    def test_rag_lab_separates_retrieval_and_generation_failures(self) -> None:
+        lab = load_lab_module(
+            "labs/optional-rag-failure-decomposition/run_lab.py",
+            "lab_optional_rag_failure_decomposition",
+        )
+
+        report = lab.run_lab()
+
+        self.assertEqual(report["candidate_release_decision"], "block")
+        self.assertIn("q-refund", report["retrieval_results"]["hybrid"])
+        self.assertTrue(all(report["failure_decomposition"].values()))
+        self.assertTrue(
+            report["negative_controls"]["wrong_document_grounding"][
+                "wrong_document_grounding"
+            ]
+        )
+        self.assertTrue(
+            report["negative_controls"]["stale_source_grounding"][
+                "stale_source_grounding"
+            ]
+        )
+        self.assertFalse(
+            report["negative_controls"]["citation_failure"]["citation_correct"]
+        )
+        self.assertFalse(
+            report["retrieval_vs_generation_ablations"][
+                "generation_fixed_retrieval_degraded"
+            ]["retrieval_success"]
+        )
+        self.assertFalse(
+            report["retrieval_vs_generation_ablations"][
+                "retrieval_fixed_generation_degraded"
+            ]["generation_success"]
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

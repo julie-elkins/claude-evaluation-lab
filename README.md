@@ -170,6 +170,9 @@ Optional:
 - [Optional Codex coding-agent evaluation](labs/optional-codex-agent-adapter/README.md) —
   evaluate repository scope, commands, tests, patch evidence, safety, and
   human review without requiring live Codex access.
+- [Optional RAG failure-decomposition lab](labs/optional-rag-failure-decomposition/README.md) —
+  separate retrieval, context, grounding, citation, and generation failures using
+  deterministic synthetic documents.
 - [Optional Trace-to-Evaluator Design Skill](course/TRACE_TO_EVALUATOR_SKILL.md) —
   inspect approved or synthetic traces, identify recurring failure mechanisms,
   classify root-cause hypotheses, use replay as a diagnostic filter, require

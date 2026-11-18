@@ -1993,7 +1993,9 @@ Calibration is a short agreement session before the full rating pass. Reviewers 
 
 Keep criteria separate when they answer different questions. A response can be factually supported but unsafe, or safe but incomplete. Combining those dimensions into one score makes it harder to see what needs fixing and allows a strong dimension to hide a blocking failure.
 
-In the demo, score three synthetic cases. Pay attention to the case where the original criterion seems clear until two reviewers interpret “complete” differently. Add an explicit boundary to the rubric, then rescore. The cost of skipping calibration is expensive disagreement later: reviewers spend more time, the result becomes harder to interpret, and evaluator tuning is aimed at an unstable target.
+Before expanding a benchmark or trusting an aggregate score, run a **rubric validity audit**. This asks whether the rubric represents the decision at all, not only whether reviewers can apply it consistently. Look for missing criteria, criteria that measure a different construct than the decision, verification rules without evidence, duplicate or bundled criteria, and vague wording. A rubric can be consistently applied and still miss the requirement that matters most.
+
+In the demo, score the synthetic cases, including one where the answer passes the current rubric because it is complete and supported but still misses a critical actionability requirement. The aggregate score passes; the rubric-validity audit blocks the decision because the requirement is not represented. Then add the criterion or explicitly document why it is out of scope. The cost of skipping this audit is a precise score for the wrong question.
 
 #### Learner practice 🧪
 
@@ -2007,9 +2009,18 @@ Write a rubric for “the agent should not claim completion without completion e
 
 Have a second reviewer score three cases and compare the disagreements.
 
+Then audit the rubric against the decision: name one requirement that must block
+the decision, identify where the rubric represents it, and record what happens
+when the requirement is absent. Do not repair a missing criterion by increasing
+the weight of an unrelated one.
+
 #### What this lesson does not prove ⚠️
 
-A clear rubric improves consistency; it does not make subjective judgment disappear. Some tasks require human review because context, harm, or domain meaning cannot be reduced safely to a single rule.
+A clear rubric improves consistency; it does not prove that the rubric measures
+the right construct. A passing aggregate can still be misleading when a
+decision-relevant requirement is absent, bundled, or verified without evidence.
+Some tasks require human review because context, harm, or domain meaning cannot
+be reduced safely to a single rule.
 
 ### Lesson 8: Inter-Rater Agreement
 
@@ -2716,6 +2727,10 @@ questions, an ordered question for partial correctness, weights, blocking
 questions, a score breakdown, an overlap warning, and an explicit calibration
 boundary.
 
+You will also run a rubric-validity audit. A rubric-validity audit checks whether
+the scoring rule represents the decision's important requirements before the
+aggregate score is trusted.
+
 You will also run a pairwise bias probe, where the same candidates are shown in
 opposite orders to detect whether the judge changes its preference.
 
@@ -2740,7 +2755,9 @@ The case set includes:
 - a fluent completion claim without evidence; and
 - a partially complete answer with an explicit ordered score;
 - a tool-derived value that does not match the tool output; and
-- a safe escalation without a completion claim.
+- a safe escalation without a completion claim; and
+- a supported, complete answer that still misses a critical actionability
+  requirement absent from the question contract.
 
 #### Run it
 
@@ -2773,6 +2790,8 @@ The summary should show:
   duplicate construct; and
 - `calibration.status: "not_measured"` because no independent human labels are
   present; and
+- `rubric_validity_audit.status: "block"` because `rubric-gap-001` exposes a
+  decision-relevant requirement missing from the question contract; and
 - `release_decision: "block"` because the evaluator stack has known failures.
 
 The lab should exit with code `0`. The zero exit code means the teaching
@@ -2793,6 +2812,8 @@ observed response
         |
         +--> overlap audit and calibration boundary
         |
+        +--> rubric-validity audit
+        |
         +--> pairwise order probe
                     |
                     v
@@ -2812,6 +2833,7 @@ Review these fields in the JSON output:
 - `question_level`
 - `overlap_audit`
 - `calibration`
+- `rubric_validity_audit`
 - `negative_control`
 - `bias_probe`
 - `release_decision`
@@ -2846,6 +2868,14 @@ before using the question set as a release gate. The lab does not claim human
 calibration: it reports the cases that require independent human labels and
 keeps per-question agreement unset.
 
+`rubric-gap-001` shows a different failure. The answer is complete, supported,
+and faithful to the tool output, so the current question contract gives it a
+passing aggregate score. The decision still blocks because the rubric-validity
+audit finds that actionability—the requirement that a user can act without a
+missing critical condition—is not represented. Adding weight to an unrelated
+question would not repair the measurement; the criterion must be added or
+explicitly declared out of scope.
+
 #### Troubleshooting
 
 1. Confirm that you are running the command from the course repository root.
@@ -2870,6 +2900,7 @@ overall_score:
 blocking_failures:
 overlap_audit:
 calibration_status:
+rubric_validity_audit:
 contract_failures:
 judge_false_passes:
 independent_breaker_result:
@@ -2880,6 +2911,20 @@ release_decision:
 release_reasons:
 limitations:
 ```
+
+> 🧭 **Take this forward**
+>
+> **Remember:** a parseable judge result is not enough; independent checks and
+> calibration determine whether the evaluator can support the decision.
+>
+> **Try next:** add one known false-pass case and one human-reviewed calibration
+> case before using an automated judge as a release gate.
+>
+> **Inspect:** the independent breaker, calibration status, bias probe,
+> rubric-validity audit, and release reasons.
+>
+> **Do not infer:** a passing synthetic lab means a live judge is accurate or
+> production-ready.
 
 #### What this does not prove
 
@@ -4407,6 +4452,20 @@ candidate_release_decision:
 limitations:
 ```
 
+> 🧭 **Take this forward**
+>
+> **Remember:** telemetry explains what happened; evaluation evidence supports a
+> decision about what should happen next.
+>
+> **Try next:** turn one synthetic trace finding into a minimized regression
+> case with a named owner and release consequence.
+>
+> **Inspect:** trace completeness, privacy status, incident findings, and the
+> regression case created from the failure.
+>
+> **Do not infer:** a complete local trace proves that a production exporter or
+> incident process captures everything.
+
 #### What this does not prove
 
 This is an offline synthetic observability control. It does not prove that a
@@ -5410,6 +5469,20 @@ A blocked synthetic attack is evidence that the declared control was exercised.
 An unblocked attack is a regression finding. Neither result is a universal
 safety score.
 
+> 🧭 **Take this forward**
+>
+> **Remember:** evaluate the harness around an agent—tools, permissions,
+> policies, state, and evidence—not only the underlying model.
+>
+> **Try next:** name the authorization owner and the independent record holder
+> for one consequential action.
+>
+> **Inspect:** the control result, authorization evidence, evidence source, and
+> whether the executor could rewrite the record being used for the decision.
+>
+> **Do not infer:** a public incident report or a blocked synthetic attack is
+> telemetry-backed proof of universal safety.
+
 #### Optional extension
 
 Map each synthetic control to a real service boundary in a system you are
@@ -5558,6 +5631,20 @@ Then complete the following for one feedback signal:
 6. Would an explicit question produce enough decision-relevant evidence to
    justify its attention cost?
 
+> 🧭 **Take this forward**
+>
+> **Remember:** feedback is a signal for review, not an automatic evaluator
+> label.
+>
+> **Try next:** choose one feedback signal, define its sampling rule, and state
+> the human or evaluator check required before it becomes a regression case.
+>
+> **Inspect:** the signal's alternative explanations, privacy boundary,
+> calibration status, and resulting decision.
+>
+> **Do not infer:** a stable score or a single retry proves that the deployed
+> system or evaluator has not drifted.
+
 #### What this lesson does not prove ⚠️
 
 A synthetic distribution comparison does not establish that a deployed monitor
@@ -5606,6 +5693,20 @@ Write an action contract with `idempotency_key`, `state_version`,
 `write_owner`, `write_scope`, `review_gate`, `approval_required`, `approval_id`,
 `compensation_action`, and `audit_event`. Mark which investigation steps may
 run independently and which step joins proposals before the shared write.
+
+> 🧭 **Take this forward**
+>
+> **Remember:** parallel investigation is safe only when shared writes remain
+> owned, authorized, and reviewable.
+>
+> **Try next:** identify the read-only fan-out, the single write owner, and the
+> approval gate for one workflow.
+>
+> **Inspect:** state version, idempotency key, authorization evidence, conflict
+> result, and compensation path.
+>
+> **Do not infer:** a successful response proves that a side effect happened
+> once, safely, or with the intended scope.
 
 #### What this lesson does not prove ⚠️
 
