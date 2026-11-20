@@ -18,6 +18,7 @@ You will inspect:
 - tenant and network egress policy;
 - output validation before a side effect;
 - tool and dependency provenance;
+- domain-source ownership, freshness, and missing-data behavior;
 - telemetry access, retention, deletion, and audit evidence; and
 - idempotency and stale-state controls;
 - red-team cases that connect an attack hypothesis to an expected control and
@@ -72,6 +73,24 @@ Review:
 - `coverage_summary`
 - `candidate_release_decision`
 - `evidence_template`
+
+## Domain evidence extension
+
+After the automated controls pass, create a small synthetic source contract for
+one decision. Use three records:
+
+1. a public course description;
+2. an original learner answer; and
+3. an AI-generated “understood” label.
+
+Record the source owner, permitted purpose, provenance (where the evidence came
+from), freshness, retention, and missing-data behavior. Keep the original answer
+separate from the model label. If the answer is missing or conflicts with the
+label, mark the decision `not_evaluated` or route it for human review rather
+than treating the label as ground truth (a trusted reference for correctness).
+
+This is a learner exercise over synthetic records; it is not a live learner
+analytics integration and does not require private data.
 
 ## What this does not prove
 

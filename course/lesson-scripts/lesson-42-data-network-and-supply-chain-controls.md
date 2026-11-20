@@ -37,6 +37,29 @@ Supply-chain evidence includes the tool definition revision, dependency
 revision, model revision, and policy revision. Without those identities, a
 failure may be impossible to reproduce.
 
+## Domain evidence and source trust
+
+Data access is not the same as trustworthy evidence. A domain source is useful
+only when the evaluation can state its owner, authority, provenance (where the
+evidence came from), freshness, retention, and permitted use.
+
+Preserve the source observation before asking a model to summarize or classify
+it. A model-generated explanation, label, or learner-status report is derived
+evidence. It may help a person make a decision, but it must not silently replace
+the observation that supports or challenges the claim.
+
+For the synthetic exercise, use three records:
+
+1. a public course description;
+2. an original learner answer; and
+3. an AI-generated “understood” label.
+
+Ask which record can support the decision, what provenance is required, and what
+the workflow should do when the answer is missing or the label conflicts with
+it. The expected control is to keep the original answer and model label
+separate, mark the decision `not_evaluated` when required evidence is missing,
+and route an unresolved conflict for human review.
+
 ## Demo notes
 
 - Review Lab 7 tenant, egress, output-validation, and provenance findings.
@@ -45,7 +68,9 @@ failure may be impossible to reproduce.
 ## Learner practice
 
 Choose one tool and define its allowed tenant, network destination, output
-schema, tool revision, and dependency revision.
+schema, tool revision, dependency revision, and one domain source contract.
+State the source owner, freshness rule, missing-data behavior, and how the
+workflow distinguishes original observations from model interpretations.
 
 ## What this lesson does not prove
 
