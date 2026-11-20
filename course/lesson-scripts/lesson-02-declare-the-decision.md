@@ -47,6 +47,28 @@ answer may include the final text, but it may also need the tool choice, the
 arguments, the authorization state, the source identifiers, the number of
 retries, or the state before and after the action.
 
+### Domain data is an evidence contract, not just an input
+
+A general-purpose model can already summarize a document, explain a lesson, or
+draft quiz questions. A domain system becomes more useful when it contributes
+evidence that is specific to the decision and not available from the generic
+prompt alone. That evidence still needs a contract.
+
+For each domain source, record:
+
+- who owns the source and why it is authorized;
+- where the evidence came from and which revision or time window it represents;
+- what the original observation was before the model interpreted it;
+- what happens when the source is missing, stale, conflicting, or structurally
+  incomplete; and
+- which decision the evidence can change.
+
+Keep original observations separate from derived interpretations. For example,
+a learner's submitted answer is an observation. An AI-generated label such as
+“the learner understood the lesson” is a derived claim, not ground truth (a
+trusted reference for correctness) unless it has been validated against an
+appropriate reference decision.
+
 This is where evaluation layers become useful. A deterministic check is a fixed
 rule, such as whether a required field exists or whether an argument matches a
 schema. A semantic check evaluates meaning, such as whether the response
@@ -66,6 +88,8 @@ changing the wrong record. A low cost can coexist with an unsafe refusal.
 > 2. The decision is…
 > 3. The most expensive plausible failure is…
 > 4. The evidence I need is…
+> 5. The domain evidence is… and the original observation is separate from the
+>    model's interpretation because…
 
 If you cannot name the evidence, the evaluation is not ready to run. That is
 not a failure of the model. It is a missing contract.
@@ -83,7 +107,10 @@ documents.
 ## Learner practice
 
 Complete the four-line evaluation contract for one workflow. Add one negative
-case that would look successful if you checked only the request status.
+case that would look successful if you checked only the request status. Then
+classify one synthetic source as an original observation or a derived
+interpretation, and state whether missing or stale source data should block the
+decision.
 
 ## What this lesson does not prove
 

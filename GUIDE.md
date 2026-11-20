@@ -1542,6 +1542,28 @@ answer may include the final text, but it may also need the tool choice, the
 arguments, the authorization state, the source identifiers, the number of
 retries, or the state before and after the action.
 
+### Domain data is an evidence contract, not just an input
+
+A general-purpose model can already summarize a document, explain a lesson, or
+draft quiz questions. A domain system becomes more useful when it contributes
+evidence that is specific to the decision and not available from the generic
+prompt alone. That evidence still needs a contract.
+
+For each domain source, record:
+
+- who owns the source and why it is authorized;
+- where the evidence came from and which revision or time window it represents;
+- what the original observation was before the model interpreted it;
+- what happens when the source is missing, stale, conflicting, or structurally
+  incomplete; and
+- which decision the evidence can change.
+
+Keep original observations separate from derived interpretations. For example,
+a learner's submitted answer is an observation. An AI-generated label such as
+“the learner understood the lesson” is a derived claim, not ground truth (a
+trusted reference for correctness) unless it has been validated against an
+appropriate reference decision.
+
 This is where evaluation layers become useful. A deterministic check is a fixed
 rule, such as whether a required field exists or whether an argument matches a
 schema. A semantic check evaluates meaning, such as whether the response
@@ -1561,6 +1583,8 @@ changing the wrong record. A low cost can coexist with an unsafe refusal.
 > 2. The decision is…
 > 3. The most expensive plausible failure is…
 > 4. The evidence I need is…
+> 5. The domain evidence is… and the original observation is separate from the
+>    model's interpretation because…
 
 If you cannot name the evidence, the evaluation is not ready to run. That is
 not a failure of the model. It is a missing contract.
@@ -1571,7 +1595,10 @@ status from semantic outcome.
 #### Learner practice 🧪
 
 Complete the four-line evaluation contract for one workflow. Add one negative
-case that would look successful if you checked only the request status.
+case that would look successful if you checked only the request status. Then
+classify one synthetic source as an original observation or a derived
+interpretation, and state whether missing or stale source data should block the
+decision.
 
 #### What this lesson does not prove ⚠️
 
@@ -5270,7 +5297,9 @@ failure may be impossible to reproduce.
 #### Learner practice 🧪
 
 Choose one tool and define its allowed tenant, network destination, output
-schema, tool revision, and dependency revision.
+schema, tool revision, dependency revision, and one domain source contract.
+State the source owner, freshness rule, missing-data behavior, and how the
+workflow distinguishes original observations from model interpretations.
 
 #### What this lesson does not prove ⚠️
 
@@ -5393,6 +5422,7 @@ You will inspect:
 - tenant and network egress policy;
 - output validation before a side effect;
 - tool and dependency provenance;
+- domain-source ownership, freshness, and missing-data behavior;
 - telemetry access, retention, deletion, and audit evidence; and
 - idempotency and stale-state controls;
 - red-team cases that connect an attack hypothesis to an expected control and
@@ -5447,6 +5477,24 @@ Review:
 - `coverage_summary`
 - `candidate_release_decision`
 - `evidence_template`
+
+#### Domain evidence extension
+
+After the automated controls pass, create a small synthetic source contract for
+one decision. Use three records:
+
+1. a public course description;
+2. an original learner answer; and
+3. an AI-generated “understood” label.
+
+Record the source owner, permitted purpose, provenance (where the evidence came
+from), freshness, retention, and missing-data behavior. Keep the original answer
+separate from the model label. If the answer is missing or conflicts with the
+label, mark the decision `not_evaluated` or route it for human review rather
+than treating the label as ground truth (a trusted reference for correctness).
+
+This is a learner exercise over synthetic records; it is not a live learner
+analytics integration and does not require private data.
 
 #### What this does not prove
 
