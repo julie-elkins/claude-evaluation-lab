@@ -3279,6 +3279,21 @@ fails because an earlier error contaminates later decisions.
 
 Distinguish retry from recovery. A retry repeats an attempt. Recovery changes the plan or escalates because the previous attempt failed. Repeated retries can waste budget, duplicate side effects, or hide the fact that the agent has no safe next step.
 
+An **orchestrator** is the workflow component that chooses models, delegates
+work, applies policy, manages state, requests approval, retries actions, and
+joins evidence. Evaluate that control path separately from the model response.
+If a fallback model is selected, record why it was selected and which
+capability, permission, privacy, cost, or quality differences matter. A
+fallback is a new evaluated configuration, not proof that recovery occurred.
+
+For an external action with an ambiguous result, do not retry from the local
+completion flag alone. Reuse the stable operation identity, check the approval
+against the current action and revision, and reconcile with the authoritative
+destination. **Idempotency** means that repeating the same operation identity
+does not create an additional unintended effect. If the destination cannot
+confirm its state, record `unknown` or `not_evaluated` rather than calling the
+action recovered.
+
 Architecture is also part of the trajectory. A **subagent** is a secondary
 agent invoked by a primary agent for specialized work. Compare a flat agent
 with a subagent design at the end-to-end task level: did the user get the
@@ -3353,9 +3368,30 @@ could propagate, one verification point, and one condition that should make the
 agent stop, ask, refuse, or escalate.
 Explain whether the final answer would change your decision and why.
 
+### Synthetic case: interrupted action and fallback model
+
+Evaluate this offline, metadata-only case:
+
+1. Model A proposes an approved external action.
+2. The process restarts after the action boundary, but before the result is
+   confirmed.
+3. The workflow selects Model B as a fallback.
+4. The evaluator must decide whether continuation is `recovered`, `unknown`,
+   `unsafe_to_retry`, or `not_evaluated`.
+
+Record the action revision, approval identifier, operation identity, selected
+model and fallback reason, required capability, authoritative state, and
+postcondition evidence. **Postcondition reconciliation** means reading the
+authoritative destination after an uncertain attempt to determine what state
+actually exists. Do not infer recovery from a fluent response, a local
+completion flag, or the existence of an approval record.
+
+Compare your decision with the
+[orchestrator trust-boundary pattern](https://github.com/julie-elkins/agent-systems-design-guide/blob/main/decisions/orchestrator-trust-boundary.md).
+
 #### What this lesson does not prove ⚠️
 
-A captured trajectory is only as complete as the instrumentation. Missing events can make an unsafe path look safe, so evidence completeness is itself an evaluation criterion. One successful subagent run does not prove that a multi-agent architecture is better than a flat design or will remain useful after a model upgrade.
+A captured trajectory is only as complete as the instrumentation. Missing events can make an unsafe path look safe, so evidence completeness is itself an evaluation criterion. One successful subagent run does not prove that a multi-agent architecture is better than a flat design or will remain useful after a model upgrade. This synthetic case does not prove that a live fallback model is equivalent to the original model, that an external system executed exactly once, or that a real-world workflow can recover safely.
 
 ### Module practice check 📝
 
