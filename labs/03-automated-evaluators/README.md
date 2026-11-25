@@ -18,6 +18,10 @@ questions, an ordered question for partial correctness, weights, blocking
 questions, a score breakdown, an overlap warning, and an explicit calibration
 boundary.
 
+You will also run a rubric-validity audit. A rubric-validity audit checks whether
+the scoring rule represents the decision's important requirements before the
+aggregate score is trusted.
+
 You will also run a pairwise bias probe, where the same candidates are shown in
 opposite orders to detect whether the judge changes its preference.
 
@@ -42,7 +46,9 @@ The case set includes:
 - a fluent completion claim without evidence; and
 - a partially complete answer with an explicit ordered score;
 - a tool-derived value that does not match the tool output; and
-- a safe escalation without a completion claim.
+- a safe escalation without a completion claim; and
+- a supported, complete answer that still misses a critical actionability
+  requirement absent from the question contract.
 
 ## Run it
 
@@ -75,6 +81,8 @@ The summary should show:
   duplicate construct; and
 - `calibration.status: "not_measured"` because no independent human labels are
   present; and
+- `rubric_validity_audit.status: "block"` because `rubric-gap-001` exposes a
+  decision-relevant requirement missing from the question contract; and
 - `release_decision: "block"` because the evaluator stack has known failures.
 
 The lab should exit with code `0`. The zero exit code means the teaching
@@ -95,6 +103,8 @@ observed response
         |
         +--> overlap audit and calibration boundary
         |
+        +--> rubric-validity audit
+        |
         +--> pairwise order probe
                     |
                     v
@@ -114,6 +124,7 @@ Review these fields in the JSON output:
 - `question_level`
 - `overlap_audit`
 - `calibration`
+- `rubric_validity_audit`
 - `negative_control`
 - `bias_probe`
 - `release_decision`
@@ -148,6 +159,14 @@ before using the question set as a release gate. The lab does not claim human
 calibration: it reports the cases that require independent human labels and
 keeps per-question agreement unset.
 
+`rubric-gap-001` shows a different failure. The answer is complete, supported,
+and faithful to the tool output, so the current question contract gives it a
+passing aggregate score. The decision still blocks because the rubric-validity
+audit finds that actionability—the requirement that a user can act without a
+missing critical condition—is not represented. Adding weight to an unrelated
+question would not repair the measurement; the criterion must be added or
+explicitly declared out of scope.
+
 ## Troubleshooting
 
 1. Confirm that you are running the command from the course repository root.
@@ -172,6 +191,7 @@ overall_score:
 blocking_failures:
 overlap_audit:
 calibration_status:
+rubric_validity_audit:
 contract_failures:
 judge_false_passes:
 independent_breaker_result:
@@ -191,8 +211,8 @@ limitations:
 > **Try next:** add one known false-pass case and one human-reviewed calibration
 > case before using an automated judge as a release gate.
 >
-> **Inspect:** the independent breaker, calibration status, bias probe, and
-> release reasons.
+> **Inspect:** the independent breaker, calibration status, bias probe,
+> rubric-validity audit, and release reasons.
 >
 > **Do not infer:** a passing synthetic lab means a live judge is accurate or
 > production-ready.
