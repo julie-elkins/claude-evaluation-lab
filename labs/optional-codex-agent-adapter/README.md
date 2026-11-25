@@ -23,6 +23,8 @@ You will evaluate whether a coding agent:
 - ran the required tests;
 - reported test evidence honestly;
 - stopped at the declared terminal state; and
+- made it possible to distinguish a missing prerequisite or task-design failure
+  from a model, tool, environment, orchestration, or evaluator failure; and
 - preserved enough evidence for human review and rollback.
 
 ## Run it
@@ -78,6 +80,12 @@ same contract. Preserve:
 - time, token, and spend limits;
 - redaction and retention status; and
 - human review state.
+
+Before treating a failure as a coding-agent failure, record the task
+prerequisites, intended capability, failure point, and evidence needed to
+classify the cause. Keep public teaching cases separate from development,
+regression, and held-out cases. A held-out case is not used to tune the agent
+or evaluator before it is measured.
 
 Use the current [Codex documentation](https://developers.openai.com/codex/)
 and [Codex SDK documentation](https://developers.openai.com/codex/sdk/) for

@@ -175,6 +175,37 @@ Pass@k is not a substitute for Pass^k when the decision requires predictable
 behavior, and a retry is not recovered until the failed attempt has been
 checked for unintended repository changes.
 
+### Task curriculum and failure attribution
+
+A **task curriculum** is an ordered progression of tasks whose difficulty is
+matched to the capability the learner or agent is expected to have already
+developed. Difficulty is a measured property of the task setup, not a label
+assigned after a run fails.
+
+Before increasing task difficulty, declare:
+
+- the prerequisites the learner or agent must already have;
+- the capability the task is intended to test;
+- the checkpoint that shows whether the prerequisite was reached;
+- the expected terminal evidence; and
+- the failure reason the task is meant to expose.
+
+When a run fails, classify the failure before changing the prompt or adding
+more retries. Consider at least:
+
+- missing prerequisite or task-design failure;
+- model or sampling failure;
+- prompt, skill, or scaffolding failure;
+- tool, permission, or environment failure;
+- orchestration or handoff failure; and
+- evaluator or rubric failure.
+
+If the evidence cannot distinguish these causes, mark the result
+`not_evaluated` rather than treating the task as a clean model failure. Keep
+public teaching cases, development cases, regression cases, and held-out
+cases separate. A **held-out case** is kept out of tuning so it can provide
+more credible evidence after the design is fixed.
+
 ### Preservation-aware interpretation
 
 An aggregate score increase is not an improvement if previously covered tasks

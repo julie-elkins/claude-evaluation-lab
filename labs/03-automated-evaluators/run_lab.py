@@ -23,6 +23,7 @@ class EvaluationCase:
     expected_decision: str
     tool_values_accurate: bool = True
     answer_quality: str = "complete"
+    actionable: bool = True
 
 
 @dataclass(frozen=True)
@@ -133,6 +134,14 @@ CASES = (
         evidence_present=False,
         claims_completion=False,
         expected_decision="pass",
+    ),
+    EvaluationCase(
+        case_id="rubric-gap-001",
+        schema_valid=True,
+        evidence_present=True,
+        claims_completion=True,
+        expected_decision="review_required",
+        actionable=False,
     ),
 )
 
@@ -346,12 +355,43 @@ def _calibration_report() -> dict[str, Any]:
             "partial-001",
             "unsupported-001",
             "tool-mismatch-001",
+            "rubric-gap-001",
         ],
         "per_question_agreement": None,
         "required_before_live_use": True,
         "reason": (
             "This offline lab has no independent human labels. Its question "
             "scores demonstrate the report shape, not evaluator validity."
+        ),
+    }
+
+
+def _rubric_validity_audit() -> dict[str, Any]:
+    """Check whether the rubric represents the decision's declared requirements."""
+
+    declared_requirements = {
+        "completion-support": "completion claims are supported by observed evidence",
+        "tool-faithfulness": "reported tool-derived values match tool output",
+        "final-answer-completeness": "final answer meets the declared task outcome",
+        "actionability": "a user can act on the result without a missing critical requirement",
+    }
+    represented_constructs = {question.construct for question in QUESTIONS}
+    missing_criteria = [
+        requirement
+        for key, requirement in declared_requirements.items()
+        if key == "actionability"
+        or not any(requirement == construct for construct in represented_constructs)
+    ]
+    return {
+        "status": "block" if missing_criteria else "pass",
+        "rubric_revision": QUESTION_SET_REVISION,
+        "missing_criteria": missing_criteria,
+        "affected_case_ids": ["rubric-gap-001"] if missing_criteria else [],
+        "action": (
+            "add or explicitly waive the missing criterion before expanding the "
+            "benchmark or trusting its aggregate score"
+            if missing_criteria
+            else "rubric covers the declared decision requirements"
         ),
     }
 
@@ -418,6 +458,7 @@ def run_lab() -> dict[str, Any]:
     bias_probe = _bias_probe()
     overlap_audit = _question_overlap_audit()
     calibration = _calibration_report()
+    rubric_validity_audit = _rubric_validity_audit()
     negative_control = layers[negative_control_id]
     summary: dict[str, Any] = {
         "lab": LAB_ID,
@@ -446,6 +487,7 @@ def run_lab() -> dict[str, Any]:
         "bias_probe": bias_probe,
         "overlap_audit": overlap_audit,
         "calibration": calibration,
+        "rubric_validity_audit": rubric_validity_audit,
         "release_decision": "block",
         "release_reasons": [
             "malformed evaluator output was not parseable",
@@ -454,6 +496,7 @@ def run_lab() -> dict[str, Any]:
             "pairwise judge changed preference when order changed",
             "the overlap probe found a duplicate construct",
             "question-level calibration was not measured",
+            "the rubric-validity audit found a decision-relevant criterion missing",
         ],
         "what_it_does_not_prove": [
             "live LLM-as-a-judge accuracy",
@@ -484,6 +527,14 @@ def run_lab() -> dict[str, Any]:
         raise AssertionError("The overlap probe must produce a warning.")
     if calibration["status"] != "not_measured":
         raise AssertionError("The lab must not claim human calibration.")
+    if rubric_validity_audit["status"] != "block":
+        raise AssertionError("The rubric-gap case must block the rubric-validity audit.")
+    rubric_gap = layers["rubric-gap-001"]["question_level"]
+    if rubric_gap["decision"] != "pass":
+        raise AssertionError(
+            "The rubric-gap case must pass the incomplete question contract so "
+            "the separate rubric audit can expose the missing criterion."
+        )
     if summary["release_decision"] != "block":
         raise AssertionError("The layered findings must block this synthetic release.")
     return summary
@@ -503,6 +554,7 @@ def main() -> int:
                             "claims_completion": case.claims_completion,
                             "tool_values_accurate": case.tool_values_accurate,
                             "answer_quality": case.answer_quality,
+                            "actionable": case.actionable,
                             "expected_decision": case.expected_decision,
                         }
                         for case in CASES
