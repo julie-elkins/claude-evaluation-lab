@@ -89,6 +89,34 @@ Pass@k is not a substitute for Pass^k when the decision requires predictable
 behavior, and a retry is not recovered until the failed attempt has been
 checked for unintended repository changes.
 
+## Benchmark score versus decision evidence
+
+A public benchmark is useful for orientation and screening, but it is not
+automatically evidence for a customer or production decision. A benchmark
+score is conditional on its task set, model, scaffolding, harness, evaluator,
+environment, and resource budget.
+
+Use a layered benchmark lifecycle:
+
+1. Use a public benchmark to understand broad capability and compare against a
+   declared baseline.
+2. Keep a frozen anchor set—a versioned group of representative tasks that is
+   rerun across releases—to expose regressions and benchmark drift. Benchmark
+   drift means that a score changed because the task, environment, harness, or
+   evaluator changed rather than because the agent improved.
+3. Use a rotating private holdout set—tasks kept out of tuning—to test whether
+   the result generalizes beyond the cases used during development.
+4. Use customer or production-like tasks to support the actual workflow
+   decision, including its permissions, side effects, failure costs, human
+   handoffs, and operational limits.
+
+Record the task-set version, model and scaffolding revisions, harness and
+evaluator revisions, environment, run conditions, task-level results, failure
+categories, cost, latency, and decision rule for every comparison. A score
+increase is a useful signal, not a verdict, until the matched baseline,
+repeated behavior, held-out performance, and remaining limitations are
+visible.
+
 ### Task curriculum and failure attribution
 
 A **task curriculum** is an ordered progression of tasks whose difficulty is
